@@ -1,4 +1,5 @@
 import ElectronStore from 'electron-store'
+import { DATA_DIR } from '.'
 
 class StoreManager {
   static instancePromise: Promise<StoreManager> | null = null
@@ -13,7 +14,10 @@ class StoreManager {
   async initialize() {
     const electronStoreModule = await import('electron-store')
     const StoreConstructor = electronStoreModule.default
-    this.store = new StoreConstructor()
+    this.store = new StoreConstructor({
+      name: 'settings',
+      cwd: DATA_DIR
+    })
   }
 
   static async getInstance() {
