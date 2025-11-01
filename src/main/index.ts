@@ -4,38 +4,27 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { makeDirs, pathExistsSync } from './utils/fsUtils'
 import { initStoreManager } from './store'
-import Database from 'better-sqlite3'
-import pkg from '../../package.json'
-import { type AppSettings } from './types'
+import { initDatabase, runMigrations } from './db'
+import { defaultSettings } from './defaultSettings'
 
 const APP_USER_MODEL_ID = 'com.ytdlpui'
-export const isDev = process.env.ELECTRON_RENDERER_URL ? true : false
-export const APP_DATA_PATH = isDev ? path.join(path.resolve(), 'app-data') : app.getPath('userData')
+export const APP_PATH = app.getAppPath()
+export const APP_DATA_PATH = is.dev ? path.join(APP_PATH, 'app-data') : app.getPath('userData')
 app.setPath('userData', APP_DATA_PATH)
 export const DATA_DIR = path.join(APP_DATA_PATH, 'data')
 export const DB_PATH = path.join(DATA_DIR, 'app.db')
 export const SETTINGS_PATH = path.join(DATA_DIR, 'settings.json')
 export const MEDIA_DATA_FOLDER_PATH = path.join(DATA_DIR, 'media-data')
+export const MIGRATIONS_FOLDER = is.dev
+  ? path.join(APP_PATH, 'drizzle')
+  : path.join(process.resourcesPath, 'app.asar.unpacked', 'drizzle')
 
-console.log(`isDev: ${isDev}`)
+console.log(`is.dev: ${is.dev}`)
 console.log(`APP_DATA_PATH: ${APP_DATA_PATH}`)
 console.log(`DATA_DIR: ${DATA_DIR}`)
 console.log(`DB_PATH: ${DB_PATH}`)
 console.log(`SETTINGS_PATH: ${SETTINGS_PATH}`)
 console.log()
-
-export const appSettings: AppSettings = {
-  appVersion: pkg.version,
-  defaultFormat: 'bv+ba',
-  downloadsFolder: app.getPath('downloads'),
-  ffmpegPath: '',
-  ffmpegVersion: '',
-  mediaDataFolder: '',
-  platform: process.platform,
-  userDownloadsFolder: app.getPath('downloads'),
-  ytdlpPath: '',
-  ytdlpVersion: ''
-}
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -86,18 +75,24 @@ async function init() {
 
   if (!pathExistsSync(SETTINGS_PATH)) {
     const store = await initStoreManager()
-    store.set('settings', appSettings)
+    store.set('settings', defaultSettings)
     console.log('Created settings.json')
   } else {
     console.log('settings.json exists')
   }
 
   if (!pathExistsSync(DB_PATH)) {
-    const db = new Database(DB_PATH)
-    db.pragma('journal_mode = WAL')
+    initDatabase()
     console.log('Created app.db')
+    try {
+      runMigrations()
+      console.log('Migrations applied')
+    } catch (error) {
+      console.error('Migrations failed: ' + error)
+    }
   } else {
     console.log('app.db exists')
+    initDatabase()
   }
 }
 
