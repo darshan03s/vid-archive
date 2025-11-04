@@ -1,12 +1,18 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { makeDirs, pathExistsSync } from './utils/fsUtils'
-import { initStoreManager } from './store'
+import { copyFileToFolder, copyFolder, makeDirs, pathExistsSync } from './utils/fsUtils'
+import { getStoreManager, initStoreManager } from './store'
 import { initDatabase, runMigrations } from './db'
-import { defaultSettings } from './defaultSettings'
 import log from 'electron-log'
+import {
+  getFfmpegFromPc,
+  getFfmpegFromSettings,
+  getYtdlpFromPc,
+  getYtdlpFromSettings
+} from './utils/appUtils'
+import { getDefaultAppSettings } from './defaultSettings'
 
 log.transports.file.level = 'info'
 
@@ -21,6 +27,9 @@ export const MEDIA_DATA_FOLDER_PATH = path.join(DATA_DIR, 'media-data')
 export const MIGRATIONS_FOLDER = is.dev
   ? path.join(APP_PATH, 'drizzle')
   : path.join(process.resourcesPath, 'app.asar.unpacked', 'drizzle')
+export const YTDLP_FOLDER_PATH = path.join(DATA_DIR, 'yt-dlp')
+export const YTDLP_EXE_PATH = path.join(DATA_DIR, 'yt-dlp', 'yt-dlp.exe')
+export const FFMPEG_FOLDER_PATH = path.join(DATA_DIR, 'ffmpeg')
 
 log.info(`is.dev: ${is.dev}`)
 log.info(`APP_DATA_PATH: ${APP_DATA_PATH}`)
@@ -28,8 +37,10 @@ log.info(`DATA_DIR: ${DATA_DIR}`)
 log.info(`DB_PATH: ${DB_PATH}`)
 log.info(`SETTINGS_PATH: ${SETTINGS_PATH}`)
 
+let mainWindow: BrowserWindow
+
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     minWidth: 500,
     width: 500,
     maxWidth: 700,
@@ -75,9 +86,10 @@ async function init() {
     log.info('MEDIA_DATA_FOLDER exists')
   }
 
+  const store = await initStoreManager()
+
   if (!pathExistsSync(SETTINGS_PATH)) {
-    const store = await initStoreManager()
-    store.set('settings', defaultSettings)
+    store.set('settings', getDefaultAppSettings())
     log.info('Created settings.json')
   } else {
     log.info('settings.json exists')
@@ -98,6 +110,68 @@ async function init() {
   }
 }
 
+async function addListeners() {
+  const store = await getStoreManager()
+  ipcMain.handle('renderer:init', async () => {
+    try {
+      log.info('Renderer initialized')
+
+      const { ytdlpVersion, ytdlpPath } = await getYtdlpFromSettings()
+      const { ffmpegVersion, ffmpegPath } = await getFfmpegFromSettings()
+
+      return { ytdlpPath, ytdlpVersion, ffmpegPath, ffmpegVersion }
+    } catch (err) {
+      log.error('Failed to initialize renderer:', err)
+      return { ytdlpPath: null, ytdlpVersion: null, ffmpegPath: null, ffmpegVersion: null }
+    }
+  })
+
+  ipcMain.handle('yt-dlp:confirm', async () => {
+    try {
+      log.info('Checking yt-dlp in PC...')
+
+      const { ytdlpVersionInPc, ytdlpPathInPc } = await getYtdlpFromPc()
+
+      if (ytdlpPathInPc) {
+        await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH)
+        store.set('settings.ytdlpPath', YTDLP_EXE_PATH)
+        store.set('settings.ytdlpVersion', ytdlpVersionInPc)
+      }
+
+      log.info(`yt-dlp path in PC: ${ytdlpPathInPc}`)
+      log.info(`yt-dlp version in PC: ${ytdlpVersionInPc}`)
+
+      return { ytdlpVersionInPc, ytdlpPathInPc }
+    } catch (err) {
+      log.error(err)
+      return { ytdlpPathInPc: null, ytdlpVersionInPc: null }
+    }
+  })
+
+  ipcMain.handle('ffmpeg:confirm', async () => {
+    try {
+      log.info('Checking ffmpeg in PC...')
+
+      const { ffmpegVersionInPc, ffmpegPathInPc } = await getFfmpegFromPc()
+
+      if (ffmpegPathInPc) {
+        const ffmpegFolderInPc = path.dirname(ffmpegPathInPc)
+        copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH)
+        store.set('settings.ffmpegPath', FFMPEG_FOLDER_PATH)
+        store.set('settings.ffmpegVersion', ffmpegVersionInPc)
+      }
+
+      log.info(`ffmpeg path in PC: ${ffmpegPathInPc}`)
+      log.info(`ffmpeg version in PC: ${ffmpegVersionInPc}`)
+
+      return { ffmpegVersionInPc, ffmpegPathInPc }
+    } catch (err) {
+      log.error(err)
+      return { ffmpegPathInPc: null, ffmpegVersionInPc: null }
+    }
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -109,6 +183,8 @@ app.whenReady().then(async () => {
   })
 
   await init()
+
+  await addListeners()
 
   createWindow()
 

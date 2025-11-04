@@ -1,9 +1,13 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import log from 'electron-log'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  rendererInit: () => ipcRenderer.invoke('renderer:init'),
+  confirmYtdlp: () => ipcRenderer.invoke('yt-dlp:confirm'),
+  confirmFfmpeg: () => ipcRenderer.invoke('ffmpeg:confirm')
+}
 
 if (process.contextIsolated) {
   try {
