@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { Spinner } from './ui/spinner'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
+import { useSettingsStore } from '@renderer/stores/settings-store'
 
 type YtdlpFfmpegConfirmModalProps = {
   open: boolean
@@ -21,25 +22,22 @@ type YtdlpFfmpegConfirmModalProps = {
 type ConfirmYtdlpProps = {
   isYtdlpConfirmLoading: boolean
   isYtdlpPresentInPc: boolean
-  version: string
 }
 
 type ConfirmFfmpegProps = {
   isFfmpegConfirmLoading: boolean
   isFfmpegPresentInPc: boolean
-  version: string
 }
 
-const ConfirmYtdlp = ({
-  isYtdlpConfirmLoading,
-  isYtdlpPresentInPc,
-  version
-}: ConfirmYtdlpProps) => {
+const ConfirmYtdlp = ({ isYtdlpConfirmLoading, isYtdlpPresentInPc }: ConfirmYtdlpProps) => {
+  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion)
   return (
     <div className="w-full flex justify-between items-center">
       <div className="left flex flex-col gap-1">
         <span className="text-sm">yt-dlp</span>
-        <Badge className="text-xs">Version: {isYtdlpPresentInPc ? version : 'Not Found'}</Badge>
+        <Badge className="text-xs">
+          Version: {isYtdlpPresentInPc ? ytdlpVersion : 'Not Found'}
+        </Badge>
       </div>
       <div className="right">
         {isYtdlpConfirmLoading ? (
@@ -56,16 +54,15 @@ const ConfirmYtdlp = ({
   )
 }
 
-const ConfirmFfmpeg = ({
-  isFfmpegConfirmLoading,
-  isFfmpegPresentInPc,
-  version
-}: ConfirmFfmpegProps) => {
+const ConfirmFfmpeg = ({ isFfmpegConfirmLoading, isFfmpegPresentInPc }: ConfirmFfmpegProps) => {
+  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion)
   return (
     <div className="w-full flex justify-between items-center">
       <div className="left flex flex-col gap-1">
         <span className="text-sm">ffmpeg</span>
-        <Badge className="text-xs">Version: {isFfmpegPresentInPc ? version : 'Not Found'}</Badge>
+        <Badge className="text-xs">
+          Version: {isFfmpegPresentInPc ? ffmpegVersion : 'Not Found'}
+        </Badge>
       </div>
       <div className="right">
         {isFfmpegConfirmLoading ? (
@@ -87,30 +84,42 @@ const YtdlpFfmpegConfirmModal = ({ open, onOpenChange }: YtdlpFfmpegConfirmModal
   const [isFfmpegPresentInPc, setIsFfmpegPresentInPc] = useState(false)
   const [isYtdlpConfirmLoading, setIsYtdlpConfirmLoading] = useState(true)
   const [isFfmpegConfirmLoading, setIsFfmpegConfirmLoading] = useState(true)
-  const [ytdlpVersion, setYtdlpVersion] = useState('')
-  const [ffmpegVersion, setFfmpegVersion] = useState('')
+  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion)
+  const ytdlpPath = useSettingsStore((state) => state.ytdlpPath)
+  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion)
+  const ffmpegPath = useSettingsStore((state) => state.ffmpegPath)
+
+  console.log({ ytdlpPath, ytdlpVersion, ffmpegPath, ffmpegVersion })
 
   useEffect(() => {
+    if (ytdlpVersion && ytdlpPath) {
+      setIsYtdlpPresentInPc(true)
+      setIsYtdlpConfirmLoading(false)
+      return
+    }
     window.api.confirmYtdlp().then(({ ytdlpPathInPc, ytdlpVersionInPc }) => {
       if (ytdlpPathInPc && ytdlpVersionInPc) {
         setIsYtdlpPresentInPc(true)
-        setYtdlpVersion(String(ytdlpVersionInPc))
+        useSettingsStore.setState({ ytdlpPath: ytdlpPathInPc, ytdlpVersion: ytdlpVersionInPc })
       } else {
         setIsYtdlpPresentInPc(false)
-        setYtdlpVersion('')
       }
       setIsYtdlpConfirmLoading(false)
     })
   }, [])
 
   useEffect(() => {
+    if (ffmpegVersion && ffmpegPath) {
+      setIsFfmpegPresentInPc(true)
+      setIsFfmpegConfirmLoading(false)
+      return
+    }
     window.api.confirmFfmpeg().then(({ ffmpegPathInPc, ffmpegVersionInPc }) => {
       if (ffmpegPathInPc && ffmpegVersionInPc) {
         setIsFfmpegPresentInPc(true)
-        setFfmpegVersion(String(ffmpegVersionInPc))
+        useSettingsStore.setState({ ffmpegPath: ffmpegPathInPc, ffmpegVersion: ffmpegVersionInPc })
       } else {
         setIsFfmpegPresentInPc(false)
-        setFfmpegVersion('')
       }
       setIsFfmpegConfirmLoading(false)
     })
@@ -136,13 +145,11 @@ const YtdlpFfmpegConfirmModal = ({ open, onOpenChange }: YtdlpFfmpegConfirmModal
             <ConfirmYtdlp
               isYtdlpConfirmLoading={isYtdlpConfirmLoading}
               isYtdlpPresentInPc={isYtdlpPresentInPc}
-              version={ytdlpVersion}
             />
             <hr className="w-full m-2 my-4" />
             <ConfirmFfmpeg
               isFfmpegConfirmLoading={isFfmpegConfirmLoading}
               isFfmpegPresentInPc={isFfmpegPresentInPc}
-              version={ffmpegVersion}
             />
           </div>
           <AlertDialogFooter>

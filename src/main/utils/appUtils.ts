@@ -26,6 +26,11 @@ export async function getFfmpegFromSettings() {
   }
 }
 
+export async function getSettings() {
+  const store = await getStoreManager()
+  return store.get('settings')
+}
+
 async function getAppPath(appName: string) {
   try {
     let command: string

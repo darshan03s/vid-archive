@@ -1,14 +1,11 @@
+import { type AppSettings } from '@/shared/types'
+
 export {}
 
 declare global {
   interface Window {
     api: {
-      rendererInit: () => Promise<{
-        ytdlpPath: string
-        ytdlpVersion: string
-        ffmpegPath: string
-        ffmpegVersion: string
-      }>
+      rendererInit: () => Promise<AppSettings>
       confirmYtdlp: () => Promise<{
         ytdlpPathInPc: string
         ytdlpVersionInPc: string

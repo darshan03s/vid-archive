@@ -1,12 +1,7 @@
 import { ipcMain } from 'electron'
 import { getStoreManager } from './store'
 import log from 'electron-log'
-import {
-  getFfmpegFromPc,
-  getFfmpegFromSettings,
-  getYtdlpFromPc,
-  getYtdlpFromSettings
-} from './utils/appUtils'
+import { getFfmpegFromPc, getSettings, getYtdlpFromPc } from './utils/appUtils'
 import { FFMPEG_FOLDER_PATH, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '.'
 import { copyFileToFolder, copyFolder } from './utils/fsUtils'
 import path from 'node:path'
@@ -17,10 +12,9 @@ export async function addListeners() {
     try {
       log.info('Renderer initialized')
 
-      const { ytdlpVersion, ytdlpPath } = await getYtdlpFromSettings()
-      const { ffmpegVersion, ffmpegPath } = await getFfmpegFromSettings()
+      const settings = await getSettings()
 
-      return { ytdlpPath, ytdlpVersion, ffmpegPath, ffmpegVersion }
+      return settings
     } catch (err) {
       log.error('Failed to initialize renderer:', err)
       return { ytdlpPath: null, ytdlpVersion: null, ffmpegPath: null, ffmpegVersion: null }
