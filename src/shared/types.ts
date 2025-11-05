@@ -4,7 +4,7 @@ export type AppSettings = {
   ytdlpVersion: string
   ffmpegPath: string
   ffmpegVersion: string
-  platform: typeof process.platform
+  platform: typeof process.platform | string
   mediaDataFolder: string
   downloadsFolder: string
   userDownloadsFolder: string

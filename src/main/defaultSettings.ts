@@ -1,4 +1,4 @@
-import { AppSettings } from './types/app'
+import { type AppSettings } from '../shared/types'
 import pkg from '../../package.json'
 import { app } from 'electron'
 import { MEDIA_DATA_FOLDER_PATH } from '.'

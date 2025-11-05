@@ -9,3 +9,4 @@ out
 *db-wal
 app-data
 .context
+electron.vite.config.*.mjs
