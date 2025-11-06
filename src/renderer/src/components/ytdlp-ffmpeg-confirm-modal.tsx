@@ -28,6 +28,7 @@ type ConfirmYtdlpProps = {
 type ConfirmFfmpegProps = {
   isFfmpegConfirmLoading: boolean
   isFfmpegPresentInPc: boolean
+  setIsFfmpegPresentInPc: Dispatch<SetStateAction<boolean>>
 }
 
 const ConfirmYtdlp = ({
@@ -50,6 +51,7 @@ const ConfirmYtdlp = ({
       }
     })
   }
+
   return (
     <div className="w-full flex justify-between items-center">
       <div className="left flex flex-col gap-1">
@@ -73,8 +75,27 @@ const ConfirmYtdlp = ({
   )
 }
 
-const ConfirmFfmpeg = ({ isFfmpegConfirmLoading, isFfmpegPresentInPc }: ConfirmFfmpegProps) => {
+const ConfirmFfmpeg = ({
+  isFfmpegConfirmLoading,
+  isFfmpegPresentInPc,
+  setIsFfmpegPresentInPc
+}: ConfirmFfmpegProps) => {
   const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion)
+  const [downloadingFfmpeg, setDownloadingFfmpeg] = useState(false)
+
+  function handleFfmpegDownload() {
+    setDownloadingFfmpeg(true)
+    window.api.downloadFfmpeg().then(({ ffmpegPathInPc, ffmpegVersionInPc }) => {
+      if (ffmpegPathInPc && ffmpegVersionInPc) {
+        useSettingsStore.setState({ ffmpegVersion: ffmpegVersionInPc, ffmpegPath: ffmpegPathInPc })
+        setDownloadingFfmpeg(false)
+        setIsFfmpegPresentInPc(true)
+      } else {
+        setIsFfmpegPresentInPc(false)
+      }
+    })
+  }
+
   return (
     <div className="w-full flex justify-between items-center">
       <div className="left flex flex-col gap-1">
@@ -89,8 +110,8 @@ const ConfirmFfmpeg = ({ isFfmpegConfirmLoading, isFfmpegPresentInPc }: ConfirmF
         ) : isFfmpegPresentInPc ? (
           <IconCheck />
         ) : (
-          <Button>
-            <IconDownload />
+          <Button onClick={handleFfmpegDownload} disabled={downloadingFfmpeg}>
+            {downloadingFfmpeg ? <Spinner /> : <IconDownload />}
           </Button>
         )}
       </div>
@@ -170,6 +191,7 @@ const YtdlpFfmpegConfirmModal = ({ open, onOpenChange }: YtdlpFfmpegConfirmModal
             <ConfirmFfmpeg
               isFfmpegConfirmLoading={isFfmpegConfirmLoading}
               isFfmpegPresentInPc={isFfmpegPresentInPc}
+              setIsFfmpegPresentInPc={setIsFfmpegPresentInPc}
             />
           </div>
           <AlertDialogFooter>

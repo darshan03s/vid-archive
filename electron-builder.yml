@@ -15,6 +15,7 @@ asarUnpack:
   - resources/**
   - drizzle/**
   - node_modules/better-sqlite3/**
+  - node_modules/7zip-min/**/*
 win:
   executableName: ytdlp-ui
 nsis:

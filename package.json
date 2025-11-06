@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "7zip-min": "^2.1.0",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",

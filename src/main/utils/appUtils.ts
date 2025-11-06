@@ -59,8 +59,8 @@ export async function getYtdlpVersionFromPc(ytdlpPath: string = 'yt-dlp') {
   return stdout.trim()
 }
 
-async function getFfmpegVersionFromPc() {
-  const { stdout } = await execPromise('ffmpeg -version')
+export async function getFfmpegVersionFromPc(ffmpegPath: string = 'ffmpeg') {
+  const { stdout } = await execPromise(`${ffmpegPath} -version`)
   const match = stdout.match(/ffmpeg version\s+(\d+(?:\.\d+)?)/)
   const version = match ? match[1] : null
   return version

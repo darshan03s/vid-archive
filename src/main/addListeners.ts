@@ -3,14 +3,17 @@ import { getStoreManager } from './store'
 import log from 'electron-log'
 import {
   getFfmpegFromPc,
+  getFfmpegVersionFromPc,
   getSettings,
   getYtdlpFromPc,
   getYtdlpVersionFromPc
 } from './utils/appUtils'
-import { FFMPEG_FOLDER_PATH, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '.'
+import { DATA_DIR, FFMPEG_FOLDER_PATH, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '.'
 import { copyFileToFolder, copyFolder } from './utils/fsUtils'
 import path from 'node:path'
 import { downloadYtDlpLatestRelease } from './utils/downloadYtdlp'
+import { downloadFfmpeg } from './utils/downloadFfmpeg'
+import SevenZip from '7zip-min'
 
 export async function addListeners() {
   const store = await getStoreManager()
@@ -88,6 +91,33 @@ export async function addListeners() {
       log.info(`yt-dlp downloaded version: ${ytdlpVersionInPc}`)
 
       return { ytdlpVersionInPc, ytdlpPathInPc: outputPath }
+    } catch (err) {
+      log.error('Failed to download yt-dlp:', err)
+      return { ytdlpVersionInPc: null, ytdlpPathInPc: null }
+    }
+  })
+
+  ipcMain.handle('ffmpeg:download', async () => {
+    try {
+      log.info('Downloading ffmpeg...')
+
+      const output7zPath = await downloadFfmpeg(DATA_DIR)
+      log.info('Downloaded ffmpeg')
+
+      await SevenZip.unpack(output7zPath, DATA_DIR)
+
+      const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-8.0-full_build', 'bin', 'ffmpeg.exe')
+      const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-8.0-full_build', 'bin')
+
+      const ffmpegVersionInPc = await getFfmpegVersionFromPc(ffmpegExePath)
+
+      store.set('settings.ffmpegPath', ffmpegBinPath)
+      store.set('settings.ffmpegVersion', ffmpegVersionInPc)
+
+      log.info(`ffmpeg downloaded: ${ffmpegBinPath}`)
+      log.info(`ffmpeg downloaded version: ${ffmpegVersionInPc}`)
+
+      return { ffmpegVersionInPc, ffmpegPathInPc: ffmpegBinPath }
     } catch (err) {
       log.error('Failed to download yt-dlp:', err)
       return { ytdlpVersionInPc: null, ytdlpPathInPc: null }

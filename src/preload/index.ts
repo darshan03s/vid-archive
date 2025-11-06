@@ -7,7 +7,8 @@ const api = {
   rendererInit: () => ipcRenderer.invoke('renderer:init'),
   confirmYtdlp: () => ipcRenderer.invoke('yt-dlp:confirm'),
   confirmFfmpeg: () => ipcRenderer.invoke('ffmpeg:confirm'),
-  downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download')
+  downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download'),
+  downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download')
 }
 
 if (process.contextIsolated) {

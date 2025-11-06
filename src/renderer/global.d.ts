@@ -18,6 +18,10 @@ declare global {
         ytdlpPathInPc: string
         ytdlpVersionInPc: string
       }>
+      downloadFfmpeg: () => Promise<{
+        ffmpegPathInPc: string
+        ffmpegVersionInPc: string
+      }>
     }
     electron: typeof import('@electron-toolkit/preload').electronAPI
   }
