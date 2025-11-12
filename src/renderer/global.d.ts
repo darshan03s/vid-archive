@@ -1,28 +1,28 @@
-import { type AppSettings } from '@/shared/types'
+import { type AppSettings } from '@/shared/types';
 
-export {}
+export {};
 
 declare global {
   interface Window {
     api: {
-      rendererInit: () => Promise<AppSettings>
+      rendererInit: () => Promise<AppSettings>;
       confirmYtdlp: () => Promise<{
-        ytdlpPathInPc: string
-        ytdlpVersionInPc: string
-      }>
+        ytdlpPathInPc: string;
+        ytdlpVersionInPc: string;
+      }>;
       confirmFfmpeg: () => Promise<{
-        ffmpegPathInPc: string
-        ffmpegVersionInPc: string
-      }>
+        ffmpegPathInPc: string;
+        ffmpegVersionInPc: string;
+      }>;
       downloadYtdlp: () => Promise<{
-        ytdlpPathInPc: string
-        ytdlpVersionInPc: string
-      }>
+        ytdlpPathInPc: string;
+        ytdlpVersionInPc: string;
+      }>;
       downloadFfmpeg: () => Promise<{
-        ffmpegPathInPc: string
-        ffmpegVersionInPc: string
-      }>
-    }
-    electron: typeof import('@electron-toolkit/preload').electronAPI
+        ffmpegPathInPc: string;
+        ffmpegVersionInPc: string;
+      }>;
+    };
+    electron: typeof import('@electron-toolkit/preload').electronAPI;
   }
 }

@@ -1,6 +1,6 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
-import log from 'electron-log'
+import { contextBridge, ipcRenderer } from 'electron';
+import { electronAPI } from '@electron-toolkit/preload';
+import log from 'electron-log';
 
 // Custom APIs for renderer
 const api = {
@@ -9,18 +9,18 @@ const api = {
   confirmFfmpeg: () => ipcRenderer.invoke('ffmpeg:confirm'),
   downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download'),
   downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download')
-}
+};
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('electron', electronAPI);
+    contextBridge.exposeInMainWorld('api', api);
   } catch (error) {
-    log.error(error)
+    log.error(error);
   }
 } else {
   // @ts-ignore (define in dts)
-  window.electron = electronAPI
+  window.electron = electronAPI;
   // @ts-ignore (define in dts)
-  window.api = api
+  window.api = api;
 }

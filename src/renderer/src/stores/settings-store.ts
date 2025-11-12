@@ -1,8 +1,8 @@
-import { create } from 'zustand'
-import { type AppSettings } from '@/shared/types'
+import { create } from 'zustand';
+import { type AppSettings } from '@/shared/types';
 
 interface SettingsStore extends AppSettings {
-  setSettings: (settings: Partial<AppSettings>) => void
+  setSettings: (settings: Partial<AppSettings>) => void;
 }
 
 export const useSettingsStore = create<SettingsStore>((set) => ({
@@ -17,4 +17,4 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   ytdlpPath: '',
   ytdlpVersion: '',
   setSettings: (settings) => set((state) => ({ ...state, ...settings }))
-}))
+}));

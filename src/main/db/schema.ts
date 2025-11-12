@@ -1,7 +1,7 @@
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
-import { sql } from 'drizzle-orm'
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
-export const downloadStatusEnum = ['pending', 'downloading', 'completed', 'failed'] as const
+export const downloadStatusEnum = ['pending', 'downloading', 'completed', 'failed'] as const;
 
 export const urlHistory = sqliteTable('url_history', {
   id: text('id').primaryKey().notNull(),
@@ -11,7 +11,7 @@ export const urlHistory = sqliteTable('url_history', {
   addedAt: text('added_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
-})
+});
 
 export const downloadsHistory = sqliteTable('downloads_history', {
   id: text('id').primaryKey().notNull(),
@@ -27,7 +27,7 @@ export const downloadsHistory = sqliteTable('downloads_history', {
     enum: downloadStatusEnum
   }).notNull(),
   command: text('command').notNull()
-})
+});
 
 export const extraCommandsHistory = sqliteTable('extra_commands_history', {
   id: text('id').primaryKey().notNull(),
@@ -35,4 +35,4 @@ export const extraCommandsHistory = sqliteTable('extra_commands_history', {
   createdAt: text('created_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
-})
+});

@@ -1,38 +1,38 @@
-import { useEffect, useState } from 'react'
-import YtdlpFfmpegConfirmModal from './components/ytdlp-ffmpeg-confirm-modal'
-import { Spinner } from './components/ui/spinner'
-import { type AppSettings } from '@/shared/types'
-import { useSettingsStore } from './stores/settings-store'
+import { useEffect, useState } from 'react';
+import YtdlpFfmpegConfirmModal from './components/ytdlp-ffmpeg-confirm-modal';
+import { Spinner } from './components/ui/spinner';
+import { type AppSettings } from '@/shared/types';
+import { useSettingsStore } from './stores/settings-store';
 
 const App = () => {
-  const [loadingFromSettings, setLoadingFromSettings] = useState(true)
-  const [isYtdlpFmpegConfirmModalVisible, setIsYtdlpFfmpegConfirmModalVisible] = useState(false)
-  const setSettings = useSettingsStore((state) => state.setSettings)
+  const [loadingFromSettings, setLoadingFromSettings] = useState(true);
+  const [isYtdlpFmpegConfirmModalVisible, setIsYtdlpFfmpegConfirmModalVisible] = useState(false);
+  const setSettings = useSettingsStore((state) => state.setSettings);
 
   useEffect(() => {
     window.api.rendererInit().then((settings: AppSettings) => {
-      setLoadingFromSettings(false)
-      setSettings(settings)
+      setLoadingFromSettings(false);
+      setSettings(settings);
 
-      const isYtdlpMissing = !settings.ytdlpPath || !settings.ytdlpVersion
-      const isFfmpegMissing = !settings.ffmpegPath || !settings.ffmpegVersion
+      const isYtdlpMissing = !settings.ytdlpPath || !settings.ytdlpVersion;
+      const isFfmpegMissing = !settings.ffmpegPath || !settings.ffmpegVersion;
 
       if (isYtdlpMissing || isFfmpegMissing) {
-        setIsYtdlpFfmpegConfirmModalVisible(true)
+        setIsYtdlpFfmpegConfirmModalVisible(true);
       }
-    })
-  }, [setSettings])
+    });
+  }, [setSettings]);
 
   const handleCloseModal = () => {
-    setIsYtdlpFfmpegConfirmModalVisible(false)
-  }
+    setIsYtdlpFfmpegConfirmModalVisible(false);
+  };
 
   if (loadingFromSettings) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
         <Spinner className="size-8" />
       </div>
-    )
+    );
   }
 
   return (
@@ -45,7 +45,7 @@ const App = () => {
         />
       ) : null}
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

@@ -6,50 +6,50 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@renderer/components/ui/alert-dialog'
-import { IconCheck, IconDownload } from '@tabler/icons-react'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Spinner } from './ui/spinner'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
-import { useSettingsStore } from '@renderer/stores/settings-store'
+} from '@renderer/components/ui/alert-dialog';
+import { IconCheck, IconDownload } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Spinner } from './ui/spinner';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { useSettingsStore } from '@renderer/stores/settings-store';
 
 type YtdlpFfmpegConfirmModalProps = {
-  open: boolean
-  onOpenChange: () => void
-}
+  open: boolean;
+  onOpenChange: () => void;
+};
 
 type ConfirmYtdlpProps = {
-  isYtdlpConfirmLoading: boolean
-  isYtdlpPresentInPc: boolean
-  setIsYtdlpPresentInPc: Dispatch<SetStateAction<boolean>>
-}
+  isYtdlpConfirmLoading: boolean;
+  isYtdlpPresentInPc: boolean;
+  setIsYtdlpPresentInPc: Dispatch<SetStateAction<boolean>>;
+};
 
 type ConfirmFfmpegProps = {
-  isFfmpegConfirmLoading: boolean
-  isFfmpegPresentInPc: boolean
-  setIsFfmpegPresentInPc: Dispatch<SetStateAction<boolean>>
-}
+  isFfmpegConfirmLoading: boolean;
+  isFfmpegPresentInPc: boolean;
+  setIsFfmpegPresentInPc: Dispatch<SetStateAction<boolean>>;
+};
 
 const ConfirmYtdlp = ({
   isYtdlpConfirmLoading,
   isYtdlpPresentInPc,
   setIsYtdlpPresentInPc
 }: ConfirmYtdlpProps) => {
-  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion)
-  const [downloadingYtdlp, setDownloadingYtdlp] = useState(false)
+  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion);
+  const [downloadingYtdlp, setDownloadingYtdlp] = useState(false);
 
   function handleYtdlpDownload() {
-    setDownloadingYtdlp(true)
+    setDownloadingYtdlp(true);
     window.api.downloadYtdlp().then(({ ytdlpPathInPc, ytdlpVersionInPc }) => {
       if (ytdlpPathInPc && ytdlpVersionInPc) {
-        useSettingsStore.setState({ ytdlpVersion: ytdlpVersionInPc, ytdlpPath: ytdlpPathInPc })
-        setDownloadingYtdlp(false)
-        setIsYtdlpPresentInPc(true)
+        useSettingsStore.setState({ ytdlpVersion: ytdlpVersionInPc, ytdlpPath: ytdlpPathInPc });
+        setDownloadingYtdlp(false);
+        setIsYtdlpPresentInPc(true);
       } else {
-        setIsYtdlpPresentInPc(false)
+        setIsYtdlpPresentInPc(false);
       }
-    })
+    });
   }
 
   return (
@@ -72,28 +72,28 @@ const ConfirmYtdlp = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const ConfirmFfmpeg = ({
   isFfmpegConfirmLoading,
   isFfmpegPresentInPc,
   setIsFfmpegPresentInPc
 }: ConfirmFfmpegProps) => {
-  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion)
-  const [downloadingFfmpeg, setDownloadingFfmpeg] = useState(false)
+  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion);
+  const [downloadingFfmpeg, setDownloadingFfmpeg] = useState(false);
 
   function handleFfmpegDownload() {
-    setDownloadingFfmpeg(true)
+    setDownloadingFfmpeg(true);
     window.api.downloadFfmpeg().then(({ ffmpegPathInPc, ffmpegVersionInPc }) => {
       if (ffmpegPathInPc && ffmpegVersionInPc) {
-        useSettingsStore.setState({ ffmpegVersion: ffmpegVersionInPc, ffmpegPath: ffmpegPathInPc })
-        setDownloadingFfmpeg(false)
-        setIsFfmpegPresentInPc(true)
+        useSettingsStore.setState({ ffmpegVersion: ffmpegVersionInPc, ffmpegPath: ffmpegPathInPc });
+        setDownloadingFfmpeg(false);
+        setIsFfmpegPresentInPc(true);
       } else {
-        setIsFfmpegPresentInPc(false)
+        setIsFfmpegPresentInPc(false);
       }
-    })
+    });
   }
 
   return (
@@ -116,60 +116,60 @@ const ConfirmFfmpeg = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const YtdlpFfmpegConfirmModal = ({ open, onOpenChange }: YtdlpFfmpegConfirmModalProps) => {
-  const [isYtdlpPresentInPc, setIsYtdlpPresentInPc] = useState(false)
-  const [isFfmpegPresentInPc, setIsFfmpegPresentInPc] = useState(false)
-  const [isYtdlpConfirmLoading, setIsYtdlpConfirmLoading] = useState(true)
-  const [isFfmpegConfirmLoading, setIsFfmpegConfirmLoading] = useState(true)
-  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion)
-  const ytdlpPath = useSettingsStore((state) => state.ytdlpPath)
-  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion)
-  const ffmpegPath = useSettingsStore((state) => state.ffmpegPath)
+  const [isYtdlpPresentInPc, setIsYtdlpPresentInPc] = useState(false);
+  const [isFfmpegPresentInPc, setIsFfmpegPresentInPc] = useState(false);
+  const [isYtdlpConfirmLoading, setIsYtdlpConfirmLoading] = useState(true);
+  const [isFfmpegConfirmLoading, setIsFfmpegConfirmLoading] = useState(true);
+  const ytdlpVersion = useSettingsStore((state) => state.ytdlpVersion);
+  const ytdlpPath = useSettingsStore((state) => state.ytdlpPath);
+  const ffmpegVersion = useSettingsStore((state) => state.ffmpegVersion);
+  const ffmpegPath = useSettingsStore((state) => state.ffmpegPath);
 
-  console.log({ ytdlpPath, ytdlpVersion, ffmpegPath, ffmpegVersion })
+  console.log({ ytdlpPath, ytdlpVersion, ffmpegPath, ffmpegVersion });
 
   useEffect(() => {
     if (ytdlpVersion && ytdlpPath) {
-      setIsYtdlpPresentInPc(true)
-      setIsYtdlpConfirmLoading(false)
-      return
+      setIsYtdlpPresentInPc(true);
+      setIsYtdlpConfirmLoading(false);
+      return;
     }
     window.api.confirmYtdlp().then(({ ytdlpPathInPc, ytdlpVersionInPc }) => {
       if (ytdlpPathInPc && ytdlpVersionInPc) {
-        setIsYtdlpPresentInPc(true)
-        useSettingsStore.setState({ ytdlpPath: ytdlpPathInPc, ytdlpVersion: ytdlpVersionInPc })
+        setIsYtdlpPresentInPc(true);
+        useSettingsStore.setState({ ytdlpPath: ytdlpPathInPc, ytdlpVersion: ytdlpVersionInPc });
       } else {
-        setIsYtdlpPresentInPc(false)
+        setIsYtdlpPresentInPc(false);
       }
-      setIsYtdlpConfirmLoading(false)
-    })
-  }, [])
+      setIsYtdlpConfirmLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     if (ffmpegVersion && ffmpegPath) {
-      setIsFfmpegPresentInPc(true)
-      setIsFfmpegConfirmLoading(false)
-      return
+      setIsFfmpegPresentInPc(true);
+      setIsFfmpegConfirmLoading(false);
+      return;
     }
     window.api.confirmFfmpeg().then(({ ffmpegPathInPc, ffmpegVersionInPc }) => {
       if (ffmpegPathInPc && ffmpegVersionInPc) {
-        setIsFfmpegPresentInPc(true)
-        useSettingsStore.setState({ ffmpegPath: ffmpegPathInPc, ffmpegVersion: ffmpegVersionInPc })
+        setIsFfmpegPresentInPc(true);
+        useSettingsStore.setState({ ffmpegPath: ffmpegPathInPc, ffmpegVersion: ffmpegVersionInPc });
       } else {
-        setIsFfmpegPresentInPc(false)
+        setIsFfmpegPresentInPc(false);
       }
-      setIsFfmpegConfirmLoading(false)
-    })
-  }, [])
+      setIsFfmpegConfirmLoading(false);
+    });
+  }, []);
 
   const disableContinue =
     isYtdlpConfirmLoading ||
     isFfmpegConfirmLoading ||
     ytdlpVersion.length === 0 ||
-    ffmpegVersion.length === 0
+    ffmpegVersion.length === 0;
 
   return (
     <>
@@ -200,7 +200,7 @@ const YtdlpFfmpegConfirmModal = ({ open, onOpenChange }: YtdlpFfmpegConfirmModal
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
-}
+  );
+};
 
-export default YtdlpFfmpegConfirmModal
+export default YtdlpFfmpegConfirmModal;

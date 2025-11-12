@@ -1,7 +1,7 @@
-import { type AppSettings } from '../shared/types'
-import pkg from '../../package.json'
-import { app } from 'electron'
-import { MEDIA_DATA_FOLDER_PATH } from '.'
+import { type AppSettings } from '../shared/types';
+import pkg from '../../package.json';
+import { app } from 'electron';
+import { MEDIA_DATA_FOLDER_PATH } from '.';
 
 export function getDefaultAppSettings(): AppSettings {
   return {
@@ -15,5 +15,5 @@ export function getDefaultAppSettings(): AppSettings {
     userDownloadsFolder: app.getPath('downloads'),
     ytdlpPath: '',
     ytdlpVersion: ''
-  }
+  };
 }
