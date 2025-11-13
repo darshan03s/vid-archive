@@ -6,6 +6,7 @@ import { useSettingsStore } from './stores/settings-store';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { Toaster } from './components/ui/sonner';
+import Titlebar from './components/titlebar';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
@@ -40,6 +41,7 @@ const App = () => {
 
   return (
     <>
+      <Titlebar />
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>

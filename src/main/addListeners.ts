@@ -8,7 +8,7 @@ import {
   getYtdlpFromPc,
   getYtdlpVersionFromPc
 } from './utils/appUtils';
-import { DATA_DIR, FFMPEG_FOLDER_PATH, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '.';
+import { DATA_DIR, FFMPEG_FOLDER_PATH, mainWindow, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '.';
 import { copyFileToFolder, copyFolder } from './utils/fsUtils';
 import path from 'node:path';
 import { downloadYtDlpLatestRelease } from './utils/downloadYtdlp';
@@ -16,7 +16,11 @@ import { downloadFfmpeg } from './utils/downloadFfmpeg';
 import SevenZip from '7zip-min';
 
 export async function addListeners() {
+  ipcMain.on('win:min', () => mainWindow.minimize());
+  ipcMain.on('win:close', () => mainWindow.close());
+
   const store = await getStoreManager();
+
   ipcMain.handle('renderer:init', async () => {
     try {
       log.info('Renderer initialized');
