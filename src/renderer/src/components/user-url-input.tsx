@@ -5,7 +5,11 @@ import { IconCloudDown, IconReload } from '@tabler/icons-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { useState } from 'react';
 
-const UserUrlInput = () => {
+type UserUrlInputProps = {
+  showRefetch: boolean;
+};
+
+const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
   const [userEnteredUrl, setUserEnteredUrl] = useState('');
 
   function handleRefetchMediaInfo() {
@@ -29,14 +33,16 @@ const UserUrlInput = () => {
   }
   return (
     <ButtonGroup className="w-full">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button onClick={handleRefetchMediaInfo}>
-            <IconReload />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Refetch</TooltipContent>
-      </Tooltip>
+      {showRefetch ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={handleRefetchMediaInfo}>
+              <IconReload />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Refetch</TooltipContent>
+        </Tooltip>
+      ) : null}
       <Input
         placeholder="Enter a URL"
         className="placeholder:text-sm"
