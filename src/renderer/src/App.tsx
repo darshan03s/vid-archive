@@ -3,6 +3,8 @@ import YtdlpFfmpegConfirmModal from './components/ytdlp-ffmpeg-confirm-modal';
 import { Spinner } from './components/ui/spinner';
 import { type AppSettings } from '@/shared/types';
 import { useSettingsStore } from './stores/settings-store';
+import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
@@ -37,7 +39,9 @@ const App = () => {
 
   return (
     <>
-      <div className="h-screen flex justify-center items-center font-inter">App</div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
       {isYtdlpFmpegConfirmModalVisible ? (
         <YtdlpFfmpegConfirmModal
           open={isYtdlpFmpegConfirmModalVisible}
