@@ -5,6 +5,7 @@ import { type AppSettings } from '@/shared/types';
 import { useSettingsStore } from './stores/settings-store';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
+import { Toaster } from './components/ui/sonner';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
@@ -48,6 +49,7 @@ const App = () => {
           onOpenChange={handleCloseModal}
         />
       ) : null}
+      <Toaster />
     </>
   );
 };
