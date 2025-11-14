@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { Toaster } from './components/ui/sonner';
 import Titlebar from './components/titlebar';
+import DisplayMediaInfo from './pages/DisplayMediaInfo';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
@@ -44,6 +45,7 @@ const App = () => {
       <Titlebar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/display-media-info" element={<DisplayMediaInfo />} />
       </Routes>
       {isYtdlpFmpegConfirmModalVisible ? (
         <YtdlpFfmpegConfirmModal

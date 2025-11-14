@@ -1,14 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import log from 'electron-log';
+import { type Api } from '../shared/types';
 
 // Custom APIs for renderer
-const api = {
+const api: Api = {
   rendererInit: () => ipcRenderer.invoke('renderer:init'),
   confirmYtdlp: () => ipcRenderer.invoke('yt-dlp:confirm'),
   confirmFfmpeg: () => ipcRenderer.invoke('ffmpeg:confirm'),
   downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download'),
-  downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download')
+  downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download'),
+  checkUrl: (url: string) => ipcRenderer.invoke('check-url', url)
 };
 
 if (process.contextIsolated) {

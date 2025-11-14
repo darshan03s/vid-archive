@@ -4,6 +4,9 @@ import { Input } from './ui/input';
 import { IconCloudDown, IconReload } from '@tabler/icons-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { useState } from 'react';
+import { useMediaInfoStore } from '@renderer/stores/media-info-store';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 type UserUrlInputProps = {
   showRefetch: boolean;
@@ -11,15 +14,23 @@ type UserUrlInputProps = {
 
 const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
   const [userEnteredUrl, setUserEnteredUrl] = useState('');
+  const navigate = useNavigate();
 
   function handleRefetchMediaInfo() {
     // TODO
     console.log(userEnteredUrl);
   }
 
-  function handleFetchMediaInfo() {
-    // TODO
+  async function handleFetchMediaInfo() {
     console.log(userEnteredUrl);
+    const { source, url, isMediaDisplayAvailable } = await window.api.checkUrl(userEnteredUrl);
+    console.log({ source, url, isMediaDisplayAvailable });
+    if (isMediaDisplayAvailable) {
+      useMediaInfoStore.setState({ source: source, url: url });
+      navigate('/display-media-info');
+    } else {
+      toast.error('This url is currently not supported for displaying info');
+    }
   }
 
   function handleUrlInput(e: React.ChangeEvent<HTMLInputElement>) {
@@ -46,6 +57,7 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
       <Input
         placeholder="Enter a URL"
         className="placeholder:text-sm"
+        type="url"
         onChange={handleUrlInput}
         onKeyDown={handleUrlInputEnter}
       />

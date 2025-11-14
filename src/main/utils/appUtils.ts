@@ -93,3 +93,33 @@ export async function getFfmpegFromPc() {
     };
   }
 }
+
+export function getSourceFromUrl(url: string): string {
+  if (url.includes('youtube') || url.includes('youtu.be')) {
+    return 'youtube';
+  }
+  return '';
+}
+
+function getYouTubeVideoId(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === 'youtu.be') {
+      return parsed.pathname.slice(1);
+    }
+    if (parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com') {
+      return parsed.searchParams.get('v');
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function getNormalizedUrl(source: string, url: string) {
+  if (source === 'youtube') {
+    const videoId = getYouTubeVideoId(url);
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  }
+  return '';
+}

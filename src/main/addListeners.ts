@@ -4,7 +4,9 @@ import log from 'electron-log';
 import {
   getFfmpegFromPc,
   getFfmpegVersionFromPc,
+  getNormalizedUrl,
   getSettings,
+  getSourceFromUrl,
   getYtdlpFromPc,
   getYtdlpVersionFromPc
 } from './utils/appUtils';
@@ -14,6 +16,8 @@ import path from 'node:path';
 import { downloadYtDlpLatestRelease } from './utils/downloadYtdlp';
 import { downloadFfmpeg } from './utils/downloadFfmpeg';
 import SevenZip from '7zip-min';
+import { type Api } from '../shared/types';
+import { allowedSources } from './data';
 
 export async function addListeners() {
   ipcMain.on('win:min', () => mainWindow.minimize());
@@ -126,5 +130,17 @@ export async function addListeners() {
       log.error('Failed to download yt-dlp:', err);
       return { ytdlpVersionInPc: null, ytdlpPathInPc: null };
     }
+  });
+
+  ipcMain.handle('check-url', async (_event, url): ReturnType<Api['checkUrl']> => {
+    const source = getSourceFromUrl(url);
+    if (!source) {
+      return { source: source, url: url, isMediaDisplayAvailable: false };
+    }
+    if (allowedSources.includes(source)) {
+      const normalizedUrl = getNormalizedUrl(source, url);
+      return { source: source, url: normalizedUrl, isMediaDisplayAvailable: true };
+    }
+    return { source: source, url: url, isMediaDisplayAvailable: false };
   });
 }
