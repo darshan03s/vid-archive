@@ -143,4 +143,13 @@ export async function addListeners() {
     }
     return { source: source, url: url, isMediaDisplayAvailable: false };
   });
+
+  ipcMain.handle(
+    'yt-dlp:get-info-json',
+    async (_event, url): ReturnType<Api['getYoutubeInfoJson']> => {
+      logger.info(`Fetching info json for ${url}`);
+      // TODO
+      return null;
+    }
+  );
 }

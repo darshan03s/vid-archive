@@ -5,6 +5,7 @@ import YoutubeVideoInfo from './components/youtube/YoutubeVideoInfo';
 const DisplayMediaInfo = () => {
   const url = useMediaInfoStore((state) => state.url);
   const source = useMediaInfoStore((state) => state.source);
+
   return (
     <div>
       <header className="bg-secondary text-secondary-foreground font-inter p-3">

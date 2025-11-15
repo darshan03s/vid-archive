@@ -1,3 +1,5 @@
+import { YoutubeVideo } from './info-json/youtube-video';
+
 export type AppSettings = {
   appVersion: string;
   ytdlpPath: string;
@@ -34,4 +36,5 @@ export type Api = {
     url: string;
     isMediaDisplayAvailable: boolean;
   }>;
+  getYoutubeInfoJson: (url: string) => Promise<YoutubeVideo | null>;
 };
