@@ -17,12 +17,22 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
   const [userEnteredUrl, setUserEnteredUrl] = useState('');
   const navigate = useNavigate();
 
+  function isUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   function handleRefetchMediaInfo() {
     // TODO
     console.log(userEnteredUrl);
   }
 
   async function handleFetchMediaInfo() {
+    if (!isUrl(userEnteredUrl)) return;
     const { source, url, isMediaDisplayAvailable } = await window.api.checkUrl(userEnteredUrl);
     logger.info({ source, url, isMediaDisplayAvailable });
     if (isMediaDisplayAvailable) {
