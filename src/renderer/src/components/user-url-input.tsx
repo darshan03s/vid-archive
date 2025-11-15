@@ -11,9 +11,10 @@ import logger from '@shared/logger';
 
 type UserUrlInputProps = {
   showRefetch: boolean;
+  url?: string;
 };
 
-const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
+const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
   const [userEnteredUrl, setUserEnteredUrl] = useState('');
   const navigate = useNavigate();
 
@@ -54,6 +55,15 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
   }
   return (
     <ButtonGroup className="w-full">
+      <Input
+        placeholder="Enter a URL"
+        className="placeholder:text-xs text-xs font-mono select-text"
+        type="url"
+        onChange={handleUrlInput}
+        onKeyDown={handleUrlInputEnter}
+        defaultValue={url}
+        disabled={!!url}
+      />
       {showRefetch ? (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -63,22 +73,16 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
           </TooltipTrigger>
           <TooltipContent>Refetch</TooltipContent>
         </Tooltip>
-      ) : null}
-      <Input
-        placeholder="Enter a URL"
-        className="placeholder:text-sm"
-        type="url"
-        onChange={handleUrlInput}
-        onKeyDown={handleUrlInputEnter}
-      />
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button onClick={handleFetchMediaInfo}>
-            <IconCloudDown />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Fetch</TooltipContent>
-      </Tooltip>
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={handleFetchMediaInfo}>
+              <IconCloudDown />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Fetch</TooltipContent>
+        </Tooltip>
+      )}
     </ButtonGroup>
   );
 };
