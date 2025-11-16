@@ -6,6 +6,8 @@ const ModeToggle = () => {
   const { setTheme, theme } = useTheme();
   return (
     <Button
+      variant={'default'}
+      className="size-6 bg-black hover:bg-white/20"
       onClick={() => {
         if (theme === 'dark') {
           setTheme('light');
@@ -14,7 +16,7 @@ const ModeToggle = () => {
         }
       }}
     >
-      {theme === 'light' ? <IconMoon /> : <IconSun />}
+      {theme === 'light' ? <IconMoon className="opacity-60" /> : <IconSun className="opacity-60" />}
     </Button>
   );
 };

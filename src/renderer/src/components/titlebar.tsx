@@ -2,6 +2,7 @@ import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
 import { Minus } from 'lucide-react';
 import appIcon from '../../../../build/icon.png';
 import { useNavigate } from 'react-router-dom';
+import ModeToggle from './mode-toggle';
 
 const Titlebar = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Titlebar = () => {
           <button title="Go Forward" onClick={goForward} className="opacity-60 hover:opacity-100">
             <IconArrowRight className="size-4" />
           </button>
+          <ModeToggle />
         </div>
       </div>
       <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-mono">
