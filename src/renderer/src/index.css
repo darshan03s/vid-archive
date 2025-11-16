@@ -6,11 +6,16 @@
 
 @theme {
   --font-inter: 'Inter', sans-serif;
+  --titlebar-height: 40px;
 }
 
 button,
 a {
   cursor: pointer;
+}
+
+* {
+  scrollbar-width: none;
 }
 
 .titlebar-center {

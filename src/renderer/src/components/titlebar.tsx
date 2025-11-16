@@ -22,7 +22,7 @@ const Titlebar = () => {
   }
 
   return (
-    <div className="titlebar w-full bg-black text-white flex items-center select-none h-10">
+    <div className="titlebar h-(--titlebar-height) w-full bg-black text-white flex items-center select-none sticky top-0 left-0 z-9999">
       <div className="titlebar-left px-2 flex items-center gap-2">
         <img src={appIcon} alt="icon" width={18} height={18} />
         <div className="flex items-center gap-1">

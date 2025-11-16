@@ -48,20 +48,24 @@ const App = () => {
   }
 
   return (
-    <>
+    <div className="h-screen flex flex-col">
       <Titlebar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/display-media-info" element={<DisplayMediaInfo />} />
-      </Routes>
-      {isYtdlpFmpegConfirmModalVisible ? (
+      <div className="flex-1 h-[calc(100vh-var(--titlebar-height))] overflow-auto">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/display-media-info" element={<DisplayMediaInfo />} />
+        </Routes>
+      </div>
+
+      {isYtdlpFmpegConfirmModalVisible && (
         <YtdlpFfmpegConfirmModal
           open={isYtdlpFmpegConfirmModalVisible}
           onOpenChange={handleCloseModal}
         />
-      ) : null}
+      )}
+
       <Toaster />
-    </>
+    </div>
   );
 };
 
