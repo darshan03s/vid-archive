@@ -43,14 +43,14 @@ const Titlebar = () => {
         <button
           title="Minimize"
           onClick={minimize}
-          className="w-10 hover:bg-muted/20 flex items-center justify-center h-10"
+          className="w-10 hover:bg-white/20 flex items-center justify-center h-10"
         >
           <Minus className="size-4 text-white/80" />
         </button>
         <button
           title="Close"
           onClick={close}
-          className="w-10 hover:bg-destructive/80 flex items-center justify-center h-10 rounded-tr-lg"
+          className="w-10 hover:bg-red-600/80 flex items-center justify-center h-10 rounded-tr-lg"
         >
           <IconX className="size-4 text-white/80" />
         </button>
