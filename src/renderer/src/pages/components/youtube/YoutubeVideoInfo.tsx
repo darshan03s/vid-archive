@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { YoutubeVideo } from '@/shared/types/info-json/youtube-video';
+import { YoutubeVideoInfoJson } from '@/shared/types/info-json/youtube-video';
 import { toast } from 'sonner';
 import { Spinner } from '@renderer/components/ui/spinner';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
@@ -19,15 +19,15 @@ type YoutubeVideoInfoProps = {
 const YoutubeVideoInfo = ({ url }: YoutubeVideoInfoProps) => {
   const videoId = new URL(url).searchParams.get('v');
   const hqDefaultThumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  const infoJson = useMediaInfoStore((state) => state.mediaInfo) as YoutubeVideo;
+  const infoJson = useMediaInfoStore((state) => state.mediaInfo) as YoutubeVideoInfoJson;
 
   useEffect(() => {
     if (Object.keys(infoJson).length !== 0) return;
-    window.api.getYoutubeVideoInfoJson(url).then((data: YoutubeVideo | null) => {
+    window.api.getYoutubeVideoInfoJson(url).then((data: YoutubeVideoInfoJson | null) => {
       if (!data) {
         toast.error('Could not fetch info for this url');
       }
-      useMediaInfoStore.setState({ mediaInfo: data as YoutubeVideo });
+      useMediaInfoStore.setState({ mediaInfo: data as YoutubeVideoInfoJson });
     });
   }, []);
 

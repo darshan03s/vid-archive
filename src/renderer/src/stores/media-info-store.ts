@@ -1,12 +1,12 @@
 import { Source } from '@/shared/types';
-import { YoutubePlaylist } from '@/shared/types/info-json/youtube-playlist';
-import { YoutubeVideo } from '@/shared/types/info-json/youtube-video';
+import { YoutubePlaylistInfoJson } from '@/shared/types/info-json/youtube-playlist';
+import { YoutubeVideoInfoJson } from '@/shared/types/info-json/youtube-video';
 import { create } from 'zustand';
 
 interface MediaInfoStore {
   url: string;
   source: Source | string;
-  mediaInfo: YoutubeVideo | YoutubePlaylist | object;
+  mediaInfo: YoutubeVideoInfoJson | YoutubePlaylistInfoJson | object;
 }
 
 export const useMediaInfoStore = create<MediaInfoStore>(() => ({

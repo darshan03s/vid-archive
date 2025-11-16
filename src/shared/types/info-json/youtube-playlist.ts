@@ -1,4 +1,4 @@
-export interface YoutubePlaylist {
+export interface YoutubePlaylistInfoJson {
   id: string;
   title: string;
   description: string;

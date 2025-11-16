@@ -3,13 +3,13 @@ import { MEDIA_DATA_FOLDER_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
 import { pathExists, readJson, writeJson } from './fsUtils';
-import { YoutubeVideo } from '../../shared/types/info-json/youtube-video';
+import { YoutubeVideoInfoJson } from '../../shared/types/info-json/youtube-video';
 import { Source } from '../../shared/types';
-import { YoutubePlaylist } from '../../shared/types/info-json/youtube-playlist';
+import { YoutubePlaylistInfoJson } from '../../shared/types/info-json/youtube-playlist';
 import logger from '../../shared/logger';
 
 async function addExpireTime(infoJsonPath: string) {
-  const json = await readJson<YoutubeVideo>(infoJsonPath);
+  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
   const format = json.formats.find((format) => format.vcodec !== 'none' && format.manifest_url);
   const expireTimestamp = format?.manifest_url.split('/')[7];
   const expireTimestampISOString = new Date(Number(expireTimestamp) * 1000).toISOString();
@@ -18,7 +18,7 @@ async function addExpireTime(infoJsonPath: string) {
 }
 
 async function getExpireTime(infoJsonPath: string) {
-  const json = await readJson<YoutubeVideo>(infoJsonPath);
+  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
   return json.expire_time;
 }
 
@@ -26,7 +26,7 @@ export async function createInfoJson(
   url: string,
   source: Source,
   infoJsonPath: string
-): Promise<YoutubeVideo | YoutubePlaylist | null> {
+): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
   return await new Promise((resolve, reject) => {
     const child = spawn('yt-dlp', [
       '--skip-download',
@@ -45,7 +45,7 @@ export async function createInfoJson(
 
       if (source === 'youtube-video') {
         await addExpireTime(infoJsonPath);
-        const result = await readJson<YoutubeVideo>(infoJsonPath);
+        const result = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
         return resolve(result);
       }
 
@@ -57,16 +57,16 @@ export async function createInfoJson(
 export async function getInfoJson(
   url: string,
   source: Source
-): Promise<YoutubeVideo | YoutubePlaylist | null> {
+): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
   if (source === 'youtube-video') {
     const videoId = new URL(url).searchParams.get('v') as string;
     const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
     if (await pathExists(infoJsonPath)) {
       const expireTime = await getExpireTime(infoJsonPath);
       if (new Date().toISOString() > expireTime) {
-        return (await createInfoJson(url, source, infoJsonPath)) as YoutubeVideo;
+        return (await createInfoJson(url, source, infoJsonPath)) as YoutubeVideoInfoJson;
       } else {
-        return await readJson<YoutubeVideo>(infoJsonPath);
+        return await readJson<YoutubeVideoInfoJson>(infoJsonPath);
       }
     } else {
       return await createInfoJson(url, source, infoJsonPath);

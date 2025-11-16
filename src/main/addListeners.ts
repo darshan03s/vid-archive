@@ -19,7 +19,7 @@ import SevenZip from '7zip-min';
 import { Source, type Api } from '../shared/types';
 import { allowedSources } from '../shared/data';
 import { getInfoJson } from './utils/ytdlpUtils';
-import { YoutubeVideo } from '../shared/types/info-json/youtube-video';
+import { YoutubeVideoInfoJson } from '../shared/types/info-json/youtube-video';
 import { urlHistoryOperations } from './utils/dbUtils';
 
 export async function addListeners() {
@@ -149,9 +149,12 @@ export async function addListeners() {
 
   ipcMain.handle(
     'yt-dlp:get-youtube-video-info-json',
-    async (_event, url): Promise<YoutubeVideo | null> => {
+    async (_event, url): Promise<YoutubeVideoInfoJson | null> => {
       logger.info(`Fetching info json for ${url}`);
-      const infoJson = (await getInfoJson(url, 'youtube-video' as Source)) as YoutubeVideo | null;
+      const infoJson = (await getInfoJson(
+        url,
+        'youtube-video' as Source
+      )) as YoutubeVideoInfoJson | null;
       if (infoJson) {
         logger.info(`Fetched info json for ${url}`);
         try {

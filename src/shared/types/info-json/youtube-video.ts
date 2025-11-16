@@ -1,4 +1,4 @@
-export interface YoutubeVideo {
+export interface YoutubeVideoInfoJson {
   id: string;
   title: string;
   formats: YoutubeFormat[];
