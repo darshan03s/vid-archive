@@ -18,7 +18,7 @@ type YoutubeVideoInfoProps = {
 
 const YoutubeVideoInfo = ({ url }: YoutubeVideoInfoProps) => {
   const videoId = new URL(url).searchParams.get('v');
-  const hqDefaultThumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
   const infoJson = useMediaInfoStore((state) => state.mediaInfo) as YoutubeVideoInfoJson;
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const YoutubeVideoInfo = ({ url }: YoutubeVideoInfoProps) => {
 
   return (
     <div className="flex flex-col">
-      <Preview previewUrl={hqDefaultThumbnailUrl} />
+      <Preview previewUrl={thumbnailUrl} />
       <div className="p-2">{Object.keys(infoJson).length !== 0 ? <Details /> : <Spinner />}</div>
     </div>
   );
