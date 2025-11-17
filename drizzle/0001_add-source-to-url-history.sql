@@ -1,1 +1,0 @@
-ALTER TABLE `url_history` ADD `source` text DEFAULT '' NOT NULL;

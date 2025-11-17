@@ -19,7 +19,9 @@ CREATE TABLE `extra_commands_history` (
 CREATE TABLE `url_history` (
 	`id` text PRIMARY KEY NOT NULL,
 	`url` text NOT NULL,
+	`source` text NOT NULL,
 	`thumbnail` text NOT NULL,
+	`thumbnail_local` text NOT NULL,
 	`title` text NOT NULL,
 	`added_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

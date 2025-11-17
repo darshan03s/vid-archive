@@ -37,31 +37,22 @@ export const urlHistoryOperations = {
     return db?.delete(urlHistory).where(eq(urlHistory.url, url));
   },
 
-  updateById: async (
-    id: string,
-    data: Pick<UrlHistoryItem, 'thumbnail' | 'title' | 'url' | 'source'>
-  ) => {
+  updateById: async (id: string, data: Omit<UrlHistoryItem, 'id' | 'addedAt'>) => {
     return db?.update(urlHistory).set(data).where(eq(urlHistory.id, id));
   },
 
-  updateByUrl: async (
-    url: string,
-    data: Pick<UrlHistoryItem, 'thumbnail' | 'title' | 'url' | 'source'>
-  ) => {
+  updateByUrl: async (url: string, data: Omit<UrlHistoryItem, 'id' | 'addedAt'>) => {
     return db?.update(urlHistory).set(data).where(eq(urlHistory.url, url));
   },
 
-  addNew: async (data: Pick<UrlHistoryItem, 'thumbnail' | 'title' | 'url' | 'source'>) => {
+  addNew: async (data: Omit<UrlHistoryItem, 'id' | 'addedAt'>) => {
     const completeData: NewUrlHistoryItem = {
       ...data,
       id: randomUUID()
     };
     return db?.insert(urlHistory).values(completeData);
   },
-  upsertByUrl: async (
-    url: string,
-    data: Pick<UrlHistoryItem, 'thumbnail' | 'title' | 'url' | 'source'>
-  ) => {
+  upsertByUrl: async (url: string, data: Omit<UrlHistoryItem, 'id' | 'addedAt'>) => {
     const existing = await db?.select().from(urlHistory).where(eq(urlHistory.url, url));
 
     if (existing && existing.length > 0) {

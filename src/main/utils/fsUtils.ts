@@ -1,6 +1,9 @@
 import { access, mkdir, cp, copyFile, readFile, writeFile } from 'node:fs/promises';
-import { accessSync, constants, mkdirSync } from 'node:fs';
+import { accessSync, constants, createWriteStream, mkdirSync } from 'node:fs';
 import path from 'node:path';
+import { fetch } from 'undici';
+import { Readable } from 'node:stream';
+import { pathToFileURL } from 'node:url';
 
 export async function pathExists(pathToCheck: string): Promise<boolean> {
   try {
@@ -59,4 +62,55 @@ export async function readJson<T = unknown>(path: string): Promise<T> {
 export async function writeJson(path: string, data: unknown): Promise<void> {
   const formatted = JSON.stringify(data, null, 2);
   await writeFile(path, formatted, 'utf-8');
+}
+
+export async function downloadFile(params: {
+  url: string;
+  destinationPath: string;
+}): Promise<void> {
+  const { url, destinationPath } = params;
+
+  try {
+    const dir = path.dirname(destinationPath);
+    await mkdir(dir, { recursive: true });
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to download. HTTP ${response.status}`);
+    }
+
+    const body = response.body;
+    if (!body) {
+      throw new Error('Response body is null');
+    }
+
+    const nodeReadable = Readable.fromWeb(body);
+    const fileStream = createWriteStream(destinationPath);
+
+    await new Promise<void>((resolve, reject) => {
+      nodeReadable.pipe(fileStream);
+      nodeReadable.on('error', reject);
+      fileStream.on('finish', resolve);
+      fileStream.on('error', reject);
+    });
+  } catch (err) {
+    throw new Error(`Failed to download file: ${(err as Error).message}`);
+  }
+}
+
+export function sanitizeFileName(name: string): string {
+  return name.replace(/[<>:"/\\|?*]/g, '').trim();
+}
+
+export function filePathToFileUrl(inputPath: string): string {
+  try {
+    const platformNormalized = path.normalize(inputPath);
+
+    const fileUrl = pathToFileURL(platformNormalized).toString();
+
+    return fileUrl;
+  } catch (error) {
+    throw new Error(`Failed to convert file path to file URL: ${(error as Error).message}`);
+  }
 }

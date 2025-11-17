@@ -8,6 +8,7 @@ export const urlHistory = sqliteTable('url_history', {
   url: text('url').notNull(),
   source: text('source').notNull(),
   thumbnail: text('thumbnail').notNull(),
+  thumbnail_local: text('thumbnail_local').notNull(),
   title: text('title').notNull(),
   addedAt: text('added_at')
     .default(sql`CURRENT_TIMESTAMP`)

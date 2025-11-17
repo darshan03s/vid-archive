@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1f3ef9bc-f279-4645-a4c2-8371ec22ce9a",
+  "id": "2ee3d717-faa8-4f7c-bcec-d52abc8d33ba",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "downloads_history": {
@@ -127,8 +127,22 @@
           "notNull": true,
           "autoincrement": false
         },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "thumbnail": {
           "name": "thumbnail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "thumbnail_local": {
+          "name": "thumbnail_local",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
