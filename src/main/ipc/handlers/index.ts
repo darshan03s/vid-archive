@@ -35,6 +35,7 @@ import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { writeFile } from 'node:fs/promises';
 import SevenZip from '7zip-min';
 import path from 'node:path';
+import { IpcMainInvokeEvent } from 'electron';
 
 export async function rendererInit(): ReturnType<Api['rendererInit']> {
   try {
@@ -153,7 +154,10 @@ export async function downloadFfmpeg(): ReturnType<Api['downloadFfmpeg']> {
   }
 }
 
-export async function checkUrl(_event, url): ReturnType<Api['checkUrl']> {
+export async function checkUrl(
+  _event: IpcMainInvokeEvent,
+  url: string
+): ReturnType<Api['checkUrl']> {
   const source = getSourceFromUrl(url);
   if (!source) {
     return { source: '', url: url, isMediaDisplayAvailable: false };
@@ -165,7 +169,10 @@ export async function checkUrl(_event, url): ReturnType<Api['checkUrl']> {
   return { source: source, url: url, isMediaDisplayAvailable: false };
 }
 
-export async function getYoutubeVideoInfoJson(_event, url): Promise<YoutubeVideoInfoJson | null> {
+export async function getYoutubeVideoInfoJson(
+  _event: IpcMainInvokeEvent,
+  url: string
+): Promise<YoutubeVideoInfoJson | null> {
   logger.info(`Fetching info json for ${url}`);
   // get info json
   const infoJson = (await getInfoJson(
