@@ -2,24 +2,42 @@ import { spawn } from 'node:child_process';
 import { MEDIA_DATA_FOLDER_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
-import { pathExists, readJson, writeJson } from './fsUtils';
+import {
+  downloadFile,
+  filePathToFileUrl,
+  pathExists,
+  readJson,
+  sanitizeFileName,
+  writeJson
+} from './fsUtils';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
 import logger from '@shared/logger';
+import { writeFile } from 'node:fs/promises';
 
-async function addExpireTime(infoJsonPath: string) {
-  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
-  const format = json.formats.find((format) => format.vcodec !== 'none' && format.manifest_url);
-  const expireTimestamp = format?.manifest_url.split('/')[7];
-  const expireTimestampISOString = new Date(Number(expireTimestamp) * 1000).toISOString();
-  json.expire_time = expireTimestampISOString;
-  await writeJson(infoJsonPath, json);
-}
-
-async function getExpireTime(infoJsonPath: string) {
-  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
-  return json.expire_time;
+export async function getInfoJson(
+  url: string,
+  source: Source
+): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
+  if (source === 'youtube-video') {
+    const videoId = new URL(url).searchParams.get('v') as string;
+    const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
+    if (await pathExists(infoJsonPath)) {
+      const expireTime = await getExpireTime(infoJsonPath);
+      if (new Date().toISOString() > expireTime!) {
+        logger.info(`Video Links expired for ${url} on ${new Date(expireTime!)}`);
+        logger.info(`Re-creating info-json for ${url}`);
+        return (await createInfoJson(url, source, infoJsonPath)) as YoutubeVideoInfoJson;
+      } else {
+        logger.info(`Video Links for ${url} expire at ${new Date(expireTime!)}`);
+        return await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+      }
+    } else {
+      return await createInfoJson(url, source, infoJsonPath);
+    }
+  }
+  return null;
 }
 
 export async function createInfoJson(
@@ -44,9 +62,15 @@ export async function createInfoJson(
       logger.info(`Created info json for ${url}`);
 
       if (source === 'youtube-video') {
-        await addExpireTime(infoJsonPath);
-        const result = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
-        return resolve(result);
+        let infoJson = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+        infoJson = await addCreatedAt(infoJson);
+        infoJson = await addExpiresAt(infoJson);
+        infoJson = await downloadThumbnail(infoJson);
+        infoJson = await writeDescription(infoJson);
+
+        await writeJson(infoJsonPath, infoJson);
+
+        return resolve(infoJson);
       }
 
       resolve(null);
@@ -54,26 +78,59 @@ export async function createInfoJson(
   });
 }
 
-export async function getInfoJson(
-  url: string,
-  source: Source
-): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
-  if (source === 'youtube-video') {
-    const videoId = new URL(url).searchParams.get('v') as string;
-    const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
-    if (await pathExists(infoJsonPath)) {
-      const expireTime = await getExpireTime(infoJsonPath);
-      if (new Date().toISOString() > expireTime) {
-        logger.info(`Video Links expired for ${url} on ${new Date(expireTime)}`);
-        logger.info(`Re-creating info-json for ${url}`);
-        return (await createInfoJson(url, source, infoJsonPath)) as YoutubeVideoInfoJson;
-      } else {
-        logger.info(`Video Links for ${url} expire at ${new Date(expireTime)}`);
-        return await readJson<YoutubeVideoInfoJson>(infoJsonPath);
-      }
-    } else {
-      return await createInfoJson(url, source, infoJsonPath);
-    }
+async function addCreatedAt(infoJson: YoutubeVideoInfoJson) {
+  infoJson.created_at = new Date().toISOString();
+  return infoJson;
+}
+
+async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
+  const format = infoJson.formats.find((format) => format.vcodec !== 'none' && format.manifest_url);
+  const expireTimestamp = format?.manifest_url.split('/')[7];
+  const expireTimestampISOString = new Date(Number(expireTimestamp) * 1000).toISOString();
+  infoJson.expires_at = expireTimestampISOString;
+  return infoJson;
+}
+
+async function getExpireTime(infoJsonPath: string) {
+  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+  return json.expires_at;
+}
+
+async function downloadThumbnail(infoJson: YoutubeVideoInfoJson) {
+  const safeTitle = sanitizeFileName(infoJson.fulltitle);
+  const thumbnailUrl = `https://i.ytimg.com/vi/${infoJson.id}/maxresdefault.jpg`;
+  const thumbnailLocalPath = path.join(
+    MEDIA_DATA_FOLDER_PATH,
+    'youtube-video',
+    infoJson.id,
+    safeTitle + '.jpg'
+  );
+  try {
+    await downloadFile({ url: thumbnailUrl, destinationPath: thumbnailLocalPath });
+    logger.info(`Downloaded thumbnail for ${infoJson.fulltitle} to ${thumbnailLocalPath}`);
+  } catch (error) {
+    logger.error(error);
   }
-  return null;
+  infoJson.thumbnail_local = filePathToFileUrl(thumbnailLocalPath);
+  return infoJson;
+}
+
+async function writeDescription(infoJson: YoutubeVideoInfoJson) {
+  const safeTitle = sanitizeFileName(infoJson.fulltitle);
+
+  const descriptionLocalPath = path.join(
+    MEDIA_DATA_FOLDER_PATH,
+    'youtube-video',
+    infoJson.id,
+    safeTitle + '.description'
+  );
+
+  try {
+    await writeFile(descriptionLocalPath, infoJson.description, 'utf-8');
+    logger.info(`Wrote description for ${infoJson.fulltitle} to ${descriptionLocalPath}`);
+  } catch (error) {
+    logger.error(error);
+  }
+
+  return infoJson;
 }

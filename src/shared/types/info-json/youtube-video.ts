@@ -1,4 +1,10 @@
-export interface YoutubeVideoInfoJson {
+interface Extra {
+  created_at: string;
+  expires_at?: string;
+  thumbnail_local?: string;
+}
+
+export interface YoutubeVideoInfoJson extends Extra {
   id: string;
   title: string;
   formats: YoutubeFormat[];
@@ -59,7 +65,6 @@ export interface YoutubeVideoInfoJson {
   abr: number;
   asr: number;
   audio_channels: number;
-  expire_time: string;
 }
 
 interface YoutubeFormat {

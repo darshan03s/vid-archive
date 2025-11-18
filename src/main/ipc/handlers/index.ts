@@ -1,10 +1,4 @@
-import {
-  DATA_DIR,
-  FFMPEG_FOLDER_PATH,
-  MEDIA_DATA_FOLDER_PATH,
-  YTDLP_EXE_PATH,
-  YTDLP_FOLDER_PATH
-} from '@main/index';
+import { DATA_DIR, FFMPEG_FOLDER_PATH, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '@main/index';
 import { getStoreManager } from '@main/store';
 import {
   getFfmpegFromPc,
@@ -18,21 +12,12 @@ import {
 import { urlHistoryOperations } from '@main/utils/dbUtils';
 import { downloadFfmpeg7z } from '@main/utils/downloadFfmpeg7z';
 import { downloadYtDlpLatestRelease } from '@main/utils/downloadYtdlp';
-import {
-  copyFileToFolder,
-  copyFolder,
-  deleteFile,
-  downloadFile,
-  filePathToFileUrl,
-  pathExists,
-  sanitizeFileName
-} from '@main/utils/fsUtils';
+import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fsUtils';
 import { getInfoJson } from '@main/utils/ytdlpUtils';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
 import { Api, Source } from '@shared/types';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
-import { writeFile } from 'node:fs/promises';
 import SevenZip from '7zip-min';
 import path from 'node:path';
 import { IpcMainInvokeEvent } from 'electron';
@@ -181,49 +166,13 @@ export async function getYoutubeVideoInfoJson(
   )) as YoutubeVideoInfoJson | null;
   if (infoJson) {
     logger.info(`Fetched info json for ${url}`);
-    const thumbnailUrl = `https://i.ytimg.com/vi/${infoJson.id}/maxresdefault.jpg`;
-    const safeTitle = sanitizeFileName(infoJson.fulltitle);
-    const thumbnailLocalPath = path.join(
-      MEDIA_DATA_FOLDER_PATH,
-      'youtube-video',
-      infoJson.id,
-      safeTitle + '.jpg'
-    );
-    const descriptionLocalPath = path.join(
-      MEDIA_DATA_FOLDER_PATH,
-      'youtube-video',
-      infoJson.id,
-      safeTitle + '.description'
-    );
-    if (!(await pathExists(thumbnailLocalPath))) {
-      try {
-        // download thumbnail
-        await downloadFile({ url: thumbnailUrl, destinationPath: thumbnailLocalPath });
-        logger.info(`Downloaded thumbnail for ${url} to ${thumbnailLocalPath}`);
-      } catch (error) {
-        logger.error(error);
-      }
-    } else {
-      logger.info(`Thumbnail exists for ${url} at ${thumbnailLocalPath}`);
-    }
-    if (!(await pathExists(descriptionLocalPath))) {
-      try {
-        // write description
-        await writeFile(descriptionLocalPath, infoJson.description, 'utf-8');
-        logger.info(`Wrote description for ${url} to ${descriptionLocalPath}`);
-      } catch (error) {
-        logger.error(error);
-      }
-    } else {
-      logger.info(`Description exists for ${url} at ${descriptionLocalPath}`);
-    }
     try {
       await urlHistoryOperations.upsertByUrl(url, {
         url,
         thumbnail: infoJson.thumbnail,
         title: infoJson.fulltitle,
         source: 'youtube-video' as Source,
-        thumbnail_local: filePathToFileUrl(thumbnailLocalPath)
+        thumbnail_local: infoJson.thumbnail_local ?? ''
       });
       logger.info('Updated url history');
     } catch {
