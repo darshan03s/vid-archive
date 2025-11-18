@@ -6,6 +6,7 @@ import log from 'electron-log';
 import logger from '@shared/logger';
 import { init } from './init';
 import registerHanlders from './ipc/registerHandlers';
+import registerProtocolHandlers from './protocolHanlders';
 
 const logsFolderName = new Date().toISOString().split('T')[0];
 
@@ -79,6 +80,8 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
   electronApp.setAppUserModelId(APP_USER_MODEL_ID);
+
+  await registerProtocolHandlers();
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);

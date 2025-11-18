@@ -2,14 +2,7 @@ import { spawn } from 'node:child_process';
 import { MEDIA_DATA_FOLDER_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
-import {
-  downloadFile,
-  filePathToFileUrl,
-  pathExists,
-  readJson,
-  sanitizeFileName,
-  writeJson
-} from './fsUtils';
+import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
@@ -111,7 +104,7 @@ async function downloadThumbnail(infoJson: YoutubeVideoInfoJson) {
   } catch (error) {
     logger.error(error);
   }
-  infoJson.thumbnail_local = filePathToFileUrl(thumbnailLocalPath);
+  infoJson.thumbnail_local = thumbnailLocalPath;
   return infoJson;
 }
 
