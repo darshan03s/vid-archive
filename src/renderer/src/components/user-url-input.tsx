@@ -71,7 +71,7 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
               <IconReload />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Refetch</TooltipContent>
+          <TooltipContent side="bottom">Refetch</TooltipContent>
         </Tooltip>
       ) : (
         <Tooltip>
@@ -80,7 +80,7 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
               <IconCloudDown />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Fetch</TooltipContent>
+          <TooltipContent side="bottom">Fetch</TooltipContent>
         </Tooltip>
       )}
     </ButtonGroup>
