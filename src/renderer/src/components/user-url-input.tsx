@@ -2,12 +2,12 @@ import { Button } from './ui/button';
 import { ButtonGroup } from './ui/button-group';
 import { Input } from './ui/input';
 import { IconCloudDown, IconReload } from '@tabler/icons-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { useState } from 'react';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import logger from '@shared/logger';
+import { TooltipWrapper } from './wrappers';
 
 type UserUrlInputProps = {
   showRefetch: boolean;
@@ -65,23 +65,17 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
         disabled={!!url}
       />
       {showRefetch ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button onClick={handleRefetchMediaInfo}>
-              <IconReload />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Refetch</TooltipContent>
-        </Tooltip>
+        <TooltipWrapper message="Refetch" side="bottom">
+          <Button onClick={handleRefetchMediaInfo}>
+            <IconReload />
+          </Button>
+        </TooltipWrapper>
       ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button onClick={handleFetchMediaInfo}>
-              <IconCloudDown />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Fetch</TooltipContent>
-        </Tooltip>
+        <TooltipWrapper message="Fetch" side="bottom">
+          <Button onClick={handleFetchMediaInfo}>
+            <IconCloudDown />
+          </Button>
+        </TooltipWrapper>
       )}
     </ButtonGroup>
   );
