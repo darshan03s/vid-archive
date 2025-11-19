@@ -8,4 +8,5 @@ export function Logo(source: Source) {
   if (source === 'youtube-playlist') {
     return youtubeLogo;
   }
+  return '';
 }
