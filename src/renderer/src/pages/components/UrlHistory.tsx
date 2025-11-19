@@ -33,6 +33,30 @@ export function updateUrlHistoryInStore() {
   });
 }
 
+export function formatDate(input: string): string {
+  const year = input.slice(0, 4);
+  const monthNum = Number(input.slice(4, 6));
+  const day = input.slice(6, 8);
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  const month = months[monthNum - 1];
+  return `${year} ${month} ${day}`;
+}
+
 const MoreInfo = ({
   open,
   setOpen,
@@ -57,12 +81,26 @@ const MoreInfo = ({
             <span className="font-semibold">Source</span>: <span>{item.source}</span>
           </div>
           <div>
-            <span className="font-semibold">Uploader</span>: <span>{item.uploader}</span>
-          </div>
-          <div>
             <span className="font-semibold">URL</span>:{' '}
             <a href={item.url} target="_blank" rel="noreferrer" className="underline">
               {item.url}
+            </a>
+          </div>
+          <div>
+            <span className="font-semibold">Created At</span>:{' '}
+            <span>{formatDate(item.created_at)}</span>
+          </div>
+          <div>
+            <span className="font-semibold">Duration</span>:{' '}
+            <span>{item.duration.length === 0 ? 'N/A' : item.duration}</span>
+          </div>
+          <div>
+            <span className="font-semibold">Uploader</span>: <span>{item.uploader}</span>
+          </div>
+          <div>
+            <span className="font-semibold">Uploader URL</span>:{' '}
+            <a href={item.uploader_url} target="_blank" rel="noreferrer" className="underline">
+              {item.uploader_url}
             </a>
           </div>
           <div>

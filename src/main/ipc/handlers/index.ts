@@ -175,7 +175,10 @@ export async function getYoutubeVideoInfoJson(
           title: infoJson.fulltitle,
           source: 'youtube-video' as Source,
           thumbnail_local: infoJson.thumbnail_local ?? '',
-          uploader: infoJson.uploader
+          uploader: infoJson.uploader,
+          uploader_url: infoJson.uploader_url,
+          created_at: infoJson.upload_date,
+          duration: infoJson.duration_string ?? ''
         });
         logger.info('Updated url history');
       } catch {

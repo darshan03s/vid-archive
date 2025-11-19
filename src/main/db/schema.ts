@@ -10,6 +10,9 @@ export const urlHistory = sqliteTable('url_history', {
   thumbnail: text('thumbnail').notNull(),
   thumbnail_local: text('thumbnail_local').notNull(),
   uploader: text('uploader').notNull(),
+  uploader_url: text('uploader_url').notNull(),
+  created_at: text('created_at').notNull(),
+  duration: text('duration'),
   title: text('title').notNull(),
   addedAt: text('added_at')
     .default(sql`CURRENT_TIMESTAMP`)
