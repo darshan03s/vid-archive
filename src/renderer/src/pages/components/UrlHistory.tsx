@@ -124,7 +124,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
         <ItemFooter className="url-history-item-footer w-full">
           <div className="url-history-item-footer-left flex items-center gap-2">
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button variant={'outline'} size={'icon-sm'}>
                   <img src={Logo(item.source)} alt={item.source} className="size-4" />
                 </Button>
@@ -132,7 +132,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
               <TooltipContent>Source: {item.source}</TooltipContent>
             </Tooltip>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button
                   onClick={() => setIsMoreInfoModalOpen(true)}
                   variant={'outline'}
@@ -146,7 +146,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
           </div>
           <div className="url-history-item-footer-right">
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button
                   onClick={() => handleUrlHistoryItemDelete(item.id)}
                   variant={'destructive'}
@@ -217,7 +217,7 @@ const UrlHistory = () => {
       <div className="w-full p-2 flex items-center justify-between border-b">
         <span className="text-sm">History ({urlHistory?.length})</span>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button
               disabled={urlHistory?.length === 0}
               onClick={() => handleUrlHistoryDelete()}
