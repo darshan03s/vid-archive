@@ -3,6 +3,7 @@ import {
   Item,
   ItemContent,
   ItemDescription,
+  ItemFooter,
   ItemMedia,
   ItemTitle
 } from '@renderer/components/ui/item';
@@ -11,6 +12,10 @@ import { useEffect } from 'react';
 import { useHistoryStore } from '@renderer/stores/history-store';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { useNavigate } from 'react-router-dom';
+import { IconTrash } from '@tabler/icons-react';
+import { Button } from '@renderer/components/ui/button';
+import { Logo } from '@renderer/data/logo';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@renderer/components/ui/tooltip';
 
 const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
   const navigate = useNavigate();
@@ -39,6 +44,32 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
           </Badge>
         </ItemDescription>
       </ItemContent>
+      <ItemFooter className="url-history-item-footer w-full">
+        <div className="url-history-item-footer-left">
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant={'outline'} size={'icon-sm'}>
+                <img src={Logo(item.source)} alt={item.source} className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Source: {item.source}</TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="url-history-item-footer-right">
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant={'outline'}
+                size={'icon-sm'}
+                className="text-destructive hover:text-destructive/70"
+              >
+                <IconTrash />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Delete from history</TooltipContent>
+          </Tooltip>
+        </div>
+      </ItemFooter>
     </Item>
   );
 };
