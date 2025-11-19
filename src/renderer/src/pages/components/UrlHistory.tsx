@@ -93,8 +93,30 @@ const UrlHistory = () => {
     if (urlHistory && urlHistory.length > 0) return;
     updateUrlHistoryInStore();
   }, []);
+
+  function handleUrlHistoryDelete() {
+    window.api.deleteAllUrlHistory().then(() => {
+      updateUrlHistoryInStore();
+    });
+  }
+
   return (
     <div className="p-2 flex flex-col gap-2">
+      <div className="w-full flex items-center justify-between">
+        <span className="text-sm">History ({urlHistory?.length})</span>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              onClick={() => handleUrlHistoryDelete()}
+              variant={'destructive'}
+              size={'icon-sm'}
+            >
+              <IconTrash />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Delete all history</TooltipContent>
+        </Tooltip>
+      </div>
       {urlHistory?.map((item) => {
         return <UrlHistoryItem key={item.id} item={item} />;
       })}

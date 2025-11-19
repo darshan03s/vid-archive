@@ -46,4 +46,5 @@ export type Api = {
   ) => Promise<YoutubeVideoInfoJson | null>;
   getUrlHistory: () => Promise<UrlHistoryList>;
   deleteFromUrlHistory: (id: string) => Promise<void>;
+  deleteAllUrlHistory: () => Promise<void>;
 };

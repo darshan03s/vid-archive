@@ -37,6 +37,10 @@ export const urlHistoryOperations = {
     return db?.delete(urlHistory).where(eq(urlHistory.url, url));
   },
 
+  deleteAll: async () => {
+    return db?.delete(urlHistory);
+  },
+
   updateById: async (id: string, data: Omit<UrlHistoryItem, 'id' | 'addedAt'>) => {
     return db?.update(urlHistory).set(data).where(eq(urlHistory.id, id));
   },

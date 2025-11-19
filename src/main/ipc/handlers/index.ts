@@ -200,3 +200,11 @@ export async function deleteOneFromUrlHistory(_event: IpcMainInvokeEvent, id: st
     logger.error(`Could not delete from url history for id -> ${id}\n${e}`);
   }
 }
+
+export async function deleteAllFromUrlHistory() {
+  try {
+    urlHistoryOperations.deleteAll();
+  } catch (e) {
+    logger.error(`Could not delete all url history \n${e}`);
+  }
+}

@@ -14,7 +14,8 @@ const api: Api = {
   getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean) =>
     ipcRenderer.invoke('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory),
   getUrlHistory: () => ipcRenderer.invoke('url-history:get-all'),
-  deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id)
+  deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id),
+  deleteAllUrlHistory: () => ipcRenderer.invoke('url-history:delete-all')
 };
 
 if (process.contextIsolated) {
