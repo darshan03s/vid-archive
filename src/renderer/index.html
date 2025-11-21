@@ -14,8 +14,9 @@
     />
   </head>
 
-  <body>
-    <div id="root"></div>
+  <body class="h-screen flex flex-col">
+    <div id="titlebar-root"></div>
+    <div id="root" class="flex-1 h-[calc(100vh-var(--titlebar-height))] overflow-auto"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

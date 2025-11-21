@@ -6,7 +6,6 @@ import { useSettingsStore } from './stores/settings-store';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { Toaster } from './components/ui/sonner';
-import Titlebar from './components/titlebar';
 import DisplayMediaInfo from './pages/DisplayMediaInfo';
 import logger from '@shared/logger';
 import { toast } from 'sonner';
@@ -48,14 +47,11 @@ const App = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <Titlebar />
-      <div className="flex-1 h-[calc(100vh-var(--titlebar-height))] overflow-auto">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/display-media-info" element={<DisplayMediaInfo />} />
-        </Routes>
-      </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/display-media-info" element={<DisplayMediaInfo />} />
+      </Routes>
 
       {isYtdlpFmpegConfirmModalVisible && (
         <YtdlpFfmpegConfirmModal
@@ -65,7 +61,7 @@ const App = () => {
       )}
 
       <Toaster />
-    </div>
+    </>
   );
 };
 
