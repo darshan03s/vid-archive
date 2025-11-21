@@ -9,6 +9,8 @@ import { Toaster } from './components/ui/sonner';
 import DisplayMediaInfo from './pages/DisplayMediaInfo';
 import logger from '@shared/logger';
 import { toast } from 'sonner';
+import Sidebar from './pages/components/sidebar';
+import Downloads from './pages/Downloads';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
@@ -47,11 +49,18 @@ const App = () => {
   }
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/display-media-info" element={<DisplayMediaInfo />} />
-      </Routes>
+    <div className="h-full">
+      <div className="flex h-full">
+        <Sidebar />
+
+        <section className="flex-1 overflow-auto">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/display-media-info" element={<DisplayMediaInfo />} />
+            <Route path="/downloads" element={<Downloads />} />
+          </Routes>
+        </section>
+      </div>
 
       {isYtdlpFmpegConfirmModalVisible && (
         <YtdlpFfmpegConfirmModal
@@ -61,7 +70,7 @@ const App = () => {
       )}
 
       <Toaster />
-    </>
+    </div>
   );
 };
 
