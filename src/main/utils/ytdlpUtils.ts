@@ -8,6 +8,7 @@ import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
 import logger from '@shared/logger';
 import { writeFile } from 'node:fs/promises';
+import { getStoreManager } from '@main/store';
 
 export async function getInfoJson(
   url: string,
@@ -38,14 +39,23 @@ export async function createInfoJson(
   source: Source,
   infoJsonPath: string
 ): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
+  const store = await getStoreManager();
+
   return await new Promise((resolve, reject) => {
-    const child = spawn(YTDLP_EXE_PATH, [
+    const infoJsonCommandBase = YTDLP_EXE_PATH;
+    const infoJsonCommandArgs = [
+      '--js-runtimes',
+      store.get('settings.jsRuntimePath') as string,
       '--skip-download',
       '--write-info-json',
       '-o',
       infoJsonPath.split('.info.json')[0],
       url
-    ]);
+    ];
+
+    const completeCommand = infoJsonCommandBase.concat(' ').concat(infoJsonCommandArgs.join(' '));
+    logger.info(`Creating info-json for ${url}\nCommand: ${completeCommand}`);
+    const child = spawn(infoJsonCommandBase, infoJsonCommandArgs);
 
     child.on('error', reject);
 
