@@ -16,6 +16,6 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   userDownloadsFolder: '',
   ytdlpPath: '',
   ytdlpVersion: '',
-  jsRuntime: '',
+  jsRuntimePath: '',
   setSettings: (settings) => set((state) => ({ ...state, ...settings }))
 }));
