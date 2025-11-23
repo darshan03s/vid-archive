@@ -79,10 +79,6 @@ const MoreInfo = ({
             <span className="font-semibold">Thumbnail</span>:{' '}
             <Anchor href={item.thumbnail}>{item.thumbnail}</Anchor>
           </div>
-          <div>
-            <span className="font-semibold">Last Fetched</span>:{' '}
-            <span>{new Date(item.addedAt).toLocaleString()}</span>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
