@@ -1,9 +1,10 @@
 import ElectronStore from 'electron-store';
 import { DATA_DIR } from '.';
+import { AppSettings } from '@shared/types';
 
 class StoreManager {
   static instancePromise: Promise<StoreManager> | null = null;
-  store: ElectronStore<Record<string, unknown>> | null = null;
+  store: ElectronStore<AppSettings> | null = null;
 
   constructor() {
     if (StoreManager.instancePromise) {
@@ -31,12 +32,20 @@ class StoreManager {
     return StoreManager.instancePromise;
   }
 
-  get(key: string) {
+  get<K extends keyof AppSettings>(key: K): AppSettings[K] {
     return this.store!.get(key);
   }
 
-  set(key: string, value: any) {
+  getAll(): AppSettings {
+    return this.store!.store as AppSettings;
+  }
+
+  set<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
     this.store!.set(key, value);
+  }
+
+  setAll(values: AppSettings) {
+    this.store!.set(values);
   }
 }
 

@@ -7,8 +7,8 @@ const execPromise = promisify(exec);
 
 export async function getYtdlpFromSettings() {
   const store = await getStoreManager();
-  const ytdlpPath = store.get('settings.ytdlpPath') as string;
-  const ytdlpVersion = store.get('settings.ytdlpVersion') as string;
+  const ytdlpPath = store.get('ytdlpPath') as string;
+  const ytdlpVersion = store.get('ytdlpVersion') as string;
 
   return {
     ytdlpPath,
@@ -18,8 +18,8 @@ export async function getYtdlpFromSettings() {
 
 export async function getFfmpegFromSettings() {
   const store = await getStoreManager();
-  const ffmpegPath = store.get('settings.ffmpegPath') as string;
-  const ffmpegVersion = store.get('settings.ffmpegVersion') as string;
+  const ffmpegPath = store.get('ffmpegPath') as string;
+  const ffmpegVersion = store.get('ffmpegVersion') as string;
 
   return {
     ffmpegPath,
@@ -29,7 +29,7 @@ export async function getFfmpegFromSettings() {
 
 export async function getSettings(): Promise<AppSettings> {
   const store = await getStoreManager();
-  return store.get('settings') as AppSettings;
+  return store.getAll();
 }
 
 async function getAppPath(appName: string) {
@@ -64,7 +64,7 @@ export async function getFfmpegVersionFromPc(ffmpegPath: string = 'ffmpeg') {
   const { stdout } = await execPromise(`${ffmpegPath} -version`);
   const match = stdout.match(/ffmpeg version\s+(\d+(?:\.\d+)?)/);
   const version = match ? match[1] : null;
-  return version;
+  return version ?? 'N/A';
 }
 
 export async function getYtdlpFromPc(): ReturnType<Api['confirmYtdlp']> {

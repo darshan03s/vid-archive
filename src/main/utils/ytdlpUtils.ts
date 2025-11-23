@@ -45,7 +45,7 @@ export async function createInfoJson(
     const infoJsonCommandBase = YTDLP_EXE_PATH;
     const infoJsonCommandArgs = [
       '--js-runtimes',
-      store.get('settings.jsRuntimePath') as string,
+      store.get('jsRuntimePath') as string,
       '--skip-download',
       '--write-info-json',
       '-o',

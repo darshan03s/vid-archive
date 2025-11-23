@@ -62,7 +62,7 @@ async function addJsRuntime() {
 
   await deleteFile(outputJsRuntimeZipPath);
 
-  store.set('settings.jsRuntimePath', path.join(DATA_DIR, 'quickjs', 'qjs.exe'));
+  store.set('jsRuntimePath', path.join(DATA_DIR, 'quickjs', 'qjs.exe'));
 }
 
 export async function confirmYtdlp(): ReturnType<Api['confirmYtdlp']> {
@@ -73,10 +73,10 @@ export async function confirmYtdlp(): ReturnType<Api['confirmYtdlp']> {
 
     const { ytdlpVersionInPc, ytdlpPathInPc } = await getYtdlpFromPc();
 
-    if (ytdlpPathInPc) {
+    if (ytdlpPathInPc && ytdlpVersionInPc) {
       await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH);
-      store.set('settings.ytdlpPath', YTDLP_EXE_PATH);
-      store.set('settings.ytdlpVersion', ytdlpVersionInPc);
+      store.set('ytdlpPath', YTDLP_EXE_PATH);
+      store.set('ytdlpVersion', ytdlpVersionInPc);
     }
 
     logger.info(`yt-dlp path in PC: ${ytdlpPathInPc}`);
@@ -99,11 +99,11 @@ export async function confirmFfmpeg(): ReturnType<Api['confirmFfmpeg']> {
 
     const { ffmpegVersionInPc, ffmpegPathInPc } = await getFfmpegFromPc();
 
-    if (ffmpegPathInPc) {
+    if (ffmpegPathInPc && ffmpegVersionInPc) {
       const ffmpegFolderInPc = path.dirname(ffmpegPathInPc);
       copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
-      store.set('settings.ffmpegPath', FFMPEG_FOLDER_PATH);
-      store.set('settings.ffmpegVersion', ffmpegVersionInPc);
+      store.set('ffmpegPath', FFMPEG_FOLDER_PATH);
+      store.set('ffmpegVersion', ffmpegVersionInPc);
     }
 
     logger.info(`ffmpeg path in PC: ${ffmpegPathInPc}`);
@@ -127,8 +127,8 @@ export async function downloadYtdlp(): ReturnType<Api['downloadYtdlp']> {
 
     const ytdlpVersionInPc = await getYtdlpVersionFromPc(outputPath);
 
-    store.set('settings.ytdlpPath', outputPath);
-    store.set('settings.ytdlpVersion', ytdlpVersionInPc);
+    store.set('ytdlpPath', outputPath);
+    store.set('ytdlpVersion', ytdlpVersionInPc);
 
     logger.info(`yt-dlp downloaded: ${outputPath}`);
     logger.info(`yt-dlp downloaded version: ${ytdlpVersionInPc}`);
@@ -176,8 +176,8 @@ export async function downloadFfmpeg(): ReturnType<Api['downloadFfmpeg']> {
 
     const ffmpegVersionInPc = await getFfmpegVersionFromPc(ffmpegExePath);
 
-    store.set('settings.ffmpegPath', ffmpegBinPath);
-    store.set('settings.ffmpegVersion', ffmpegVersionInPc);
+    store.set('ffmpegPath', ffmpegBinPath);
+    store.set('ffmpegVersion', ffmpegVersionInPc);
 
     logger.info(`ffmpeg downloaded: ${ffmpegBinPath}`);
     logger.info(`ffmpeg downloaded version: ${ffmpegVersionInPc}`);

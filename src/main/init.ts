@@ -23,7 +23,8 @@ export async function init() {
   const store = await initStoreManager();
 
   if (!pathExistsSync(SETTINGS_PATH)) {
-    store.set('settings', getDefaultAppSettings());
+    const defaults = getDefaultAppSettings();
+    store.setAll({ ...defaults });
     logger.info('Created settings.json');
   } else {
     logger.info('settings.json exists');
