@@ -2,10 +2,19 @@ import UserUrlInput from '@renderer/components/user-url-input';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import YoutubeVideoInfo from './components/youtube/youtube-video-info';
 import { Source } from '@/shared/types';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const DisplayMediaInfo = () => {
   const url = useMediaInfoStore((state) => state.url);
   const source = useMediaInfoStore((state) => state.source) as Source;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!url && !source) {
+      navigate('/');
+    }
+  }, []);
 
   return (
     <div className="h-full overflow-y-scroll">
