@@ -28,6 +28,8 @@ export const downloadsHistory = sqliteTable('downloads_history', {
   thumbnail_local: text('thumbnail_local').notNull(),
   uploader: text('uploader').notNull(),
   uploader_url: text('uploader_url').notNull(),
+  start_time: text('start_time').notNull(),
+  end_time: text('end_time').notNull(),
   format: text('format').notNull(),
   command: text('command').notNull(),
   download_progress: real('download_progress').notNull(),

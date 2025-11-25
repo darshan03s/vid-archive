@@ -25,6 +25,8 @@ export type DownloadsHistoryItem = {
   thumbnail_local: string;
   uploader: string;
   uploader_url: string;
+  start_time: string;
+  end_time: string;
   format: string;
   command: string;
   download_progress: number;
@@ -45,6 +47,8 @@ export type RunningDownloadItem = {
   thumbnail_local: string;
   uploader: string;
   uploader_url: string;
+  start_time: string;
+  end_time: string;
   format: string;
   command: string;
   download_progress: number;

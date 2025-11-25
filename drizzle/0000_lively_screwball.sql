@@ -7,6 +7,8 @@ CREATE TABLE `downloads_history` (
 	`thumbnail_local` text NOT NULL,
 	`uploader` text NOT NULL,
 	`uploader_url` text NOT NULL,
+	`start_time` text NOT NULL,
+	`end_time` text NOT NULL,
 	`format` text NOT NULL,
 	`command` text NOT NULL,
 	`download_progress` real NOT NULL,

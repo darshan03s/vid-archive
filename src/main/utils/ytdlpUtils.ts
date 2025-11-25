@@ -247,12 +247,14 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       thumbnail_local: mediaInfo.thumbnail_local || '',
       uploader: mediaInfo.uploader,
       uploader_url: mediaInfo.uploader_url,
+      start_time: downloadSections.startTime,
+      end_time: downloadSections.endTime,
       download_progress: 0,
       download_progress_string: '',
       command: completeCommand,
       download_status: 'downloading',
       download_completed_at: '',
-      format: selectedFormat.format_id!,
+      format: selectedFormat.resolution + ' - ' + selectedFormat.format_id!,
       added_at: new Date().toISOString()
     };
 

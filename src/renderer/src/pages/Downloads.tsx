@@ -14,7 +14,7 @@ import {
   ItemMedia,
   ItemTitle
 } from '@renderer/components/ui/item';
-import { TooltipWrapper } from '@renderer/components/wrappers';
+import { Anchor, TooltipWrapper } from '@renderer/components/wrappers';
 import { Logo } from '@renderer/data/logo';
 import { useEffect, useState } from 'react';
 import { ProgressBar } from './components/progress-bar';
@@ -86,10 +86,24 @@ const DownloadCard = ({
       <ItemContent className="flex flex-col gap-2 min-w-0">
         <ItemTitle className="text-xs line-clamp-1">{downloadItem.title}</ItemTitle>
         <ItemDescription className="flex flex-col gap-1 text-xs">
-          <div>
+          <div className="flex items-center gap-2">
+            <Anchor href={downloadItem.uploader_url}>
+              <Badge variant={'outline'} className="text-[10px]">
+                {downloadItem.uploader}
+              </Badge>
+            </Anchor>
             <Badge variant={'outline'} className="text-[10px]">
-              {downloadItem.uploader}
+              {downloadItem.format}
             </Badge>
+            {downloadItem.start_time || downloadItem.end_time ? (
+              <Badge variant="outline" className="text-[10px]">
+                {(downloadItem.start_time.length === 0 ? '00:00:00' : downloadItem.start_time) +
+                  ' - ' +
+                  downloadItem.end_time}
+              </Badge>
+            ) : (
+              downloadItem.start_time || null
+            )}
           </div>
           <div className="space-y-2">
             <p className="line-clamp-1 text-[10px]">
