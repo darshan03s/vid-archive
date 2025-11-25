@@ -9,6 +9,7 @@ import {
   IconArrowDown,
   IconCircleCheckFilled,
   IconClockHour3Filled,
+  IconFolder,
   IconKeyframes
 } from '@tabler/icons-react';
 import { acodec, formatDate, formatFileSize, vcodec } from '@renderer/utils';
@@ -25,6 +26,7 @@ import { SelectedFormat, useSelectedOptionsStore } from '@renderer/stores/select
 import { DownloadOptions } from '@/shared/types/download';
 import { Input } from '@renderer/components/ui/input';
 import { Toggle } from '@renderer/components/ui/toggle';
+import { useSettingsStore } from '@renderer/stores/settings-store';
 
 const Preview = ({
   previewUrl,
@@ -56,6 +58,7 @@ const Preview = ({
 const DownloadButton = () => {
   const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
   const downloadSections = useSelectedOptionsStore((state) => state.downloadSections);
+  const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
   const url = useMediaInfoStore.getState().url;
   const source = useMediaInfoStore.getState().source;
   const mediaInfo = useMediaInfoStore((state) => state.mediaInfo);
@@ -67,7 +70,8 @@ const DownloadButton = () => {
       url: url,
       source: source,
       mediaInfo: mediaInfo,
-      downloadSections: downloadSections
+      downloadSections: downloadSections,
+      selectedDownloadFolder: selectedDownloadFolder
     };
     window.api.download(downloadOptions);
     const unsubscribe = window.api.on('download-begin', () => {
@@ -142,6 +146,10 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
         <div className="download-sections">
           <DownloadSections />
         </div>
+
+        <div className="download-location">
+          <DownloadLocation />
+        </div>
       </div>
 
       <MoreDetailsModal
@@ -150,6 +158,40 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
         infoJson={infoJson}
       />
     </>
+  );
+};
+
+const DownloadLocation = () => {
+  const downloadsFolderFromSettings = useSettingsStore((state) => state.downloadsFolder);
+  const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
+
+  useEffect(() => {
+    useSelectedOptionsStore.setState({ selectedDownloadFolder: downloadsFolderFromSettings });
+  }, []);
+
+  async function pickFolder() {
+    const path = await window.api.selectFolder();
+    if (path) {
+      useSelectedOptionsStore.setState({ selectedDownloadFolder: path });
+    }
+  }
+
+  function handleDownloadFolderInput(e: React.ChangeEvent<HTMLInputElement>) {
+    useSelectedOptionsStore.setState({ selectedDownloadFolder: e.target.value });
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Input
+        onChange={handleDownloadFolderInput}
+        type="text"
+        className="text-xs"
+        value={selectedDownloadFolder}
+      />
+      <Button variant={'outline'} onClick={pickFolder}>
+        <IconFolder />
+      </Button>
+    </div>
   );
 };
 

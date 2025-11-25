@@ -27,7 +27,8 @@ const api: Api = {
     ipcRenderer.removeListener(channel, listener);
   },
   getRunningDownloads: () => ipcRenderer.invoke('running-downloads:get-all'),
-  getDownloadsHistory: () => ipcRenderer.invoke('downloads-history:get-all')
+  getDownloadsHistory: () => ipcRenderer.invoke('downloads-history:get-all'),
+  selectFolder: () => ipcRenderer.invoke('select-folder')
 };
 
 if (process.contextIsolated) {

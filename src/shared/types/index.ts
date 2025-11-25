@@ -55,4 +55,5 @@ export type Api = {
   off: (channel: string, listener: (...args: unknown[]) => void) => void;
   getRunningDownloads: () => Promise<RunningDownloadsList>;
   getDownloadsHistory: () => Promise<DownloadsHistoryList>;
+  selectFolder: () => Promise<string | null>;
 };

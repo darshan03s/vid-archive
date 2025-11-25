@@ -11,6 +11,7 @@ export type DownloadOptions = {
   downloadId: string;
   selectedFormat: Partial<YoutubeFormat>;
   downloadSections: DownloadSections;
+  selectedDownloadFolder: string;
   url: string;
   source: string;
   mediaInfo: YoutubeVideoInfoJson | YoutubePlaylistInfoJson | object;

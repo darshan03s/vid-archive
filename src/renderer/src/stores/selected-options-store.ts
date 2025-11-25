@@ -12,6 +12,7 @@ export interface DownloadSections {
 interface SelectedOptionsStore {
   selectedFormat: SelectedFormat;
   downloadSections: DownloadSections;
+  selectedDownloadFolder: string;
   setSelectedFormat: (data: SelectedFormat) => void;
   setDownloadSections: (data: Partial<DownloadSections>) => void;
 }
@@ -36,6 +37,8 @@ export const useSelectedOptionsStore = create<SelectedOptionsStore>((set) => ({
     endTime: '',
     forceKeyframesAtCuts: false
   },
+
+  selectedDownloadFolder: '',
 
   setSelectedFormat: (data) =>
     set({

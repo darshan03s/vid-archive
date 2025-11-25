@@ -20,7 +20,7 @@ import { Api, Source } from '@shared/types';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import SevenZip from '7zip-min';
 import path from 'node:path';
-import { IpcMainInvokeEvent } from 'electron';
+import { dialog, IpcMainInvokeEvent } from 'electron';
 import { downloadQuickJS } from '@main/utils/downloadJsRuntime';
 import { is } from '@electron-toolkit/utils';
 import { DownloadManager } from '@main/downloadManager';
@@ -280,4 +280,17 @@ export async function getRunningDownloads() {
 
 export async function getDownloadsHistory() {
   return downloadsHistoryOperations.getAllByAddedAtDesc();
+}
+
+export async function selectFolder() {
+  const result = await dialog.showOpenDialog({
+    title: 'Select a folder',
+    properties: ['openDirectory']
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  return result.filePaths[0];
 }

@@ -2,7 +2,14 @@ import { spawn } from 'node:child_process';
 import { MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
-import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
+import {
+  downloadFile,
+  makeDirs,
+  pathExists,
+  readJson,
+  sanitizeFileName,
+  writeJson
+} from './fsUtils';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
@@ -173,7 +180,8 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
   const store = await getStoreManager();
 
   if (downloadOptions.source === ('youtube-video' as Source)) {
-    const { url, source, selectedFormat, downloadSections } = downloadOptions;
+    const { url, source, selectedFormat, downloadSections, selectedDownloadFolder } =
+      downloadOptions;
     console.log({ url, source, selectedFormat, downloadSections });
     const mediaInfo = downloadOptions.mediaInfo as YoutubeVideoInfoJson;
     const infoJsonPath = getInfoJsonPath(url, source);
@@ -222,7 +230,8 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     // output filename
     targetDownloadFileName = targetDownloadFileName + '.%(ext)s';
     targetDownloadFileName = sanitizeFileName(targetDownloadFileName, '_');
-    const targetDownloadFilePath = path.join(store.get('downloadsFolder'), targetDownloadFileName);
+    makeDirs(selectedDownloadFolder);
+    const targetDownloadFilePath = path.join(selectedDownloadFolder, targetDownloadFileName);
     downloadCommandArgs.push('-o', targetDownloadFilePath);
     const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
     logger.info(`Starting download for ${downloadOptions.url}\nCommand: ${completeCommand}`);

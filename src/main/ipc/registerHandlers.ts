@@ -12,7 +12,8 @@ import {
   rendererInit,
   downloadMedia,
   getRunningDownloads,
-  getDownloadsHistory
+  getDownloadsHistory,
+  selectFolder
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -45,6 +46,8 @@ async function registerHanlders() {
   ipcMain.handle('running-downloads:get-all', getRunningDownloads);
 
   ipcMain.handle('downloads-history:get-all', getDownloadsHistory);
+
+  ipcMain.handle('select-folder', selectFolder);
 }
 
 export default registerHanlders;
