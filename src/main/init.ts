@@ -1,11 +1,15 @@
 import { DATA_DIR, DB_PATH, MEDIA_DATA_FOLDER_PATH, SETTINGS_PATH } from '.';
 import { initDatabase, runMigrations } from './db';
 import { getDefaultAppSettings } from './defaultSettings';
+import { DownloadManager } from './downloadManager';
 import { initStoreManager } from './store';
 import { makeDirs, pathExistsSync } from './utils/fsUtils';
 import logger from '@shared/logger';
 
 export async function init() {
+  const store = await initStoreManager();
+  DownloadManager.initDownloadManager();
+
   if (!pathExistsSync(DATA_DIR)) {
     makeDirs(DATA_DIR);
     logger.info('Created DATA_DIR');
@@ -19,8 +23,6 @@ export async function init() {
   } else {
     logger.info('MEDIA_DATA_FOLDER exists');
   }
-
-  const store = await initStoreManager();
 
   if (!pathExistsSync(SETTINGS_PATH)) {
     const defaults = getDefaultAppSettings();

@@ -1,1 +1,0 @@
-ALTER TABLE `url_history` ADD `uploader` text NOT NULL;

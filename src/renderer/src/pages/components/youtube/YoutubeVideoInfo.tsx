@@ -17,6 +17,7 @@ import {
 import { Anchor } from '@renderer/components/wrappers';
 import { Button } from '@renderer/components/ui/button';
 import { SelectedFormat, useSelectedOptionsStore } from '@renderer/stores/selected-options-store';
+import { DownloadOptions } from '@/shared/types/download';
 
 const Preview = ({ previewUrl, isLoading }: { previewUrl: string; isLoading: boolean }) => {
   return (
@@ -30,26 +31,54 @@ const Preview = ({ previewUrl, isLoading }: { previewUrl: string; isLoading: boo
   );
 };
 
+const DownloadButton = () => {
+  const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
+  const url = useMediaInfoStore.getState().url;
+  const source = useMediaInfoStore.getState().source;
+  const mediaInfo = useMediaInfoStore((state) => state.mediaInfo);
+
+  function handleDownload() {
+    const downloadOptions: DownloadOptions = {
+      downloadId: crypto.randomUUID(),
+      selectedFormat: selectedFormat,
+      url: url,
+      source: source,
+      mediaInfo: mediaInfo
+    };
+    window.api.download(downloadOptions);
+    const unsubscribe = window.api.on('download-begin', () => {
+      toast.info('Download Started');
+      unsubscribe();
+    });
+  }
+
+  return (
+    <Button onClick={handleDownload} className="text-xs h-6 px-1 flex items-center gap-1">
+      <IconArrowDown className="size-4" /> Download
+    </Button>
+  );
+};
+
+const LiveStatus = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
+  if (infoJson.was_live) {
+    return (
+      <span className="text-[10px]">
+        <span className="text-red-500">Was Live</span>
+        {' || '}
+      </span>
+    );
+  } else if (infoJson.is_live) {
+    return (
+      <span className="text-[10px]">
+        <span className="text-red-500">Live Now</span>
+        {' || '}
+      </span>
+    );
+  } else return null;
+};
+
 const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
-
-  const LiveStatus = () => {
-    if (infoJson.was_live) {
-      return (
-        <span className="text-[10px]">
-          <span className="text-red-500">Was Live</span>
-          {' || '}
-        </span>
-      );
-    } else if (infoJson.is_live) {
-      return (
-        <span className="text-[10px]">
-          <span className="text-red-500">Live Now</span>
-          {' || '}
-        </span>
-      );
-    } else return null;
-  };
 
   return (
     <>
@@ -60,7 +89,7 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
         >
           <div className="">
             <p className="text-xs leading-5">
-              <LiveStatus />
+              <LiveStatus infoJson={infoJson} />
               {infoJson.fulltitle}
             </p>
           </div>
@@ -79,9 +108,7 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
           </div>
 
           <div>
-            <Button className="text-xs h-6 px-1 flex items-center gap-1">
-              <IconArrowDown className="size-4" /> Download
-            </Button>
+            <DownloadButton />
           </div>
         </div>
 
@@ -172,7 +199,49 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
     .reverse();
   const allFormats: (YoutubeFormat | SelectedFormat)[] = [...videoFormats, ...audioFormats];
   allFormats.unshift(defaultFormat);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'video' | 'audio'>('all');
+  const videoAndAudioFormats = formats
+    .filter((format) => format.vcodec !== 'none' && format.acodec !== 'none')
+    .reverse();
+  const mp4Formats = formats.filter((format) => format.ext === 'mp4').reverse();
+  const webmFormats = formats.filter((format) => format.ext === 'webm').reverse();
+  const vp9Formats = formats.filter((format) => format.vcodec.includes('vp9')).reverse();
+  const av01Formats = formats.filter((format) => format.vcodec.includes('av01')).reverse();
+  const avc1Formats = formats.filter((format) => format.vcodec.includes('avc1')).reverse();
+  const opusFormats = formats.filter((format) => format.acodec.includes('opus')).reverse();
+  const mp4aFormats = formats.filter((format) => format.acodec.includes('mp4a')).reverse();
+
+  const formatFiltersObj = {
+    all: 'All',
+    'video-and-video': 'Video & Audio',
+    video: 'Video',
+    audio: 'Audio',
+    mp4: 'Video: mp4',
+    webm: 'Video: webm',
+    vp9: 'Video: vp9',
+    av01: 'Video: av01',
+    avc1: 'Video: avc1',
+    opus: 'Audio: opus',
+    mp4a: 'Audio: mp4a'
+  };
+
+  const formatFilters = Object.keys(formatFiltersObj);
+  type FormatFilter = keyof typeof formatFiltersObj;
+
+  const formatMap: Record<FormatFilter, typeof allFormats> = {
+    all: allFormats,
+    video: videoFormats,
+    audio: audioFormats,
+    'video-and-video': videoAndAudioFormats,
+    mp4: mp4Formats,
+    webm: webmFormats,
+    vp9: vp9Formats,
+    av01: av01Formats,
+    avc1: avc1Formats,
+    opus: opusFormats,
+    mp4a: mp4aFormats
+  };
+
+  const [selectedFilter, setSelectedFilter] = useState<FormatFilter>('all');
 
   const Format = ({ format }: { format: YoutubeFormat | SelectedFormat }) => {
     const setSelectedOptions = useSelectedOptionsStore((state) => state.setSelectedFormat);
@@ -230,40 +299,24 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
         <DialogHeader>
           <DialogTitle>All formats</DialogTitle>
           <DialogDescription>All audio and video formats</DialogDescription>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => setSelectedFilter('all')}
-              size={'sm'}
-              variant={'secondary'}
-              className="text-xs"
-            >
-              All
-            </Button>
-            <Button
-              onClick={() => setSelectedFilter('video')}
-              size={'sm'}
-              variant={'secondary'}
-              className="text-xs"
-            >
-              Video
-            </Button>
-            <Button
-              onClick={() => setSelectedFilter('audio')}
-              size={'sm'}
-              variant={'secondary'}
-              className="text-xs"
-            >
-              Audio
-            </Button>
-          </div>
         </DialogHeader>
+        <div className="format-filters flex flex-wrap items-center gap-2">
+          {formatFilters.map((formatFilter, key) => (
+            <Button
+              key={key}
+              onClick={() => setSelectedFilter(formatFilter as FormatFilter)}
+              size={'sm'}
+              variant={'secondary'}
+              className="text-xs border-none shadow-none outline-none ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=on]:outline-none data-[state=on]:ring-0"
+            >
+              {formatFiltersObj[formatFilter]}
+            </Button>
+          ))}
+        </div>
         <div className="w-full font-mono flex flex-col gap-2 h-70 overflow-auto">
-          {selectedFilter === 'all' &&
-            allFormats.map((format) => <Format key={format.format_id} format={format} />)}
-          {selectedFilter === 'video' &&
-            videoFormats.map((format) => <Format key={format.format_id} format={format} />)}
-          {selectedFilter === 'audio' &&
-            audioFormats.map((format) => <Format key={format.format_id} format={format} />)}
+          {formatMap[selectedFilter]?.map((format) => (
+            <Format key={format.format_id} format={format} />
+          ))}
         </div>
       </DialogContent>
     </Dialog>

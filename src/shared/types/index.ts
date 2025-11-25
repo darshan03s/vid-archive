@@ -1,5 +1,6 @@
 import { allowedSources } from '../data';
-import { UrlHistoryList } from './history';
+import { DownloadOptions } from './download';
+import { DownloadsHistoryList, RunningDownloadsList, UrlHistoryList } from './history';
 import { YoutubeVideoInfoJson } from './info-json/youtube-video';
 
 export type AppSettings = {
@@ -14,6 +15,7 @@ export type AppSettings = {
   userDownloadsFolder: string;
   defaultFormat: string;
   jsRuntimePath: string;
+  downloadTemplate: string;
 };
 
 export type Source = (typeof allowedSources)[number];
@@ -48,4 +50,9 @@ export type Api = {
   getUrlHistory: () => Promise<UrlHistoryList>;
   deleteFromUrlHistory: (id: string) => Promise<void>;
   deleteAllUrlHistory: () => Promise<void>;
+  download: (downloadOptions: DownloadOptions) => void;
+  on: (channel: string, listener: (...args: unknown[]) => void) => () => Electron.IpcRenderer;
+  off: (channel: string, listener: (...args: unknown[]) => void) => void;
+  getRunningDownloads: () => Promise<RunningDownloadsList>;
+  getDownloadsHistory: () => Promise<DownloadsHistoryList>;
 };

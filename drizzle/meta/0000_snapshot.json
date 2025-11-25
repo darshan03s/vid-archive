@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "2ee3d717-faa8-4f7c-bcec-d52abc8d33ba",
+  "id": "a2e7044b-90a2-4caf-b8b1-57b5257efc5c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "downloads_history": {
@@ -14,6 +14,27 @@
           "notNull": true,
           "autoincrement": false
         },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "thumbnail": {
           "name": "thumbnail",
           "type": "text",
@@ -21,8 +42,22 @@
           "notNull": true,
           "autoincrement": false
         },
-        "title": {
-          "name": "title",
+        "thumbnail_local": {
+          "name": "thumbnail_local",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "uploader": {
+          "name": "uploader",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "uploader_url": {
+          "name": "uploader_url",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -35,9 +70,16 @@
           "notNull": true,
           "autoincrement": false
         },
+        "command": {
+          "name": "command",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "download_progress": {
           "name": "download_progress",
-          "type": "text",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -49,23 +91,23 @@
           "notNull": true,
           "autoincrement": false
         },
-        "downloaded_at": {
-          "name": "downloaded_at",
+        "added_at": {
+          "name": "added_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "download_status": {
-          "name": "download_status",
+        "download_completed_at": {
+          "name": "download_completed_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "command": {
-          "name": "command",
+        "download_status": {
+          "name": "download_status",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -120,6 +162,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "url": {
           "name": "url",
           "type": "text",
@@ -148,8 +197,29 @@
           "notNull": true,
           "autoincrement": false
         },
-        "title": {
-          "name": "title",
+        "uploader": {
+          "name": "uploader",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "uploader_url": {
+          "name": "uploader_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

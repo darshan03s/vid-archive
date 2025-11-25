@@ -9,14 +9,25 @@ import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlis
 import logger from '@shared/logger';
 import { writeFile } from 'node:fs/promises';
 import { getStoreManager } from '@main/store';
+import { DownloadManager } from '@main/downloadManager';
+import { NewDownloadsHistoryItem } from '@main/types/db';
+import { DownloadOptions } from '@shared/types/download';
+
+function getInfoJsonPath(url: string, source: Source): string {
+  if (source === 'youtube-video') {
+    const videoId = new URL(url).searchParams.get('v') as string;
+    const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
+    return infoJsonPath;
+  }
+  return '';
+}
 
 export async function getInfoJson(
   url: string,
   source: Source
 ): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
   if (source === 'youtube-video') {
-    const videoId = new URL(url).searchParams.get('v') as string;
-    const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
+    const infoJsonPath = getInfoJsonPath(url, source);
     if (await pathExists(infoJsonPath)) {
       const expireTime = await getExpireTime(infoJsonPath);
       if (new Date().toISOString() > expireTime!) {
@@ -42,10 +53,11 @@ export async function createInfoJson(
   const store = await getStoreManager();
 
   return await new Promise((resolve, reject) => {
+    const jsRuntimePath = `quickjs:${store.get('jsRuntimePath')}`;
     const infoJsonCommandBase = YTDLP_EXE_PATH;
     const infoJsonCommandArgs = [
       '--js-runtimes',
-      store.get('jsRuntimePath') as string,
+      jsRuntimePath,
       '--skip-download',
       '--write-info-json',
       '-o',
@@ -87,10 +99,27 @@ async function addCreatedAt(infoJson: YoutubeVideoInfoJson) {
 }
 
 async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
-  const format = infoJson.formats.find((format) => format.vcodec !== 'none' && format.manifest_url);
-  const expireTimestamp = format?.manifest_url.split('/')[7];
-  const expireTimestampISOString = new Date(Number(expireTimestamp) * 1000).toISOString();
-  infoJson.expires_at = expireTimestampISOString;
+  const format = infoJson.formats.find((f) => f.vcodec !== 'none' && f.url);
+
+  console.log(`Adding expires_at from ${format}`);
+
+  if (!format?.url) {
+    infoJson.expires_at = new Date().toISOString();
+    return infoJson;
+  }
+
+  const url = format.url;
+
+  const expireParam = url.match(/[?&]expire=(\d+)/)?.[1];
+
+  if (!expireParam) {
+    infoJson.expires_at = new Date().toISOString();
+    return infoJson;
+  }
+
+  const expireIso = new Date(Number(expireParam) * 1000).toISOString();
+  infoJson.expires_at = expireIso;
+
   return infoJson;
 }
 
@@ -138,4 +167,56 @@ async function writeDescription(infoJson: YoutubeVideoInfoJson) {
   }
 
   return infoJson;
+}
+
+export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
+  const store = await getStoreManager();
+
+  if (downloadOptions.source === ('youtube-video' as Source)) {
+    const { url, source, selectedFormat } = downloadOptions;
+    console.log({ url, source, selectedFormat });
+    const mediaInfo = downloadOptions.mediaInfo as YoutubeVideoInfoJson;
+    const infoJsonPath = getInfoJsonPath(url, source);
+    const formatId = selectedFormat.format_id!;
+    const targetDownloadFileName = `${mediaInfo.fulltitle} [${selectedFormat.resolution}] [${selectedFormat.format_id}].%(ext)s`;
+
+    const targetDownloadFilePath = path.join(store.get('downloadsFolder'), targetDownloadFileName);
+    const jsRuntimePath = `quickjs:${store.get('jsRuntimePath')}`;
+    const downloadCommandBase = YTDLP_EXE_PATH;
+    const downloadCommandArgs = [
+      '--js-runtimes',
+      jsRuntimePath,
+      '--load-info-json',
+      infoJsonPath,
+      '-f',
+      formatId.includes('+') ? formatId : formatId.concat('+ba'),
+      '--newline',
+      '-o',
+      targetDownloadFilePath
+    ];
+    const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
+    logger.info(`Starting download for ${downloadOptions.url}\nCommand: ${completeCommand}`);
+
+    const downloadManager = DownloadManager.getInstance();
+
+    const newDownload: NewDownloadsHistoryItem = {
+      id: downloadOptions.downloadId,
+      thumbnail: mediaInfo.thumbnail,
+      title: mediaInfo.fulltitle,
+      url: url,
+      source: source,
+      thumbnail_local: mediaInfo.thumbnail_local || '',
+      uploader: mediaInfo.uploader,
+      uploader_url: mediaInfo.uploader_url,
+      download_progress: 0,
+      download_progress_string: '',
+      command: completeCommand,
+      download_status: 'downloading',
+      download_completed_at: '',
+      format: selectedFormat.format_id!,
+      added_at: new Date().toISOString()
+    };
+
+    downloadManager.addDownload(newDownload, downloadCommandBase, downloadCommandArgs);
+  }
 }

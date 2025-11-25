@@ -9,11 +9,11 @@ import {
   getYtdlpFromPc,
   getYtdlpVersionFromPc
 } from '@main/utils/appUtils';
-import { urlHistoryOperations } from '@main/utils/dbUtils';
+import { downloadsHistoryOperations, urlHistoryOperations } from '@main/utils/dbUtils';
 import { downloadFfmpeg7z } from '@main/utils/downloadFfmpeg7z';
 import { downloadYtDlpLatestRelease } from '@main/utils/downloadYtdlp';
 import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fsUtils';
-import { getInfoJson } from '@main/utils/ytdlpUtils';
+import { downloadFromYtdlp, getInfoJson } from '@main/utils/ytdlpUtils';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
 import { Api, Source } from '@shared/types';
@@ -23,6 +23,9 @@ import path from 'node:path';
 import { IpcMainInvokeEvent } from 'electron';
 import { downloadQuickJS } from '@main/utils/downloadJsRuntime';
 import { is } from '@electron-toolkit/utils';
+import { DownloadManager } from '@main/downloadManager';
+import { NewDownloadsHistoryItem } from '@main/types/db';
+import { DownloadOptions } from '@shared/types/download';
 
 export async function rendererInit(): ReturnType<Api['rendererInit']> {
   try {
@@ -260,4 +263,21 @@ export async function deleteAllFromUrlHistory() {
   } catch (e) {
     logger.error(`Could not delete all url history \n${e}`);
   }
+}
+
+export function downloadMedia(_event: IpcMainInvokeEvent, downloadOptions: DownloadOptions) {
+  downloadFromYtdlp(downloadOptions);
+}
+
+export async function getRunningDownloads() {
+  const runningDownloads: NewDownloadsHistoryItem[] = [];
+  const downloadManager = DownloadManager.getInstance();
+  downloadManager.currentlyRunningDownloads.forEach((data) => {
+    runningDownloads.push(data.downloadingItem);
+  });
+  return runningDownloads;
+}
+
+export async function getDownloadsHistory() {
+  return downloadsHistoryOperations.getAllByAddedAtDesc();
 }

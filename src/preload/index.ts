@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import logger from '@shared/logger';
 import { type Api } from '@shared/types';
+import { DownloadOptions } from '@shared/types/download';
 
 // Custom APIs for renderer
 const api: Api = {
@@ -15,7 +16,18 @@ const api: Api = {
     ipcRenderer.invoke('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory),
   getUrlHistory: () => ipcRenderer.invoke('url-history:get-all'),
   deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id),
-  deleteAllUrlHistory: () => ipcRenderer.invoke('url-history:delete-all')
+  deleteAllUrlHistory: () => ipcRenderer.invoke('url-history:delete-all'),
+  download: (downloadOptions: DownloadOptions) => ipcRenderer.send('download', downloadOptions),
+  on: (channel: string, listener: (...args: unknown[]) => void) => {
+    const wrapped = (_: unknown, ...args: unknown[]) => listener(...args);
+    ipcRenderer.on(channel, wrapped);
+    return () => ipcRenderer.removeListener(channel, wrapped);
+  },
+  off: (channel: string, listener: (...args: unknown[]) => void) => {
+    ipcRenderer.removeListener(channel, listener);
+  },
+  getRunningDownloads: () => ipcRenderer.invoke('running-downloads:get-all'),
+  getDownloadsHistory: () => ipcRenderer.invoke('downloads-history:get-all')
 };
 
 if (process.contextIsolated) {

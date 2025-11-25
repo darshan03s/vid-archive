@@ -15,6 +15,7 @@ export function getDefaultAppSettings(): AppSettings {
     userDownloadsFolder: app.getPath('downloads'),
     ytdlpPath: '',
     ytdlpVersion: '',
-    jsRuntimePath: ''
+    jsRuntimePath: '',
+    downloadTemplate: '%(title)s.%(ext)s'
   };
 }

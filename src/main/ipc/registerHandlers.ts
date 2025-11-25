@@ -9,7 +9,10 @@ import {
   downloadYtdlp,
   getUrlHistory,
   getYoutubeVideoInfoJson,
-  rendererInit
+  rendererInit,
+  downloadMedia,
+  getRunningDownloads,
+  getDownloadsHistory
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -36,6 +39,12 @@ async function registerHanlders() {
   ipcMain.handle('url-history:delete-one', deleteOneFromUrlHistory);
 
   ipcMain.handle('url-history:delete-all', deleteAllFromUrlHistory);
+
+  ipcMain.on('download', downloadMedia);
+
+  ipcMain.handle('running-downloads:get-all', getRunningDownloads);
+
+  ipcMain.handle('downloads-history:get-all', getDownloadsHistory);
 }
 
 export default registerHanlders;

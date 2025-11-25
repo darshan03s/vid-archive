@@ -61,7 +61,7 @@ const MoreInfo = ({
             <span className="font-semibold">URL</span>: <Anchor href={item.url}>{item.url}</Anchor>
           </div>
           <div>
-            <span className="font-semibold">Created At</span>:{' '}
+            <span className="font-semibold">Created/Uploaded At</span>:{' '}
             <span>{formatDate(item.created_at)}</span>
           </div>
           <div>
