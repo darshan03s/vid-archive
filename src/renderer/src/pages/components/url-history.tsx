@@ -12,7 +12,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useHistoryStore } from '@renderer/stores/history-store';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { useNavigate } from 'react-router-dom';
-import { IconInfoSquareRounded, IconTrash } from '@tabler/icons-react';
+import { IconExternalLink, IconInfoSquareRounded, IconPhoto, IconTrash } from '@tabler/icons-react';
 import { Button } from '@renderer/components/ui/button';
 import { Logo } from '@renderer/data/logo';
 
@@ -104,7 +104,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
     <>
       <Item size={'sm'} variant={'outline'} className="hover:bg-muted p-2 border-none">
         <ItemMedia
-          className="aspect-video w-32 cursor-pointer"
+          className="aspect-video w-32 cursor-pointer relative"
           onClick={handleNavigateToDisplayInfo}
         >
           <img
@@ -116,12 +116,20 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
             alt={item.title}
             className="aspect-video rounded-sm outline-1"
           />
+          <span className="bg-black text-white p-1 px-1.5 text-[10px] rounded-md absolute right-0.5 bottom-0.5">
+            {item.duration}
+          </span>
         </ItemMedia>
         <ItemContent className="flex flex-col gap-3">
           <ItemTitle className="text-xs line-clamp-1">{item.title}</ItemTitle>
           <ItemDescription className="flex gap-2 items-center text-xs">
+            <Anchor href={item.uploader_url}>
+              <Badge variant={'outline'} className="text-[10px]">
+                {item.uploader}
+              </Badge>
+            </Anchor>
             <Badge variant={'outline'} className="text-[10px]">
-              {item.uploader}
+              {formatDate(item.created_at)}
             </Badge>
           </ItemDescription>
         </ItemContent>
@@ -135,6 +143,20 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
             <TooltipWrapper message={`More Info`}>
               <span onClick={() => setIsMoreInfoModalOpen(true)} className="cursor-pointer">
                 <IconInfoSquareRounded className="size-4" />
+              </span>
+            </TooltipWrapper>
+            <TooltipWrapper message={`Open in browser`}>
+              <span>
+                <Anchor href={item.url}>
+                  <IconExternalLink className="size-4" />
+                </Anchor>
+              </span>
+            </TooltipWrapper>
+            <TooltipWrapper message={`Open thumbnail in browser`}>
+              <span>
+                <Anchor href={item.thumbnail}>
+                  <IconPhoto className="size-4" />
+                </Anchor>
               </span>
             </TooltipWrapper>
           </div>
