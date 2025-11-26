@@ -28,6 +28,7 @@ import {
 } from '@renderer/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
+import { AutoScrollTextarea } from './components/auto-scroll-textarea';
 
 const Downloads = () => {
   const [runningDownloads, setRunningDownloads] = useState<RunningDownloadsList>([]);
@@ -165,7 +166,7 @@ const DownloadCard = ({
                 </Anchor>
               </span>
             </TooltipWrapper>
-            <TooltipWrapper message={`Command`}>
+            <TooltipWrapper message={`Command and Output`}>
               <span onClick={() => setIsCommandModalOpen(true)} className="cursor-pointer">
                 <IconTerminal2 className="size-4" />
               </span>
@@ -174,11 +175,7 @@ const DownloadCard = ({
           <div className="url-history-item-footer-right"></div>
         </ItemFooter>
       </Item>
-      <Command
-        open={isCommandModalOpen}
-        setOpen={setIsCommandModalOpen}
-        data={downloadItem.command}
-      />
+      <Command open={isCommandModalOpen} setOpen={setIsCommandModalOpen} data={downloadItem} />
     </>
   );
 };
@@ -190,23 +187,32 @@ const Command = ({
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  data: string;
+  data: RunningDownloadItem | DownloadsHistoryItem;
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Command</DialogTitle>
-          <DialogDescription>See download command</DialogDescription>
+          <DialogTitle>Command and Output</DialogTitle>
+          <DialogDescription>See download command and output</DialogDescription>
         </DialogHeader>
-        <div className="w-full flex flex-col gap-2 text-xs">
+        <div className="w-full flex flex-col gap-3 text-xs">
           <textarea
             name="command"
             className="h-44 outline-2 p-2 cursor-text resize-none rounded-md font-mono leading-4.5 overflow-y-auto"
             disabled
           >
-            {data}
+            {data.command}
           </textarea>
+
+          {data.download_status !== 'downloading' ? (
+            <AutoScrollTextarea
+              name="output"
+              value={data.complete_output}
+              className="h-44 outline-2 p-2 text-muted-foreground bg-muted resize-none rounded-md font-mono leading-4.5 overflow-y-auto"
+              disabled
+            />
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>

@@ -30,6 +30,7 @@ export type DownloadsHistoryItem = {
   duration: string;
   format: string;
   command: string;
+  complete_output: string;
   download_progress: number;
   download_progress_string: string;
   download_completed_at: string;
@@ -53,6 +54,7 @@ export type RunningDownloadItem = {
   duration: string;
   format: string;
   command: string;
+  complete_output: string;
   download_progress: number;
   download_progress_string: string;
   download_completed_at: string;

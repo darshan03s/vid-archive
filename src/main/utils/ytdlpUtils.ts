@@ -253,6 +253,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       download_progress: 0,
       download_progress_string: '',
       command: completeCommand,
+      complete_output: '',
       download_status: 'downloading',
       download_completed_at: '',
       format: selectedFormat.resolution + ' - ' + selectedFormat.format_id!,

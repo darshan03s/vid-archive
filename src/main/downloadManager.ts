@@ -58,6 +58,7 @@ export class DownloadManager {
       downloadingItem.download_progress_string = text;
       downloadingItem.download_progress =
         getProgressPercent(text) ?? downloadingItem.download_progress;
+      downloadingItem.complete_output += text;
       mainWindow.webContents.send(`download-progress:${newDownload.id}`, {
         progressString: text,
         progressPercentage: getProgressPercent(text) ?? downloadingItem.download_progress
@@ -68,6 +69,7 @@ export class DownloadManager {
       const text = data.toString();
       console.log(`stderr: ${text}`);
       downloadingItem.download_progress_string = text;
+      downloadingItem.complete_output += text;
       mainWindow.webContents.send(`download-progress:${newDownload.id}`, {
         progressString: text
       } as ProgressDetails);
@@ -84,6 +86,7 @@ export class DownloadManager {
         downloadingItem.download_completed_at = 'Not Completed';
         downloadingItem.download_progress_string = 'Download Failed';
       }
+      downloadingItem.complete_output += '\nProcess complete';
       downloadsHistoryOperations.addNew(downloadingItem);
       this.currentlyRunningDownloads = this.currentlyRunningDownloads.filter(
         (d) => d.downloadingItem.id != downloadingItem.id

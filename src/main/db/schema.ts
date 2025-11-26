@@ -33,6 +33,7 @@ export const downloadsHistory = sqliteTable('downloads_history', {
   duration: text('duration').notNull(),
   format: text('format').notNull(),
   command: text('command').notNull(),
+  complete_output: text('complete_output').notNull(),
   download_progress: real('download_progress').notNull(),
   download_progress_string: text('download_progress_string').notNull(),
   added_at: text('added_at')
