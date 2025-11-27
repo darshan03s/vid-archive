@@ -197,23 +197,30 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
   }
 
   function handleDownload() {
-    if (downloadSections.startTime.length > 0 || downloadSections.endTime.length > 0) {
-      if (!(validTime(downloadSections.startTime) || validTime(downloadSections.endTime))) {
-        toast.error('Start and End time must be in HH:MM:SS format');
-        return;
-      }
+    const { startTime, endTime } = downloadSections;
+
+    if (startTime.length > 0 && !validTime(startTime)) {
+      toast.error('Start time must be in HH:MM:SS format');
+      return;
+    }
+
+    if (endTime.length > 0 && !validTime(endTime)) {
+      toast.error('End time must be in HH:MM:SS format');
+      return;
     }
 
     const downloadOptions: DownloadOptions = {
       downloadId: crypto.randomUUID(),
-      selectedFormat: selectedFormat,
-      url: url,
-      source: source,
-      mediaInfo: mediaInfo,
-      downloadSections: downloadSections,
-      selectedDownloadFolder: selectedDownloadFolder
+      selectedFormat,
+      url,
+      source,
+      mediaInfo,
+      downloadSections,
+      selectedDownloadFolder
     };
+
     window.api.download(downloadOptions);
+
     const unsubscribe = window.api.on('download-begin', () => {
       toast.info('Download Started');
       unsubscribe();
