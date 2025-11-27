@@ -9,6 +9,14 @@
   --titlebar-height: 40px;
 }
 
+@utility animate-fast {
+  @apply animate-[pulse_1s_ease-in-out_infinite];
+}
+
+@utility animate-slow {
+  @apply animate-[pulse_1.5s_ease-in-out_infinite];
+}
+
 button,
 a {
   cursor: pointer;
