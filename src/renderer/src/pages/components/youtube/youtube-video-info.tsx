@@ -164,7 +164,7 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
         </div>
 
         <div className="download-sections">
-          <DownloadSections loading={true} />
+          <DownloadSections loading={isInfoJsonEmpty} />
         </div>
 
         <div className="download-location">
@@ -191,7 +191,17 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
   const source = useMediaInfoStore.getState().source;
   const mediaInfo = useMediaInfoStore((state) => state.mediaInfo);
 
+  function validTime(time: string) {
+    const pattern = /^\d\d(?::\d\d?){0,2}$/;
+    return pattern.test(time);
+  }
+
   function handleDownload() {
+    if (!(validTime(downloadSections.startTime) || validTime(downloadSections.endTime))) {
+      toast.error('Start and End time must be in HH:MM:SS format');
+      return;
+    }
+
     const downloadOptions: DownloadOptions = {
       downloadId: crypto.randomUUID(),
       selectedFormat: selectedFormat,
@@ -297,7 +307,7 @@ const DownloadSections = ({ loading }: { loading: boolean }) => {
       <Input
         disabled={loading}
         type="text"
-        placeholder="Start Time"
+        placeholder="Start Time (HH:MM:SS)"
         value={downloadSections.startTime}
         onChange={handleStarttime}
         className="text-xs h-8"
@@ -305,7 +315,7 @@ const DownloadSections = ({ loading }: { loading: boolean }) => {
       <Input
         disabled={loading}
         type="text"
-        placeholder="End Time"
+        placeholder="End Time (HH:MM:SS)"
         value={downloadSections.endTime}
         onChange={handleEndtime}
         className="text-xs h-8"
