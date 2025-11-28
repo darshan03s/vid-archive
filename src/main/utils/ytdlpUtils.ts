@@ -19,11 +19,17 @@ import { getStoreManager } from '@main/store';
 import { DownloadManager } from '@main/downloadManager';
 import { NewDownloadsHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
+import { getYouTubeVideoId } from './appUtils';
 
 function getInfoJsonPath(url: string, source: Source): string {
   if (source === 'youtube-video') {
-    const videoId = new URL(url).searchParams.get('v') as string;
-    const infoJsonPath = path.join(MEDIA_DATA_FOLDER_PATH, source, videoId, videoId + '.info.json');
+    const videoId = getYouTubeVideoId(url);
+    const infoJsonPath = path.join(
+      MEDIA_DATA_FOLDER_PATH,
+      source,
+      videoId!,
+      videoId + '.info.json'
+    );
     return infoJsonPath;
   }
   return '';
@@ -31,10 +37,15 @@ function getInfoJsonPath(url: string, source: Source): string {
 
 export async function getInfoJson(
   url: string,
-  source: Source
+  source: Source,
+  refetch?: boolean
 ): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
   if (source === 'youtube-video') {
     const infoJsonPath = getInfoJsonPath(url, source);
+    if (refetch) {
+      logger.info(`Re-fetching info-json for ${url}`);
+      return await createInfoJson(url, source, infoJsonPath);
+    }
     if (await pathExists(infoJsonPath)) {
       const expireTime = await getExpireTime(infoJsonPath);
       if (new Date().toISOString() > expireTime!) {

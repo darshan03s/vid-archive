@@ -28,8 +28,8 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
   }
 
   function handleRefetchMediaInfo() {
-    // TODO
-    console.log(userEnteredUrl);
+    useMediaInfoStore.setState({ mediaInfo: {} });
+    window.api.getYoutubeVideoInfoJson(url, false, true);
   }
 
   async function handleFetchMediaInfo() {

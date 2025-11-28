@@ -41,7 +41,7 @@ export type Api = {
     url: string;
     isMediaDisplayAvailable: boolean;
   }>;
-  getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean) => void;
+  getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean, refetch?: boolean) => void;
   getUrlHistory: () => Promise<UrlHistoryList>;
   deleteFromUrlHistory: (id: string) => Promise<void>;
   deleteFromDownloadsHistory: (id: string) => Promise<void>;

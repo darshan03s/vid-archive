@@ -104,7 +104,7 @@ export function getSourceFromUrl(url: string): Source | null {
   return null;
 }
 
-function getYouTubeVideoId(url: string): string | null {
+export function getYouTubeVideoId(url: string): string | null {
   try {
     const parsed = new URL(url);
     if (parsed.hostname === 'youtu.be') {

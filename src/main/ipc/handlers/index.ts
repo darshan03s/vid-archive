@@ -218,7 +218,8 @@ let fetchingInfoJsonForUrls: string[] = [];
 export async function getYoutubeVideoInfoJson(
   _event: IpcMainEvent,
   url: string,
-  updateUrlHistory: boolean
+  updateUrlHistory: boolean,
+  refetch?: boolean
 ) {
   if (fetchingInfoJsonForUrls.includes(url)) {
     return;
@@ -228,7 +229,8 @@ export async function getYoutubeVideoInfoJson(
   fetchingInfoJsonForUrls.push(url);
   const infoJson = (await getInfoJson(
     url,
-    'youtube-video' as Source
+    'youtube-video' as Source,
+    refetch
   )) as YoutubeVideoInfoJson | null;
   if (infoJson) {
     logger.info(`Fetched info json for ${url}`);

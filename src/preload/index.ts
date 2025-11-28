@@ -12,8 +12,8 @@ const api: Api = {
   downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download'),
   downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download'),
   checkUrl: (url: string) => ipcRenderer.invoke('check-url', url),
-  getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean) =>
-    ipcRenderer.send('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory),
+  getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean, refetch?: boolean) =>
+    ipcRenderer.send('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory, refetch),
   getUrlHistory: () => ipcRenderer.invoke('url-history:get-all'),
   deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id),
   deleteFromDownloadsHistory: (id: string) =>
