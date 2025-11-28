@@ -6,14 +6,7 @@ import {
   RunningDownloadsList
 } from '@/shared/types/history';
 import { Badge } from '@renderer/components/ui/badge';
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemFooter,
-  ItemMedia,
-  ItemTitle
-} from '@renderer/components/ui/item';
+import { Item, ItemContent, ItemFooter, ItemMedia, ItemTitle } from '@renderer/components/ui/item';
 import { Anchor, TooltipWrapper } from '@renderer/components/wrappers';
 import { Logo } from '@renderer/data/logo';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -187,7 +180,7 @@ const DownloadCard = ({
         </ItemMedia>
         <ItemContent className="flex flex-col gap-2 min-w-0">
           <ItemTitle className="text-xs line-clamp-1">{downloadItem.title}</ItemTitle>
-          <ItemDescription className="flex flex-col gap-1 text-xs">
+          <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-2">
               <Anchor href={downloadItem.uploader_url}>
                 <Badge variant={'outline'} className="text-[10px]">
@@ -208,14 +201,14 @@ const DownloadCard = ({
               )}
             </div>
             <div className="space-y-2">
-              <p className="line-clamp-1 text-[10px]">
+              <p className="line-clamp-1 text-[10px] text-muted-foreground">
                 {progressDetails?.progressString ?? downloadItem.download_progress_string}
               </p>
               <ProgressBar
                 value={progressDetails?.progressPercentage ?? downloadItem.download_progress}
               />
             </div>
-          </ItemDescription>
+          </div>
         </ItemContent>
         <ItemFooter className="downloads-history-item-footer w-full">
           <div className="downloads-history-item-footer-left flex items-center gap-3">
