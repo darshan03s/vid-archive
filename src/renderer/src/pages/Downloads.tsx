@@ -240,6 +240,7 @@ const DownloadCard = ({
           <div className="downloads-history-item-footer-right">
             <TooltipWrapper message={`Delete from history`}>
               <Button
+                disabled={downloadItem.download_status === 'downloading'}
                 onClick={() => handleDownloadsHistoryItemDelete(downloadItem.id)}
                 variant={'ghost'}
                 size={'icon-sm'}
