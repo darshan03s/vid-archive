@@ -1,5 +1,5 @@
-appId: com.ytdlpui
-productName: ytdlp-ui
+appId: com.ytdlpdesk.app
+productName: yt-dlp Desk
 directories:
   buildResources: build
 files:
@@ -18,7 +18,7 @@ asarUnpack:
   - node_modules/better-sqlite3/**
   - node_modules/7zip-min/**/*
 win:
-  executableName: ytdlp-ui
+  executableName: yt-dlp Desk
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

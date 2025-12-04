@@ -37,7 +37,7 @@ const Titlebar = () => {
         </div>
       </div>
       <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-mono">
-        ytdlp-ui
+        yt-dlp Desk
       </div>
       <div className="titlebar-right flex items-center">
         <button

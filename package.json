@@ -1,8 +1,8 @@
 {
-  "name": "ytdlp-ui",
+  "name": "yt-dlp-desk",
   "version": "0.7.0",
   "author": "Darshan S",
-  "description": "A UI for yt-dlp",
+  "description": "A Desktop UI for yt-dlp",
   "main": "./out/main/index.js",
   "scripts": {
     "format": "prettier --write .",
@@ -11,7 +11,7 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",
     "start": "electron-vite preview",
-    "start:win-unpack": "bash -c ./dist/win-unpacked/ytdlp-ui.exe",
+    "start:win-unpack": "bash -c \"./dist/win-unpacked/yt-dlp\\ Desk.exe\"",
     "start:win-unpack:nopath": "bash ./shell-scripts/start-win-unpack-nopath.sh",
     "dev": "electron-vite dev",
     "dev:nopath": "bash ./shell-scripts/dev-nopath.sh",
