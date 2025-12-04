@@ -1,4 +1,5 @@
 export function formatDate(input: string): string {
+  if (input.length === 0) return '';
   const year = input.slice(0, 4);
   const monthNum = Number(input.slice(4, 6));
   const day = input.slice(6, 8);

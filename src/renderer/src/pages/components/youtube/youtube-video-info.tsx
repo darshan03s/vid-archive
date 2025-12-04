@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { YoutubeFormat, YoutubeVideoInfoJson } from '@/shared/types/info-json/youtube-video';
 import { toast } from 'sonner';
-import { Spinner } from '@renderer/components/ui/spinner';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { useSearchParams } from 'react-router-dom';
 import { updateUrlHistoryInStore } from '../url-history';
@@ -101,7 +100,7 @@ const Preview = ({
   return (
     <div className="w-full h-60 bg-black flex items-center justify-center">
       {loading ? (
-        <Spinner className="text-white" />
+        <div className="w-[420px] aspect-video bg-secondary animate-fast" />
       ) : (
         <div className="relative">
           <img src={previewUrl} alt="Preview" width={420} className="aspect-video" />
@@ -130,22 +129,28 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
             onClick={() => setIsMoreDetailsModalOpen(true)}
             className="text-xs border bg-secondary text-secondary-foreground h-10 px-2 rounded-md cursor-pointer flex items-center"
           >
-            <p className="text-xs leading-5 line-clamp-1">{infoJson.fulltitle}</p>
+            <p className="text-xs leading-5 line-clamp-1">
+              {infoJson.fulltitle ?? infoJson.title ?? 'N/A'}
+            </p>
           </div>
         )}
-        <div className="flex items-center justify-between">
+        <div className="py-1 flex items-center justify-between">
           {!isInfoJsonEmpty ? (
-            <div className="flex items-center gap-1 flex-1">
-              <span className="text-xs inline-flex items-center gap-1">
-                {infoJson.channel_is_verified ? <IconCircleCheckFilled className="size-3" /> : null}
-                {infoJson.uploader}
-              </span>
-              {' | '}
-              <span className="text-xs inline-flex items-center gap-1">
-                <IconClockHour3Filled className="size-3" />
-                {formatDate(infoJson.upload_date)}
-              </span>
-              {' | '}
+            <div className="flex items-center gap-2 flex-1">
+              {infoJson.uploader && (
+                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                  {infoJson.channel_is_verified ? (
+                    <IconCircleCheckFilled className="size-3" />
+                  ) : null}
+                  {infoJson.uploader}
+                </span>
+              )}
+              {infoJson.upload_date && (
+                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                  <IconClockHour3Filled className="size-3" />
+                  {formatDate(infoJson.upload_date || '')}
+                </span>
+              )}
               <span className="text-xs inline-flex items-center gap-1">
                 <LiveStatus infoJson={infoJson} />
               </span>
@@ -181,6 +186,18 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
       )}
     </>
   );
+};
+
+const LiveStatus = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
+  if (infoJson.was_live) {
+    return (
+      <span className="bg-red-500 text-white text-[12px] px-2 py-0.5 rounded-full">Was Live</span>
+    );
+  } else if (infoJson.is_live) {
+    return (
+      <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">Live Now</span>
+    );
+  } else return null;
 };
 
 const DownloadButton = ({ loading }: { loading: boolean }) => {
@@ -231,112 +248,11 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
     <Button
       disabled={loading}
       onClick={handleDownload}
-      className="text-xs h-6 px-1 flex items-center gap-1"
+      className="text-xs h-6 px-1 flex items-center gap-1 rounded-full"
     >
-      <IconArrowDown className="size-4" /> Download
+      <IconArrowDown className="size-4" />
+      Download
     </Button>
-  );
-};
-
-const LiveStatus = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
-  if (infoJson.was_live) {
-    return (
-      <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-md mt-1">
-        Was Live
-      </span>
-    );
-  } else if (infoJson.is_live) {
-    return (
-      <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-md mt-1">
-        Live Now
-      </span>
-    );
-  } else return null;
-};
-
-const DownloadLocation = ({ loading }: { loading: boolean }) => {
-  const downloadsFolderFromSettings = useSettingsStore((state) => state.downloadsFolder);
-  const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
-
-  useEffect(() => {
-    useSelectedOptionsStore.setState({ selectedDownloadFolder: downloadsFolderFromSettings });
-  }, []);
-
-  async function pickFolder() {
-    const path = await window.api.selectFolder();
-    if (path) {
-      useSelectedOptionsStore.setState({ selectedDownloadFolder: path });
-    }
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      <Input disabled type="text" className="text-xs" value={selectedDownloadFolder} />
-      <Button
-        variant={'outline'}
-        onClick={pickFolder}
-        disabled={loading}
-        title="Select download folder"
-      >
-        <IconFolder />
-      </Button>
-    </div>
-  );
-};
-
-const DownloadSections = ({ loading }: { loading: boolean }) => {
-  const downloadSections = useSelectedOptionsStore((state) => state.downloadSections);
-  const setDownloadSections = useSelectedOptionsStore((state) => state.setDownloadSections);
-
-  useEffect(() => {
-    setDownloadSections({ startTime: '', endTime: '', forceKeyframesAtCuts: false });
-  }, []);
-
-  function handleStarttime(e: React.ChangeEvent<HTMLInputElement>) {
-    setDownloadSections({ startTime: e.currentTarget.value });
-  }
-
-  function handleEndtime(e: React.ChangeEvent<HTMLInputElement>) {
-    setDownloadSections({ endTime: e.currentTarget.value });
-  }
-
-  function handleToggle(pressed: boolean) {
-    setDownloadSections({ forceKeyframesAtCuts: pressed });
-  }
-
-  console.log({ downloadSections });
-
-  return (
-    <div className="flex items-center gap-2">
-      <Input
-        disabled={loading}
-        type="text"
-        placeholder="Start Time (HH:MM:SS)"
-        value={downloadSections.startTime}
-        onChange={handleStarttime}
-        className="text-xs h-8"
-      />
-      <Input
-        disabled={loading}
-        type="text"
-        placeholder="End Time (HH:MM:SS)"
-        value={downloadSections.endTime}
-        onChange={handleEndtime}
-        className="text-xs h-8"
-      />
-      <Toggle
-        disabled={loading}
-        title="Force keyframes at cuts"
-        pressed={downloadSections.forceKeyframesAtCuts}
-        onPressedChange={handleToggle}
-        aria-label="Toggle bookmark"
-        size="sm"
-        variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-primary data-[state=on]:*:[svg]:stroke-primary"
-      >
-        <IconKeyframes />
-      </Toggle>
-    </div>
   );
 };
 
@@ -345,17 +261,17 @@ const Formats = ({ infoJson, loading }: { infoJson: YoutubeVideoInfoJson; loadin
   const setSelectedFormat = useSelectedOptionsStore((state) => state.setSelectedFormat);
   const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
   const defaultFormat: SelectedFormat = {
-    vcodec: infoJson.vcodec,
-    acodec: infoJson.acodec,
-    ext: infoJson.ext,
-    filesize_approx: infoJson.filesize_approx,
-    fps: infoJson.fps,
-    format: infoJson.format,
-    format_id: infoJson.format_id,
-    format_note: infoJson.format_note,
-    height: infoJson.height,
-    width: infoJson.width,
-    resolution: infoJson.resolution
+    vcodec: infoJson.vcodec ?? 'N/A',
+    acodec: infoJson.acodec ?? 'N/A',
+    ext: infoJson.ext ?? 'N/A',
+    filesize_approx: infoJson.filesize_approx ?? 0,
+    fps: infoJson.fps ?? 0,
+    format: infoJson.format ?? 'N/A',
+    format_id: infoJson.format_id ?? 'N/A',
+    format_note: infoJson.format_note ?? 'N/A',
+    height: infoJson.height ?? 0,
+    width: infoJson.width ?? 0,
+    resolution: infoJson.resolution ?? 'N/A'
   };
   useEffect(() => {
     setSelectedFormat(defaultFormat);
@@ -368,34 +284,38 @@ const Formats = ({ infoJson, loading }: { infoJson: YoutubeVideoInfoJson; loadin
           className={`relative border px-1 h-16 rounded-md w-full bg-secondary ${loading ? 'animate-fast' : ''}`}
         ></div>
       ) : (
-        <div
-          onClick={() => setIsAllFormatsModalOpen(true)}
-          className="selected-format relative border px-1 h-16 rounded-md w-full bg-secondary flex items-center gap-2 cursor-pointer"
-        >
-          <div className="selected-format-left p-1 flex items-center">
-            <span className="bg-primary text-primary-foreground text-xs p-2 rounded-md">
-              {selectedFormat.ext || defaultFormat.ext}
-            </span>
-          </div>
-          <div className="selected-format-right flex flex-col">
-            <span>{selectedFormat.resolution || defaultFormat.resolution}</span>
-            <span className="text-[10px]">{selectedFormat.format || defaultFormat.format}</span>
-            <div className="text-[10px] flex items-center gap-2">
-              <span>fps: {selectedFormat.fps || defaultFormat.fps}</span>
-              <span>vcodec: {vcodec(selectedFormat.vcodec || defaultFormat.vcodec)}</span>
-              <span>acodec: {acodec(selectedFormat.acodec || defaultFormat.acodec)}</span>
-              <span>
-                Filesize≈{' '}
-                {formatFileSize(selectedFormat.filesize_approx! || defaultFormat.filesize_approx!)}
+        infoJson.formats && (
+          <div
+            onClick={() => setIsAllFormatsModalOpen(true)}
+            className="selected-format relative border px-1 h-16 rounded-md w-full bg-secondary flex items-center gap-2 cursor-pointer"
+          >
+            <div className="selected-format-left p-1 flex items-center">
+              <span className="bg-primary text-primary-foreground text-xs p-2 rounded-md">
+                {selectedFormat.ext || defaultFormat.ext}
               </span>
             </div>
+            <div className="selected-format-right flex flex-col">
+              <span>{selectedFormat.resolution || defaultFormat.resolution}</span>
+              <span className="text-[10px]">{selectedFormat.format || defaultFormat.format}</span>
+              <div className="text-[10px] flex items-center gap-2">
+                <span>fps: {selectedFormat.fps || defaultFormat.fps}</span>
+                <span>vcodec: {vcodec(selectedFormat.vcodec || defaultFormat.vcodec)}</span>
+                <span>acodec: {acodec(selectedFormat.acodec || defaultFormat.acodec)}</span>
+                <span>
+                  Filesize≈{' '}
+                  {formatFileSize(
+                    selectedFormat.filesize_approx! || defaultFormat.filesize_approx!
+                  )}
+                </span>
+              </div>
+            </div>
+            <span className="absolute right-0 top-0 text-[10px] bg-primary/30 px-2 py-0.5 rounded-tr-md rounded-bl-md">
+              Selected Format
+            </span>
           </div>
-          <span className="absolute right-0 top-0 text-[10px] bg-primary/30 px-2 py-0.5 rounded-tr-md rounded-bl-md">
-            Selected Format
-          </span>
-        </div>
+        )
       )}
-      {!loading && (
+      {!loading && infoJson.formats.length > 0 && (
         <AllFormatsModal
           open={isAllFormatsModalOpen}
           setOpen={setIsAllFormatsModalOpen}
@@ -466,21 +386,22 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
   const [selectedFilter, setSelectedFilter] = useState<FormatFilter>('all');
 
   const Format = ({ format }: { format: YoutubeFormat | SelectedFormat }) => {
-    const setSelectedOptions = useSelectedOptionsStore((state) => state.setSelectedFormat);
+    const setSelectedFormat = useSelectedOptionsStore((state) => state.setSelectedFormat);
     const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
+
     function handleFormatSelect() {
-      setSelectedOptions({
-        vcodec: format.vcodec,
-        acodec: format.acodec,
-        ext: format.ext,
-        filesize_approx: format.filesize_approx,
-        fps: format.fps,
-        format: format.format,
-        format_id: format.format_id,
-        format_note: format.format_note,
-        height: format.height,
-        width: format.width,
-        resolution: format.resolution
+      setSelectedFormat({
+        vcodec: format.vcodec ?? 'N/A',
+        acodec: format.acodec ?? 'N/A',
+        ext: format.ext ?? 'N/A',
+        filesize_approx: format.filesize_approx ?? 0,
+        fps: format.fps ?? 0,
+        format: format.format ?? 'N/A',
+        format_id: format.format_id ?? 'N/A',
+        format_note: format.format_note ?? 'N/A',
+        height: format.height ?? 0,
+        width: format.width ?? 0,
+        resolution: format.resolution ?? 'N/A'
       });
     }
 
@@ -491,18 +412,18 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
       >
         <div className="selected-format-left p-1 flex items-center">
           <span className="bg-primary text-primary-foreground text-xs p-2 rounded-md">
-            {format.ext}
+            {format.ext ?? 'N/A'}
           </span>
         </div>
         <div className="selected-format-right flex flex-col">
-          <span>{format.resolution}</span>
-          <span className="text-[10px]">{format.format}</span>
+          <span>{format.resolution ?? 'N/A'}</span>
+          <span className="text-[10px]">{format.format ?? 'N/A'}</span>
           <div className="text-[10px] flex items-center gap-2">
-            <span>fps: {format.fps}</span>
+            <span>fps: {format.fps ?? 'N/A'}</span>
             <span>vcodec: {vcodec(format.vcodec)}</span>
             <span>acodec: {acodec(format.acodec)}</span>
             <span>
-              Filesize≈ {format.filesize_approx ? formatFileSize(format.filesize_approx) : ''}
+              Filesize≈ {format.filesize_approx ? formatFileSize(format.filesize_approx) : 'N/A'}
             </span>
           </div>
         </div>
@@ -533,7 +454,7 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
               onClick={() => setSelectedFilter(formatFilter as FormatFilter)}
               size={'sm'}
               variant={'secondary'}
-              className={`text-xs border-none shadow-none outline-none ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=on]:outline-none data-[state=on]:ring-0 ${formatFilter === selectedFilter ? 'bg-primary text-primary-foreground' : ''}`}
+              className={`text-xs border-none shadow-none outline-none ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=on]:outline-none data-[state=on]:ring-0 ${formatFilter === selectedFilter ? 'hover:bg-primary text-primary-foreground' : ''} ${formatFilter === selectedFilter ? 'bg-primary text-primary-foreground' : ''}`}
             >
               {formatFiltersObj[formatFilter]}
             </Button>
@@ -546,6 +467,90 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
         </div>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const DownloadSections = ({ loading }: { loading: boolean }) => {
+  const downloadSections = useSelectedOptionsStore((state) => state.downloadSections);
+  const setDownloadSections = useSelectedOptionsStore((state) => state.setDownloadSections);
+
+  useEffect(() => {
+    setDownloadSections({ startTime: '', endTime: '', forceKeyframesAtCuts: false });
+  }, []);
+
+  function handleStarttime(e: React.ChangeEvent<HTMLInputElement>) {
+    setDownloadSections({ startTime: e.currentTarget.value });
+  }
+
+  function handleEndtime(e: React.ChangeEvent<HTMLInputElement>) {
+    setDownloadSections({ endTime: e.currentTarget.value });
+  }
+
+  function handleToggle(pressed: boolean) {
+    setDownloadSections({ forceKeyframesAtCuts: pressed });
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Input
+        disabled={loading}
+        type="text"
+        placeholder="Start Time (HH:MM:SS)"
+        value={downloadSections.startTime}
+        onChange={handleStarttime}
+        className="text-xs h-8"
+      />
+      <Input
+        disabled={loading}
+        type="text"
+        placeholder="End Time (HH:MM:SS)"
+        value={downloadSections.endTime}
+        onChange={handleEndtime}
+        className="text-xs h-8"
+      />
+      <Toggle
+        disabled={loading}
+        title="Force keyframes at cuts"
+        pressed={downloadSections.forceKeyframesAtCuts}
+        onPressedChange={handleToggle}
+        aria-label="Toggle bookmark"
+        size="sm"
+        variant="outline"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-primary data-[state=on]:*:[svg]:stroke-primary"
+      >
+        <IconKeyframes />
+      </Toggle>
+    </div>
+  );
+};
+
+const DownloadLocation = ({ loading }: { loading: boolean }) => {
+  const downloadsFolderFromSettings = useSettingsStore((state) => state.downloadsFolder);
+  const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
+
+  useEffect(() => {
+    useSelectedOptionsStore.setState({ selectedDownloadFolder: downloadsFolderFromSettings });
+  }, []);
+
+  async function pickFolder() {
+    const path = await window.api.selectFolder();
+    if (path) {
+      useSelectedOptionsStore.setState({ selectedDownloadFolder: path });
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Input disabled type="text" className="text-xs" value={selectedDownloadFolder} />
+      <Button
+        variant={'outline'}
+        onClick={pickFolder}
+        disabled={loading}
+        title="Select download folder"
+      >
+        <IconFolder />
+      </Button>
+    </div>
   );
 };
 
@@ -565,30 +570,33 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
         </DialogHeader>
         <div className="w-full font-mono flex flex-col gap-2 text-xs h-70 overflow-auto">
           <div>
-            <span className="font-semibold">Title</span>: <span>{infoJson.fulltitle}</span>
+            <span className="font-semibold">Title</span>: <span>{infoJson.fulltitle || 'N/A'}</span>
           </div>
           <div>
             <span className="font-semibold">URL</span>:{' '}
-            <Anchor href={infoJson.webpage_url}>{infoJson.webpage_url}</Anchor>
+            <Anchor href={infoJson.webpage_url || ''}>{infoJson.webpage_url || 'N/A'}</Anchor>
           </div>
           <div>
             <span className="font-semibold">Duration</span>:{' '}
             <span>{infoJson.duration_string?.length === 0 ? 'N/A' : infoJson.duration_string}</span>
           </div>
           <div>
-            <span className="font-semibold">Uploader</span>: <span>{infoJson.uploader}</span>
+            <span className="font-semibold">Uploader</span>:{' '}
+            <span>{infoJson.uploader || 'N/A'}</span>
           </div>
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <Anchor href={infoJson.uploader_url}>{infoJson.uploader_url}</Anchor>
+            <Anchor href={infoJson.uploader_url || infoJson.channel_url || ''}>
+              {infoJson.uploader_url || infoJson.channel_url || 'N/A'}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Uploade Date</span>:{' '}
-            <span>{formatDate(infoJson.upload_date)}</span>
+            <span>{formatDate(infoJson.upload_date || '')}</span>
           </div>
           <div>
             <span className="font-semibold">Thumbnail</span>:{' '}
-            <Anchor href={infoJson.thumbnail}>{infoJson.thumbnail}</Anchor>
+            <Anchor href={infoJson.thumbnail || ''}>{infoJson.thumbnail || 'N/A'}</Anchor>
           </div>
           <div>
             <span className="font-semibold">Live Status</span>:{' '}
@@ -596,16 +604,18 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
           </div>
           <div>
             <span className="font-semibold">Categories</span>:{' '}
-            <span>{infoJson.categories.join(', ')}</span>
+            <span>{infoJson.categories?.join(', ')}</span>
           </div>
           <div>
-            <span className="font-semibold">Tags</span>: <span>{infoJson.tags.join(', ')}</span>
+            <span className="font-semibold">Tags</span>: <span>{infoJson.tags?.join(', ')}</span>
           </div>
           <div>
-            <span className="font-semibold">Availablity</span>: <span>{infoJson.availability}</span>
+            <span className="font-semibold">Availablity</span>:{' '}
+            <span>{infoJson.availability || 'N/A'}</span>
           </div>
           <div>
-            <span className="font-semibold">Age Limit</span>: <span>{infoJson.age_limit}</span>
+            <span className="font-semibold">Age Limit</span>:{' '}
+            <span>{infoJson.age_limit ?? 'N/A'}</span>
           </div>
           <div>
             <span className="font-semibold">Last fetched</span>:{' '}
