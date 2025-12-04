@@ -112,8 +112,6 @@ async function addCreatedAt(infoJson: YoutubeVideoInfoJson) {
 async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
   const format = infoJson.formats.find((f) => f.vcodec !== 'none' && f.url);
 
-  console.log(`Adding expires_at from ${format}`);
-
   if (!format?.url) {
     infoJson.expires_at = new Date().toISOString();
     return infoJson;
@@ -121,16 +119,21 @@ async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
 
   const url = format.url;
 
-  const expireParam = url.match(/[?&]expire=(\d+)/)?.[1];
+  // query param: ?expire=1764870570079
+  const queryMatch = url.match(/[?&]expire=(\d+)/)?.[1];
+
+  // path segment: /expire/1764870570079/
+  const pathMatch = url.match(/\/expire\/(\d+)/)?.[1];
+
+  const expireParam = queryMatch ?? pathMatch;
 
   if (!expireParam) {
-    infoJson.expires_at = new Date().toISOString();
+    // default 15 min
+    infoJson.expires_at = new Date(Date.now() + 1000 * 60 * 15).toISOString();
     return infoJson;
   }
 
-  const expireIso = new Date(Number(expireParam) * 1000).toISOString();
-  infoJson.expires_at = expireIso;
-
+  infoJson.expires_at = new Date(Number(expireParam) * 1000).toISOString();
   return infoJson;
 }
 
@@ -199,10 +202,22 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       jsRuntimePath,
       '--load-info-json',
       infoJsonPath,
-      '-f',
-      formatId.includes('+') ? formatId : formatId.concat('+ba'),
       '--newline'
     ];
+
+    // format downloads both video and audio
+    if (selectedFormat.acodec) {
+      downloadCommandArgs.push('-f');
+      downloadCommandArgs.push(formatId);
+    }
+    // format does not download audio
+    else if (!selectedFormat.acodec && !formatId.includes('+')) {
+      downloadCommandArgs.push('-f');
+      downloadCommandArgs.push(formatId + '+ba');
+    } else {
+      downloadCommandArgs.push('-f');
+      downloadCommandArgs.push(formatId);
+    }
 
     // force-keyframes-at-cuts
     if (downloadSections.forceKeyframesAtCuts) {
@@ -258,16 +273,16 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
 
     const newDownload: NewDownloadsHistoryItem = {
       id: downloadOptions.downloadId,
-      thumbnail: mediaInfo.thumbnail,
-      title: mediaInfo.fulltitle,
+      thumbnail: mediaInfo.thumbnail ?? '',
+      title: mediaInfo.fulltitle ?? mediaInfo.title ?? 'N/A',
       url: url,
       source: source,
       thumbnail_local: mediaInfo.thumbnail_local || '',
-      uploader: mediaInfo.uploader,
-      uploader_url: mediaInfo.uploader_url ?? mediaInfo.channel_url,
+      uploader: mediaInfo.uploader ?? mediaInfo.channel ?? 'N/A',
+      uploader_url: mediaInfo.uploader_url ?? mediaInfo.channel_url ?? '',
       start_time: downloadSections.startTime,
       end_time: downloadSections.endTime,
-      duration: mediaInfo.duration_string,
+      duration: mediaInfo.duration_string ?? 'N/A',
       download_progress: 0,
       download_progress_string: '',
       command: completeCommand,

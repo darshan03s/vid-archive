@@ -195,7 +195,7 @@ const LiveStatus = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
     );
   } else if (infoJson.is_live) {
     return (
-      <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">Live Now</span>
+      <span className="bg-red-500 text-white text-[12px] px-2 py-0.5 rounded-full">Live Now</span>
     );
   } else return null;
 };
@@ -340,7 +340,10 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
     .filter((format) => format.acodec !== 'none' && format.vcodec === 'none')
     .reverse();
   const allFormats: (YoutubeFormat | SelectedFormat)[] = [...videoFormats, ...audioFormats];
-  allFormats.unshift(defaultFormat);
+  const isDefaultFormatPresent = allFormats.some((f) => f.format_id === defaultFormat.format_id);
+  if (!isDefaultFormatPresent) {
+    allFormats.unshift(defaultFormat);
+  }
   const videoAndAudioFormats = formats
     .filter((format) => format.vcodec !== 'none' && format.acodec !== 'none')
     .reverse();
