@@ -269,20 +269,15 @@ const DownloadLocation = ({ loading }: { loading: boolean }) => {
     }
   }
 
-  function handleDownloadFolderInput(e: React.ChangeEvent<HTMLInputElement>) {
-    useSelectedOptionsStore.setState({ selectedDownloadFolder: e.target.value });
-  }
-
   return (
     <div className="flex items-center gap-2">
-      <Input
+      <Input disabled type="text" className="text-xs" value={selectedDownloadFolder} />
+      <Button
+        variant={'outline'}
+        onClick={pickFolder}
         disabled={loading}
-        onChange={handleDownloadFolderInput}
-        type="text"
-        className="text-xs"
-        value={selectedDownloadFolder}
-      />
-      <Button variant={'outline'} onClick={pickFolder} disabled={loading}>
+        title="Select download folder"
+      >
         <IconFolder />
       </Button>
     </div>

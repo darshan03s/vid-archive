@@ -14,7 +14,13 @@ export type AppSettings = {
   userDownloadsFolder: string;
   jsRuntimePath: string;
   downloadTemplate: string;
+  alwaysUsePreviousDownloadsFolder: boolean;
 };
+
+export type AppSettingsChange = Pick<
+  AppSettings,
+  'downloadsFolder' | 'alwaysUsePreviousDownloadsFolder'
+>;
 
 export type Source = (typeof allowedSources)[number];
 
@@ -53,4 +59,5 @@ export type Api = {
   getRunningDownloads: () => Promise<RunningDownloadsList>;
   getDownloadsHistory: () => Promise<DownloadsHistoryList>;
   selectFolder: () => Promise<string | null>;
+  saveSettings: (changedSettings: AppSettingsChange) => void;
 };

@@ -22,7 +22,7 @@ import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fsUtils';
 import { downloadFromYtdlp, getInfoJson } from '@main/utils/ytdlpUtils';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
-import { Api, Source } from '@shared/types';
+import { Api, AppSettingsChange, Source } from '@shared/types';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import SevenZip from '7zip-min';
 import path from 'node:path';
@@ -327,4 +327,11 @@ export async function selectFolder() {
   }
 
   return result.filePaths[0];
+}
+
+export async function saveSettings(_event: IpcMainEvent, changedSettings: AppSettingsChange) {
+  const store = await getStoreManager();
+  store.update(changedSettings);
+  const settings = store.getAll();
+  mainWindow.webContents.send('settings:updated', settings);
 }

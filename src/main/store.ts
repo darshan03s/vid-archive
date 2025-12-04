@@ -1,6 +1,6 @@
 import ElectronStore from 'electron-store';
 import { DATA_DIR } from '.';
-import { AppSettings } from '@shared/types';
+import { AppSettings, AppSettingsChange } from '@shared/types';
 
 class StoreManager {
   static instancePromise: Promise<StoreManager> | null = null;
@@ -45,6 +45,10 @@ class StoreManager {
   }
 
   setAll(values: AppSettings) {
+    this.store!.set(values);
+  }
+
+  update(values: AppSettingsChange) {
     this.store!.set(values);
   }
 }

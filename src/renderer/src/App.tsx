@@ -19,6 +19,17 @@ const App = () => {
   const setSettings = useSettingsStore((state) => state.setSettings);
 
   useEffect(() => {
+    const unsubscribe = window.api.on('settings:updated', (updatedSettings) => {
+      setSettings(updatedSettings as AppSettings);
+      logger.info('Settings Updated');
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     window.api.rendererInit().then((settings: AppSettings | null) => {
       setLoadingFromSettings(false);
 

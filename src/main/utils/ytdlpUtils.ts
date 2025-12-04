@@ -1,15 +1,8 @@
 import { spawn } from 'node:child_process';
-import { MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
+import { mainWindow, MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
-import {
-  downloadFile,
-  makeDirs,
-  pathExists,
-  readJson,
-  sanitizeFileName,
-  writeJson
-} from './fsUtils';
+import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
 import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
@@ -246,10 +239,19 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     // output filename
     targetDownloadFileName = targetDownloadFileName + '.%(ext)s';
     targetDownloadFileName = sanitizeFileName(targetDownloadFileName, '_');
-    makeDirs(selectedDownloadFolder);
     const targetDownloadFilePath = path.join(selectedDownloadFolder, targetDownloadFileName);
     downloadCommandArgs.push('-o', targetDownloadFilePath);
     const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
+
+    if (store.get('alwaysUsePreviousDownloadsFolder')) {
+      const currentDownloadsFolder = store.get('downloadsFolder');
+      if (currentDownloadsFolder !== selectedDownloadFolder) {
+        store.set('downloadsFolder', selectedDownloadFolder);
+        const updatedSettings = store.getAll();
+        mainWindow.webContents.send('settings:updated', updatedSettings);
+      }
+    }
+
     logger.info(`Starting download for ${downloadOptions.url}\nCommand: ${completeCommand}`);
 
     const downloadManager = DownloadManager.getInstance();

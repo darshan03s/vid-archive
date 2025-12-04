@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import logger from '@shared/logger';
-import { type Api } from '@shared/types';
+import { AppSettingsChange, type Api } from '@shared/types';
 import { DownloadOptions } from '@shared/types/download';
 
 // Custom APIs for renderer
@@ -31,7 +31,9 @@ const api: Api = {
   },
   getRunningDownloads: () => ipcRenderer.invoke('running-downloads:get-all'),
   getDownloadsHistory: () => ipcRenderer.invoke('downloads-history:get-all'),
-  selectFolder: () => ipcRenderer.invoke('select-folder')
+  selectFolder: () => ipcRenderer.invoke('select-folder'),
+  saveSettings: (changedSettings: AppSettingsChange) =>
+    ipcRenderer.send('settings:save', changedSettings)
 };
 
 if (process.contextIsolated) {

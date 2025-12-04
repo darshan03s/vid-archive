@@ -15,7 +15,8 @@ import {
   getDownloadsHistory,
   selectFolder,
   deleteOneFromDownloadsHistory,
-  deleteAllFromDownloadsHistory
+  deleteAllFromDownloadsHistory,
+  saveSettings
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -54,6 +55,8 @@ async function registerHanlders() {
   ipcMain.handle('downloads-history:get-all', getDownloadsHistory);
 
   ipcMain.handle('select-folder', selectFolder);
+
+  ipcMain.on('settings:save', saveSettings);
 }
 
 export default registerHanlders;
