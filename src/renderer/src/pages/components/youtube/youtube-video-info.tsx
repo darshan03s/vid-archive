@@ -168,9 +168,11 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
           <Formats infoJson={infoJson} loading={isInfoJsonEmpty} />
         </div>
 
-        <div className="download-sections">
-          <DownloadSections loading={isInfoJsonEmpty} />
-        </div>
+        {!infoJson.is_live && (
+          <div className="download-sections">
+            <DownloadSections loading={isInfoJsonEmpty} />
+          </div>
+        )}
 
         <div className="download-location">
           <DownloadLocation loading={isInfoJsonEmpty} />
