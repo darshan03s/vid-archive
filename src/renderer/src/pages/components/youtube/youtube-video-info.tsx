@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { YoutubeFormat, YoutubeVideoInfoJson } from '@/shared/types/info-json/youtube-video';
+import {
+  LiveFromStartFormats,
+  YoutubeFormat,
+  YoutubeVideoInfoJson
+} from '@/shared/types/info-json/youtube-video';
 import { toast } from 'sonner';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { useSearchParams } from 'react-router-dom';
@@ -345,6 +349,7 @@ const Formats = ({ infoJson, loading }: { infoJson: YoutubeVideoInfoJson; loadin
           open={isAllFormatsModalOpen}
           setOpen={setIsAllFormatsModalOpen}
           formats={infoJson.formats}
+          liveFromStartFormats={infoJson.live_from_start_formats ?? []}
           defaultFormat={defaultFormat}
         />
       )}
@@ -354,12 +359,19 @@ const Formats = ({ infoJson, loading }: { infoJson: YoutubeVideoInfoJson; loadin
 
 interface AllFormatsModalProps {
   formats: YoutubeVideoInfoJson['formats'];
+  liveFromStartFormats: LiveFromStartFormats[];
   defaultFormat: SelectedFormat;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsModalProps) => {
+const AllFormatsModal = ({
+  formats,
+  liveFromStartFormats,
+  defaultFormat,
+  open,
+  setOpen
+}: AllFormatsModalProps) => {
   const videoFormats = formats.filter((format) => format.vcodec !== 'none').reverse();
   const audioFormats = formats
     .filter((format) => format.acodec !== 'none' && format.vcodec === 'none')
@@ -379,6 +391,7 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
   const avc1Formats = formats.filter((format) => format.vcodec.includes('avc1')).reverse();
   const opusFormats = formats.filter((format) => format.acodec.includes('opus')).reverse();
   const mp4aFormats = formats.filter((format) => format.acodec.includes('mp4a')).reverse();
+  const reversedLiveFormats = [...liveFromStartFormats].reverse();
 
   const formatFiltersObj = {
     all: 'All',
@@ -393,6 +406,10 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
     opus: 'Audio: opus',
     mp4a: 'Audio: mp4a'
   };
+
+  if (liveFromStartFormats.length > 0) {
+    formatFiltersObj['liveFromStart'] = 'Live from start';
+  }
 
   const formatFilters = Object.keys(formatFiltersObj);
   type FormatFilter = keyof typeof formatFiltersObj;
@@ -410,6 +427,10 @@ const AllFormatsModal = ({ formats, defaultFormat, open, setOpen }: AllFormatsMo
     opus: opusFormats,
     mp4a: mp4aFormats
   };
+
+  if (liveFromStartFormats.length > 0) {
+    formatMap['liveFromStart'] = reversedLiveFormats;
+  }
 
   const [selectedFilter, setSelectedFilter] = useState<FormatFilter>('all');
 

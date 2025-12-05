@@ -1,7 +1,18 @@
+export type LiveFromStartFormats = {
+  format_id: string;
+  format: string;
+  ext: string;
+  resolution: string;
+  fps: number;
+  vcodec: string;
+  acodec: string;
+};
+
 interface Extra {
   created_at: string;
   expires_at?: string;
   thumbnail_local?: string;
+  live_from_start_formats: LiveFromStartFormats[];
 }
 
 export interface YoutubeVideoInfoJson extends Extra {

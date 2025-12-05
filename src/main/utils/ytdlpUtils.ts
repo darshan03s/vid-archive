@@ -3,7 +3,7 @@ import { mainWindow, MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
 import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
-import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
+import { LiveFromStartFormats, YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import { Source } from '@shared/types';
 import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
 import logger from '@shared/logger';
@@ -93,6 +93,9 @@ export async function createInfoJson(
         infoJson = await addExpiresAt(infoJson);
         infoJson = await downloadThumbnail(infoJson);
         infoJson = await writeDescription(infoJson);
+        if (infoJson.is_live) {
+          infoJson = await addLiveFromStartFormats(url, infoJson);
+        }
 
         await writeJson(infoJsonPath, infoJson);
 
@@ -102,6 +105,91 @@ export async function createInfoJson(
       resolve(null);
     });
   });
+}
+
+async function addLiveFromStartFormats(url, infoJson: YoutubeVideoInfoJson) {
+  const store = await getStoreManager();
+  const jsRuntimePath = `quickjs:${store.get('jsRuntimePath')}`;
+  const baseCommand = YTDLP_EXE_PATH;
+  const args = ['--js-runtimes', jsRuntimePath, '-F', url, '--live-from-start'];
+
+  return new Promise<YoutubeVideoInfoJson>((resolve) => {
+    let formatsString: string;
+    const child = spawn(baseCommand, args);
+
+    child.stdout.on('data', (data) => {
+      const line = data.toString() as string;
+      if (line.includes('Available formats')) {
+        formatsString = line;
+      }
+    });
+
+    child.on('close', async (code) => {
+      if (code === 0) {
+        if (formatsString.length === 0) {
+          infoJson.live_from_start_formats = [];
+          logger.error(`Live from start formats not found`);
+          return resolve(infoJson);
+        }
+        const parsedFormats = await parseLiveFromStartFormatsString(formatsString);
+        infoJson.live_from_start_formats = parsedFormats;
+        logger.info(`Added live from start formats`);
+        return resolve(infoJson);
+      } else {
+        infoJson.live_from_start_formats = [];
+        logger.error(`Something went wrong while adding live from start formats`);
+        resolve(infoJson);
+      }
+    });
+  });
+}
+
+async function parseLiveFromStartFormatsString(formatsString: string) {
+  const lines = formatsString.split('\n').slice(3);
+  const parsedFormats: LiveFromStartFormats[] = [];
+
+  for (const line of lines) {
+    if (!line.trim()) continue;
+
+    const parts = line.split('|').map((p) => p.trim());
+    if (parts.length < 3) continue;
+
+    const left = parts[0].split(/\s+/);
+    const format_id = left[0];
+    const ext = left[1];
+    let resolution = left[2] ?? 'unknown';
+    resolution = resolution === 'audio' ? 'audio only' : resolution;
+    const fps = Number(left[3]) || 0;
+
+    const right = parts[2].split(/\s+/);
+
+    let vcodec = right[0] ?? 'none';
+    vcodec = vcodec.includes('audio') ? 'none' : vcodec;
+
+    let acodec = 'none';
+
+    for (const token of right) {
+      if (/mp4a/.test(token)) {
+        acodec = token;
+        break;
+      }
+      if (token === 'audio') acodec = 'audio only';
+      if (token === 'video') acodec = 'none';
+      if (token === 'only' && acodec.endsWith(' ')) acodec += 'only';
+    }
+
+    parsedFormats.push({
+      format_id,
+      format: `${format_id} - ${resolution}`,
+      ext,
+      resolution,
+      fps,
+      vcodec,
+      acodec
+    });
+  }
+
+  return parsedFormats;
 }
 
 async function addCreatedAt(infoJson: YoutubeVideoInfoJson) {
