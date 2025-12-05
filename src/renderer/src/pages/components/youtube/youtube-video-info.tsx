@@ -91,7 +91,7 @@ const YoutubeVideoInfo = ({ url }: YoutubeVideoInfoProps) => {
         infoJson={infoJson}
         url={url}
       />
-      <div className="p-2">
+      <div className="p-2 pb-8">
         <Details infoJson={infoJson} />
       </div>
     </div>
@@ -184,16 +184,18 @@ const Details = ({ infoJson }: { infoJson: YoutubeVideoInfoJson }) => {
         </div>
 
         {!infoJson.is_live && (
-          <div className="download-sections">
+          <div className="download-sections pt-2">
+            <h1 className="text-xs border-border border-b mb-2 pb-1">Download Sections</h1>
             <DownloadSections loading={isInfoJsonEmpty} />
           </div>
         )}
 
-        <div className="download-location">
+        <div className="download-location pt-2">
+          <h1 className="text-xs border-border border-b mb-2 pb-1">Download Location</h1>
           <DownloadLocation loading={isInfoJsonEmpty} />
         </div>
 
-        <div className="extra-options">
+        <div className="extra-options pt-2">
           <ExtraOptions />
         </div>
       </div>
@@ -600,9 +602,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedThumbnail', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconPhotoVideo />
+        <IconPhotoVideo /> <span>Embed Thumbnail</span>
       </Toggle>
     );
   };
@@ -615,9 +617,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedChapters', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconSection />
+        <IconSection /> <span>Embed Chapters</span>
       </Toggle>
     );
   };
@@ -630,9 +632,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconBadgeCc />
+        <IconBadgeCc /> <span>Embed Subs</span>
       </Toggle>
     );
   };
@@ -645,9 +647,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedMetadata', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconFileStack />
+        <IconFileStack /> <span>Embed Metadata</span>
       </Toggle>
     );
   };
@@ -660,9 +662,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeDescription', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconFileDescription />
+        <IconFileDescription /> <span>Write Description</span>
       </Toggle>
     );
   };
@@ -675,9 +677,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeComments', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconMessage />
+        <IconMessage /> <span>Write Comments</span>
       </Toggle>
     );
   };
@@ -690,9 +692,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeThumbnail', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <IconPhotoEdit />
+        <IconPhotoEdit /> <span>Write Thumbnail</span>
       </Toggle>
     );
   };
@@ -705,9 +707,9 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <FilePen />
+        <FilePen /> <span>Write Subs</span>
       </Toggle>
     );
   };
@@ -720,24 +722,34 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeAutoSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
-        <Captions />
+        <Captions /> <span>Write Auto Subs</span>
       </Toggle>
     );
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <EmbedThumbnail />
-      <EmbedChapters />
-      <EmbedSubs />
-      <EmbedMetadata />
-      <WriteDescription />
-      <WriteComments />
-      <WriteThumbnail />
-      <WriteSubs />
-      <WriteAutoSubs />
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xs border-border border-b mb-2 pb-1">Embed options</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <EmbedThumbnail />
+          <EmbedChapters />
+          <EmbedSubs />
+          <EmbedMetadata />
+        </div>
+      </div>
+      <div className="">
+        <h1 className="text-xs border-border border-b mb-2 pb-1">Write options</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <WriteDescription />
+          <WriteComments />
+          <WriteThumbnail />
+          <WriteSubs />
+          <WriteAutoSubs />
+        </div>
+      </div>
     </div>
   );
 };
