@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9ca42442-f820-420b-9d62-12bd0d9eed22",
+  "id": "a216c94e-14df-4852-8848-62c7aeb8eb07",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "downloads_history": {
-      "name": "downloads_history",
+    "download_history": {
+      "name": "download_history",
       "columns": {
         "id": {
           "name": "id",

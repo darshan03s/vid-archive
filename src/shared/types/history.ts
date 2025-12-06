@@ -16,7 +16,7 @@ export type UrlHistoryItem = {
 
 export type UrlHistoryList = UrlHistoryItem[] | undefined;
 
-export type DownloadsHistoryItem = {
+export type DownloadHistoryItem = {
   id: string;
   title: string;
   url: string;
@@ -38,7 +38,7 @@ export type DownloadsHistoryItem = {
   added_at: string;
 };
 
-export type DownloadsHistoryList = DownloadsHistoryItem[] | undefined;
+export type DownloadHistoryList = DownloadHistoryItem[] | undefined;
 
 export type RunningDownloadItem = {
   id: string;

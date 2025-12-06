@@ -15,7 +15,7 @@ import {
   getYtdlpFromPc,
   getYtdlpVersionFromPc
 } from '@main/utils/appUtils';
-import { downloadsHistoryOperations, urlHistoryOperations } from '@main/utils/dbUtils';
+import { urlHistoryOperations, downloadHistoryOperations } from '@main/utils/dbUtils';
 import { downloadFfmpeg7z } from '@main/utils/downloadFfmpeg7z';
 import { downloadYtDlpLatestRelease } from '@main/utils/downloadYtdlp';
 import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fsUtils';
@@ -30,7 +30,7 @@ import { dialog, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 import { downloadQuickJS } from '@main/utils/downloadJsRuntime';
 import { is } from '@electron-toolkit/utils';
 import { DownloadManager } from '@main/downloadManager';
-import { NewDownloadsHistoryItem } from '@main/types/db';
+import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
 
 export async function rendererInit(): ReturnType<Api['rendererInit']> {
@@ -277,9 +277,9 @@ export async function deleteOneFromUrlHistory(_event: IpcMainInvokeEvent, id: st
   }
 }
 
-export async function deleteOneFromDownloadsHistory(_event: IpcMainInvokeEvent, id: string) {
+export async function deleteOneFromDownloadHistory(_event: IpcMainInvokeEvent, id: string) {
   try {
-    downloadsHistoryOperations.deleteById(id);
+    downloadHistoryOperations.deleteById(id);
   } catch (e) {
     logger.error(`Could not delete from url history for id -> ${id}\n${e}`);
   }
@@ -293,9 +293,9 @@ export async function deleteAllFromUrlHistory() {
   }
 }
 
-export async function deleteAllFromDownloadsHistory() {
+export async function deleteAllFromDownloadHistory() {
   try {
-    downloadsHistoryOperations.deleteAll();
+    downloadHistoryOperations.deleteAll();
   } catch (e) {
     logger.error(`Could not delete all url history \n${e}`);
   }
@@ -306,7 +306,7 @@ export function downloadMedia(_event: IpcMainEvent, downloadOptions: DownloadOpt
 }
 
 export async function getRunningDownloads() {
-  const runningDownloads: NewDownloadsHistoryItem[] = [];
+  const runningDownloads: NewDownloadHistoryItem[] = [];
   const downloadManager = DownloadManager.getInstance();
   downloadManager.currentlyRunningDownloads.forEach((data) => {
     runningDownloads.push(data.downloadingItem);
@@ -314,8 +314,8 @@ export async function getRunningDownloads() {
   return runningDownloads;
 }
 
-export async function getDownloadsHistory() {
-  return downloadsHistoryOperations.getAllByCompletedAtDesc();
+export async function getDownloadHistory() {
+  return downloadHistoryOperations.getAllByCompletedAtDesc();
 }
 
 export async function selectFolder() {
@@ -340,4 +340,8 @@ export async function saveSettings(_event: IpcMainEvent, changedSettings: AppSet
 
 export async function urlHistorySearch(_event: IpcMainInvokeEvent, searchInput: string) {
   return urlHistoryOperations.search(searchInput);
+}
+
+export async function downloadHistorySearch(_event: IpcMainInvokeEvent, searchInput: string) {
+  return downloadHistoryOperations.search(searchInput);
 }

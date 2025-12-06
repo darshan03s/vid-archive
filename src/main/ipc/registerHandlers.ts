@@ -12,12 +12,13 @@ import {
   rendererInit,
   downloadMedia,
   getRunningDownloads,
-  getDownloadsHistory,
   selectFolder,
-  deleteOneFromDownloadsHistory,
-  deleteAllFromDownloadsHistory,
   saveSettings,
-  urlHistorySearch
+  urlHistorySearch,
+  downloadHistorySearch,
+  deleteOneFromDownloadHistory,
+  deleteAllFromDownloadHistory,
+  getDownloadHistory
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -43,23 +44,25 @@ async function registerHanlders() {
 
   ipcMain.handle('url-history:delete-one', deleteOneFromUrlHistory);
 
-  ipcMain.handle('downloads-history:delete-one', deleteOneFromDownloadsHistory);
+  ipcMain.handle('download-history:delete-one', deleteOneFromDownloadHistory);
 
   ipcMain.handle('url-history:delete-all', deleteAllFromUrlHistory);
 
-  ipcMain.handle('downloads-history:delete-all', deleteAllFromDownloadsHistory);
+  ipcMain.handle('download-history:delete-all', deleteAllFromDownloadHistory);
 
   ipcMain.on('download', downloadMedia);
 
   ipcMain.handle('running-downloads:get-all', getRunningDownloads);
 
-  ipcMain.handle('downloads-history:get-all', getDownloadsHistory);
+  ipcMain.handle('download-history:get-all', getDownloadHistory);
 
   ipcMain.handle('select-folder', selectFolder);
 
   ipcMain.on('settings:save', saveSettings);
 
   ipcMain.handle('url-history:search', urlHistorySearch);
+
+  ipcMain.handle('download-history:search', downloadHistorySearch);
 }
 
 export default registerHanlders;

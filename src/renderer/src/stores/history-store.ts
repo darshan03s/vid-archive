@@ -1,5 +1,5 @@
 import {
-  DownloadsHistoryList,
+  DownloadHistoryList,
   ExtraCommandsHistoryList,
   UrlHistoryList
 } from '@shared/types/history';
@@ -7,7 +7,7 @@ import { create } from 'zustand';
 
 interface HistoryStore {
   urlHistory: UrlHistoryList;
-  downloadHistory: DownloadsHistoryList;
+  downloadHistory: DownloadHistoryList;
   extraCommandsHistory: ExtraCommandsHistoryList;
 }
 

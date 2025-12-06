@@ -16,10 +16,9 @@ const api: Api = {
     ipcRenderer.send('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory, refetch),
   getUrlHistory: () => ipcRenderer.invoke('url-history:get-all'),
   deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id),
-  deleteFromDownloadsHistory: (id: string) =>
-    ipcRenderer.invoke('downloads-history:delete-one', id),
+  deleteFromDownloadHistory: (id: string) => ipcRenderer.invoke('download-history:delete-one', id),
   deleteAllUrlHistory: () => ipcRenderer.invoke('url-history:delete-all'),
-  deleteAllDownloadsHistory: () => ipcRenderer.invoke('downloads-history:delete-all'),
+  deleteAllDownloadHistory: () => ipcRenderer.invoke('download-history:delete-all'),
   download: (downloadOptions: DownloadOptions) => ipcRenderer.send('download', downloadOptions),
   on: (channel: string, listener: (...args: unknown[]) => void) => {
     const wrapped = (_: unknown, ...args: unknown[]) => listener(...args);
@@ -30,11 +29,13 @@ const api: Api = {
     ipcRenderer.removeListener(channel, listener);
   },
   getRunningDownloads: () => ipcRenderer.invoke('running-downloads:get-all'),
-  getDownloadsHistory: () => ipcRenderer.invoke('downloads-history:get-all'),
+  getDownloadHistory: () => ipcRenderer.invoke('download-history:get-all'),
   selectFolder: () => ipcRenderer.invoke('select-folder'),
   saveSettings: (changedSettings: AppSettingsChange) =>
     ipcRenderer.send('settings:save', changedSettings),
-  urlHistorySearch: (searchInput: string) => ipcRenderer.invoke('url-history:search', searchInput)
+  urlHistorySearch: (searchInput: string) => ipcRenderer.invoke('url-history:search', searchInput),
+  downloadHistorySearch: (searchInput: string) =>
+    ipcRenderer.invoke('download-history:search', searchInput)
 };
 
 if (process.contextIsolated) {

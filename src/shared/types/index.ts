@@ -1,6 +1,6 @@
 import { allowedSources } from '../data';
 import { DownloadOptions } from './download';
-import { DownloadsHistoryList, RunningDownloadsList, UrlHistoryList } from './history';
+import { DownloadHistoryList, RunningDownloadsList, UrlHistoryList } from './history';
 
 export type AppSettings = {
   appVersion: string;
@@ -50,15 +50,16 @@ export type Api = {
   getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean, refetch?: boolean) => void;
   getUrlHistory: () => Promise<UrlHistoryList>;
   deleteFromUrlHistory: (id: string) => Promise<void>;
-  deleteFromDownloadsHistory: (id: string) => Promise<void>;
+  deleteFromDownloadHistory: (id: string) => Promise<void>;
   deleteAllUrlHistory: () => Promise<void>;
-  deleteAllDownloadsHistory: () => Promise<void>;
+  deleteAllDownloadHistory: () => Promise<void>;
   download: (downloadOptions: DownloadOptions) => void;
   on: (channel: string, listener: (...args: unknown[]) => void) => () => Electron.IpcRenderer;
   off: (channel: string, listener: (...args: unknown[]) => void) => void;
   getRunningDownloads: () => Promise<RunningDownloadsList>;
-  getDownloadsHistory: () => Promise<DownloadsHistoryList>;
+  getDownloadHistory: () => Promise<DownloadHistoryList>;
   selectFolder: () => Promise<string | null>;
   saveSettings: (changedSettings: AppSettingsChange) => void;
   urlHistorySearch: (searchInput: string) => Promise<UrlHistoryList>;
+  downloadHistorySearch: (searchInput: string) => Promise<DownloadHistoryList>;
 };

@@ -1,8 +1,8 @@
 import { db } from '@main/db';
-import { downloadsHistory, urlHistory } from '@main/db/schema';
+import { downloadHistory, urlHistory } from '@main/db/schema';
 import {
-  DownloadsHistoryItem,
-  NewDownloadsHistoryItem,
+  DownloadHistoryItem,
+  NewDownloadHistoryItem,
   NewUrlHistoryItem,
   UrlHistoryItem
 } from '@main/types/db';
@@ -92,66 +92,80 @@ export const urlHistoryOperations = {
   }
 };
 
-export const downloadsHistoryOperations = {
+export const downloadHistoryOperations = {
   getById: async (id: string) => {
     return db
       ?.select()
-      .from(downloadsHistory)
-      .where(eq(downloadsHistory.id, id))
+      .from(downloadHistory)
+      .where(eq(downloadHistory.id, id))
       .then((rows) => rows[0] ?? null);
   },
 
   getByUrl: async (url: string) => {
     return db
       ?.select()
-      .from(downloadsHistory)
-      .where(eq(downloadsHistory.url, url))
+      .from(downloadHistory)
+      .where(eq(downloadHistory.url, url))
       .then((rows) => rows[0] ?? null);
   },
 
   getAllByAddedAtDesc: async () => {
-    return db?.select().from(downloadsHistory).orderBy(desc(downloadsHistory.added_at));
+    return db?.select().from(downloadHistory).orderBy(desc(downloadHistory.added_at));
   },
 
   getAllByAddedAtAsc: async () => {
-    return db?.select().from(downloadsHistory).orderBy(asc(downloadsHistory.added_at));
+    return db?.select().from(downloadHistory).orderBy(asc(downloadHistory.added_at));
   },
 
   getAllByCompletedAtDesc: async () => {
-    return db
-      ?.select()
-      .from(downloadsHistory)
-      .orderBy(desc(downloadsHistory.download_completed_at));
+    return db?.select().from(downloadHistory).orderBy(desc(downloadHistory.download_completed_at));
   },
 
   getAllByCompletedAtAsc: async () => {
-    return db?.select().from(downloadsHistory).orderBy(asc(downloadsHistory.download_completed_at));
+    return db?.select().from(downloadHistory).orderBy(asc(downloadHistory.download_completed_at));
   },
 
   deleteById: async (id: string) => {
-    return db?.delete(downloadsHistory).where(eq(downloadsHistory.id, id));
+    return db?.delete(downloadHistory).where(eq(downloadHistory.id, id));
   },
 
   deleteByUrl: async (url: string) => {
-    return db?.delete(downloadsHistory).where(eq(downloadsHistory.url, url));
+    return db?.delete(downloadHistory).where(eq(downloadHistory.url, url));
   },
 
   deleteAll: async () => {
-    return db?.delete(downloadsHistory);
+    return db?.delete(downloadHistory);
   },
 
-  updateById: async (id: string, data: Partial<Omit<DownloadsHistoryItem, 'id' | 'added_at'>>) => {
-    return db?.update(downloadsHistory).set(data).where(eq(downloadsHistory.id, id));
+  updateById: async (id: string, data: Partial<Omit<DownloadHistoryItem, 'id' | 'added_at'>>) => {
+    return db?.update(downloadHistory).set(data).where(eq(downloadHistory.id, id));
   },
 
-  updateByUrl: async (
-    url: string,
-    data: Partial<Omit<DownloadsHistoryItem, 'id' | 'added_at'>>
-  ) => {
-    return db?.update(downloadsHistory).set(data).where(eq(downloadsHistory.url, url));
+  updateByUrl: async (url: string, data: Partial<Omit<DownloadHistoryItem, 'id' | 'added_at'>>) => {
+    return db?.update(downloadHistory).set(data).where(eq(downloadHistory.url, url));
   },
 
-  addNew: async (data: NewDownloadsHistoryItem) => {
-    return db?.insert(downloadsHistory).values(data);
+  addNew: async (data: NewDownloadHistoryItem) => {
+    return db?.insert(downloadHistory).values(data);
+  },
+
+  search: async (input: string) => {
+    const pattern = `%${input}%`;
+
+    const results = await db
+      ?.select()
+      .from(downloadHistory)
+      .where(
+        or(
+          like(downloadHistory.title, pattern),
+          like(downloadHistory.url, pattern),
+          like(downloadHistory.source, pattern),
+          like(downloadHistory.uploader, pattern),
+          like(downloadHistory.uploader_url, pattern)
+        )
+      )
+      .orderBy(desc(downloadHistory.added_at));
+
+    return results;
   }
 };

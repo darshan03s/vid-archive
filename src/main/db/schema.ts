@@ -19,7 +19,7 @@ export const urlHistory = sqliteTable('url_history', {
     .notNull()
 });
 
-export const downloadsHistory = sqliteTable('downloads_history', {
+export const downloadHistory = sqliteTable('download_history', {
   id: text('id').primaryKey().notNull(),
   title: text('title').notNull(),
   url: text('url').notNull(),

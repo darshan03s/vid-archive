@@ -10,7 +10,7 @@ import logger from '@shared/logger';
 import { writeFile } from 'node:fs/promises';
 import { getStoreManager } from '@main/store';
 import { DownloadManager } from '@main/downloadManager';
-import { NewDownloadsHistoryItem } from '@main/types/db';
+import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
 import { getYouTubeVideoId } from './appUtils';
 
@@ -398,7 +398,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
 
     const downloadManager = DownloadManager.getInstance();
 
-    const newDownload: NewDownloadsHistoryItem = {
+    const newDownload: NewDownloadHistoryItem = {
       id: downloadOptions.downloadId,
       thumbnail: mediaInfo.thumbnail ?? '',
       title: mediaInfo.fulltitle ?? mediaInfo.title ?? 'N/A',

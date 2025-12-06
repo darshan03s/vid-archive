@@ -1,11 +1,11 @@
 import { ChildProcess, spawn } from 'node:child_process';
-import { NewDownloadsHistoryItem } from './types/db';
-import { downloadsHistoryOperations } from './utils/dbUtils';
+import { NewDownloadHistoryItem } from './types/db';
+import { downloadHistoryOperations } from './utils/dbUtils';
 import { mainWindow } from '.';
 import { ProgressDetails } from '@shared/types/download';
 
 type RunningDownload = {
-  downloadingItem: NewDownloadsHistoryItem;
+  downloadingItem: NewDownloadHistoryItem;
   downloadProcess: ChildProcess;
 };
 
@@ -29,7 +29,7 @@ export class DownloadManager {
   }
 
   addDownload(
-    newDownload: NewDownloadsHistoryItem,
+    newDownload: NewDownloadHistoryItem,
     downloadCommandBase: string,
     downloadCommandArgs: string[]
   ) {
@@ -99,7 +99,7 @@ export class DownloadManager {
         );
       }
       downloadingItem.complete_output += '\nProcess complete';
-      downloadsHistoryOperations.addNew(downloadingItem);
+      downloadHistoryOperations.addNew(downloadingItem);
       this.currentlyRunningDownloads = this.currentlyRunningDownloads.filter(
         (d) => d.downloadingItem.id != downloadingItem.id
       );

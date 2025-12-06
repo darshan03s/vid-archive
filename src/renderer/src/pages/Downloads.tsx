@@ -1,7 +1,7 @@
 import { ProgressDetails } from '@/shared/types/download';
 import {
-  DownloadsHistoryItem,
-  DownloadsHistoryList,
+  DownloadHistoryItem,
+  DownloadHistoryList,
   RunningDownloadItem,
   RunningDownloadsList
 } from '@/shared/types/history';
@@ -11,7 +11,13 @@ import { Anchor, TooltipWrapper } from '@renderer/components/wrappers';
 import { Logo } from '@renderer/data/logo';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ProgressBar } from './components/progress-bar';
-import { IconExternalLink, IconPhoto, IconTerminal2, IconTrash } from '@tabler/icons-react';
+import {
+  IconExternalLink,
+  IconPhoto,
+  IconSearch,
+  IconTerminal2,
+  IconTrash
+} from '@tabler/icons-react';
 import {
   Dialog,
   DialogClose,
@@ -26,29 +32,35 @@ import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { AutoScrollTextarea } from './components/auto-scroll-textarea';
 import { useHistoryStore } from '@renderer/stores/history-store';
 import { Button } from '@renderer/components/ui/button';
+import { useSearchStore } from '@renderer/stores/search-store';
+import { ButtonGroup } from '@renderer/components/ui/button-group';
+import { Input } from '@renderer/components/ui/input';
 
-function updateDownloadsHistoryInStore() {
-  window.api.getDownloadsHistory().then((downloadsHistory: DownloadsHistoryList) => {
+function updateDownloadHistoryInStore() {
+  window.api.getDownloadHistory().then((downloadsHistory: DownloadHistoryList) => {
     useHistoryStore.setState({ downloadHistory: downloadsHistory ?? [] });
   });
 }
 
 const Downloads = () => {
-  const downloadsHistory = useHistoryStore((state) => state.downloadHistory);
+  const downloadHistory = useHistoryStore((state) => state.downloadHistory);
   const [runningDownloads, setRunningDownloads] = useState<RunningDownloadsList>([]);
   const [isConfirmDeleteAllModalOpen, setIsConfirmDeleteAllModalOpen] = useState(false);
+
+  const searchResults = useSearchStore((state) => state.downloadHistorySearchResults);
 
   function updateDownloads() {
     window.api.getRunningDownloads().then((data) => {
       setRunningDownloads(data);
     });
-    window.api.getDownloadsHistory().then((data) => {
+    window.api.getDownloadHistory().then((data) => {
       useHistoryStore.setState({ downloadHistory: data });
     });
   }
 
   useEffect(() => {
     updateDownloads();
+    useSearchStore.setState({ downloadHistorySearchResults: [] });
   }, []);
 
   useEffect(() => {
@@ -69,24 +81,31 @@ const Downloads = () => {
     <>
       <div className="w-full flex flex-col gap-2">
         <div className="px-3 py-2 h-12 text-sm flex items-center justify-between sticky top-0 left-0 bg-background/60 backdrop-blur-md text-foreground z-49">
-          <span className="text-xs">History ({downloadsHistory?.length})</span>
-          <TooltipWrapper side="bottom" message={`Delete downloads history`}>
-            <Button
-              disabled={downloadsHistory?.length === 0}
-              onClick={() => handleUrlHistoryDelete()}
-              variant={'destructive'}
-              size={'icon-sm'}
-              className="size-6"
-            >
-              <IconTrash className="size-4" />
-            </Button>
-          </TooltipWrapper>
+          <span className="text-xs">Download History ({downloadHistory?.length})</span>
+          <div className="flex items-center gap-4">
+            <DownloadHistorySearch />
+            <TooltipWrapper side="bottom" message={`Delete downloads history`}>
+              <Button
+                disabled={downloadHistory?.length === 0}
+                onClick={() => handleUrlHistoryDelete()}
+                variant={'destructive'}
+                size={'icon-sm'}
+                className="size-6"
+              >
+                <IconTrash className="size-4" />
+              </Button>
+            </TooltipWrapper>
+          </div>
         </div>
         <div className="px-2 py-1 pb-2">
           {runningDownloads && runningDownloads.length > 0 && (
             <RunningDownloads runningDownloads={runningDownloads} />
           )}
-          <CompletedDownloads downloadsHistory={downloadsHistory} />
+          {searchResults!.length > 0 ? (
+            <DownloadHistorySearchResults downloadHistorySearchResults={searchResults} />
+          ) : (
+            <CompletedDownloads downloadsHistory={downloadHistory} />
+          )}
         </div>
       </div>
       <ConfirmDeleteAllModal
@@ -99,6 +118,43 @@ const Downloads = () => {
 
 export default Downloads;
 
+const DownloadHistorySearch = () => {
+  const searchInput = useSearchStore((state) => state.downloadSearchInput);
+
+  function handleSearchInput(input: string) {
+    useSearchStore.setState({ downloadSearchInput: input });
+    if (input.length === 0) {
+      useSearchStore.setState({ downloadHistorySearchResults: [] });
+    }
+  }
+
+  function handleSearch() {
+    if (searchInput.length === 0) return;
+    window.api.downloadHistorySearch(searchInput).then((searchResults) => {
+      useSearchStore.setState({ downloadHistorySearchResults: searchResults });
+    });
+  }
+
+  return (
+    <ButtonGroup>
+      <Input
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+        }}
+        onChange={(e) => handleSearchInput(e.target.value)}
+        className="h-7 text-[10px] w-[260px]"
+        type="search"
+        placeholder="Search in download history"
+      />
+      <Button variant={'outline'} className="h-7" onClick={handleSearch}>
+        <IconSearch />
+      </Button>
+    </ButtonGroup>
+  );
+};
+
 const ConfirmDeleteAllModal = ({
   open,
   setOpen
@@ -107,8 +163,8 @@ const ConfirmDeleteAllModal = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   function handleConfirmDeleteAll() {
-    window.api.deleteAllDownloadsHistory().then(() => {
-      updateDownloadsHistoryInStore();
+    window.api.deleteAllDownloadHistory().then(() => {
+      updateDownloadHistoryInStore();
     });
     setOpen(false);
   }
@@ -137,7 +193,7 @@ const DownloadCard = ({
   downloadItem,
   progressDetails
 }: {
-  downloadItem: RunningDownloadItem | DownloadsHistoryItem;
+  downloadItem: RunningDownloadItem | DownloadHistoryItem;
   progressDetails?: ProgressDetails;
 }) => {
   const [isCommandModalOpen, setIsCommandModalOpen] = useState(false);
@@ -153,8 +209,8 @@ const DownloadCard = ({
   }
 
   function handleDownloadsHistoryItemDelete(id: string) {
-    window.api.deleteFromDownloadsHistory(id).then(() => {
-      updateDownloadsHistoryInStore();
+    window.api.deleteFromDownloadHistory(id).then(() => {
+      updateDownloadHistoryInStore();
     });
   }
 
@@ -265,7 +321,7 @@ const Command = ({
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  data: RunningDownloadItem | DownloadsHistoryItem;
+  data: RunningDownloadItem | DownloadHistoryItem;
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -330,10 +386,24 @@ const RunningDownloads = ({ runningDownloads }: { runningDownloads: RunningDownl
   );
 };
 
-const CompletedDownloads = ({ downloadsHistory }: { downloadsHistory: DownloadsHistoryList }) => {
+const CompletedDownloads = ({ downloadsHistory }: { downloadsHistory: DownloadHistoryList }) => {
   return (
     <div className="w-full space-y-2">
       {downloadsHistory?.map((downloadItem) => (
+        <DownloadCard key={downloadItem.id} downloadItem={downloadItem} />
+      ))}
+    </div>
+  );
+};
+
+const DownloadHistorySearchResults = ({
+  downloadHistorySearchResults
+}: {
+  downloadHistorySearchResults: DownloadHistoryList;
+}) => {
+  return (
+    <div className="w-full space-y-2">
+      {downloadHistorySearchResults?.map((downloadItem) => (
         <DownloadCard key={downloadItem.id} downloadItem={downloadItem} />
       ))}
     </div>
