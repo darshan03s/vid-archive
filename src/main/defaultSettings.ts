@@ -16,6 +16,6 @@ export function getDefaultAppSettings(): AppSettings {
     ytdlpVersion: '',
     jsRuntimePath: '',
     downloadTemplate: '',
-    alwaysUsePreviousDownloadsFolder: false
+    rememberPreviousDownloadsFolder: false
   };
 }

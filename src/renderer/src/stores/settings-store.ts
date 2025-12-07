@@ -18,6 +18,6 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
   ytdlpVersion: '',
   jsRuntimePath: '',
   downloadTemplate: '',
-  alwaysUsePreviousDownloadsFolder: false,
+  rememberPreviousDownloadsFolder: false,
   setSettings: (settings) => set((state) => ({ ...state, ...settings }))
 }));

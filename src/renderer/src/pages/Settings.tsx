@@ -13,14 +13,14 @@ const Settings = () => {
     ytdlpVersion: initial.ytdlpVersion,
     ffmpegVersion: initial.ffmpegVersion,
     downloadsFolder: initial.downloadsFolder,
-    alwaysUsePreviousDownloadsFolder: initial.alwaysUsePreviousDownloadsFolder
+    rememberPreviousDownloadsFolder: initial.rememberPreviousDownloadsFolder
   });
 
   function handleSettingsChange(key: keyof AppSettingsChange, value: string | boolean) {
-    if (key === 'alwaysUsePreviousDownloadsFolder') {
+    if (key === 'rememberPreviousDownloadsFolder') {
       setSettings((prev) => ({
         ...prev,
-        alwaysUsePreviousDownloadsFolder: value as boolean
+        rememberPreviousDownloadsFolder: value as boolean
       }));
     }
   }
@@ -28,7 +28,7 @@ const Settings = () => {
   function handleSaveSettings() {
     const changedSettings: AppSettingsChange = {
       downloadsFolder: settings.downloadsFolder!,
-      alwaysUsePreviousDownloadsFolder: settings.alwaysUsePreviousDownloadsFolder!
+      rememberPreviousDownloadsFolder: settings.rememberPreviousDownloadsFolder!
     };
 
     window.api.saveSettings(changedSettings);
@@ -86,12 +86,12 @@ const Settings = () => {
         </div>
         <div className="flex items-center justify-between w-full px-18">
           <span className="setting-name text-[12px] text-nowrap">
-            Always use previous downloads folder
+            Remember previous downloads folder
           </span>
           <Switch
-            checked={settings?.alwaysUsePreviousDownloadsFolder}
+            checked={settings?.rememberPreviousDownloadsFolder}
             onCheckedChange={(value) =>
-              handleSettingsChange('alwaysUsePreviousDownloadsFolder', value)
+              handleSettingsChange('rememberPreviousDownloadsFolder', value)
             }
           />
         </div>

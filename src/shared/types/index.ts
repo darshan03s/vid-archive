@@ -14,12 +14,12 @@ export type AppSettings = {
   userDownloadsFolder: string;
   jsRuntimePath: string;
   downloadTemplate: string;
-  alwaysUsePreviousDownloadsFolder: boolean;
+  rememberPreviousDownloadsFolder: boolean;
 };
 
 export type AppSettingsChange = Pick<
   AppSettings,
-  'downloadsFolder' | 'alwaysUsePreviousDownloadsFolder'
+  'downloadsFolder' | 'rememberPreviousDownloadsFolder'
 >;
 
 export type Source = (typeof allowedSources)[number];

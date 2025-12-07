@@ -385,7 +385,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     downloadCommandArgs.push('-o', targetDownloadFilePath);
     const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
 
-    if (store.get('alwaysUsePreviousDownloadsFolder')) {
+    if (store.get('rememberPreviousDownloadsFolder')) {
       const currentDownloadsFolder = store.get('downloadsFolder');
       if (currentDownloadsFolder !== selectedDownloadFolder) {
         store.set('downloadsFolder', selectedDownloadFolder);
