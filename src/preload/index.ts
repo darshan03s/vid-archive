@@ -37,7 +37,8 @@ const api: Api = {
   downloadHistorySearch: (searchInput: string) =>
     ipcRenderer.invoke('download-history:search', searchInput),
   pauseDownload: (id: string) => ipcRenderer.send('yt-dlp:pause-download', id),
-  resumeDownload: (id: string) => ipcRenderer.send('yt-dlp:resume-download', id)
+  resumeDownload: (id: string) => ipcRenderer.send('yt-dlp:resume-download', id),
+  pauseAllDownloads: () => ipcRenderer.send('yt-dlp:pause-all-downloads')
 };
 
 if (process.contextIsolated) {

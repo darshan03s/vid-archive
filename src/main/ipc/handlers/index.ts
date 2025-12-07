@@ -388,3 +388,30 @@ export async function resumeDownload(_event: IpcMainEvent, downloadId: string) {
 
   mainWindow.webContents.send('refresh-downloads');
 }
+
+export async function pauseAllDownloads() {
+  const downloadManager = DownloadManager.getInstance();
+  const running = downloadManager.currentlyRunningDownloads;
+
+  if (running.length === 0) {
+    mainWindow.webContents.send('yt-dlp:paused-all-downloads');
+    return;
+  }
+
+  let exited = 0;
+
+  for (const d of running) {
+    const { downloadingItem, downloadProcess } = d;
+
+    downloadingItem.download_status = 'paused';
+
+    downloadProcess.once('exit', () => {
+      exited++;
+      if (exited === running.length) {
+        mainWindow.webContents.send('yt-dlp:paused-all-downloads');
+      }
+    });
+
+    terminateProcess(downloadProcess);
+  }
+}

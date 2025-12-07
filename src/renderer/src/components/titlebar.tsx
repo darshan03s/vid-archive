@@ -3,8 +3,22 @@ import { Minus } from 'lucide-react';
 import appIcon from '../../../../build/icon.png';
 import { useNavigate } from 'react-router-dom';
 import ModeToggle from './mode-toggle';
+import { RunningDownloadsList } from '@/shared/types/history';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@renderer/components/ui/alert-dialog';
+import { Button } from './ui/button';
 
 const Titlebar = () => {
+  const [isConfirmExitModalVisible, setIsConfirmExitModalVisible] = useState(false);
+
   const navigate = useNavigate();
   function goBack() {
     navigate(-1);
@@ -19,7 +33,14 @@ const Titlebar = () => {
   }
 
   function close() {
-    window.electron.ipcRenderer.send('win:close');
+    window.api.getRunningDownloads().then((runningDownloads: RunningDownloadsList) => {
+      if (runningDownloads && runningDownloads?.length > 0) {
+        setIsConfirmExitModalVisible(true);
+        return;
+      } else {
+        window.electron.ipcRenderer.send('win:close');
+      }
+    });
   }
 
   return (
@@ -55,7 +76,51 @@ const Titlebar = () => {
           <IconX className="size-4 text-white/80" />
         </button>
       </div>
+      <ConfirmExitModal open={isConfirmExitModalVisible} setOpen={setIsConfirmExitModalVisible} />
     </div>
+  );
+};
+
+interface ConfirmExitModalProps {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const ConfirmExitModal = ({ open, setOpen }: ConfirmExitModalProps) => {
+  function pauseAllRunningDownloadsAndExit() {
+    window.api.pauseAllDownloads();
+  }
+
+  useEffect(() => {
+    const unsubscribe = window.api.on('yt-dlp:paused-all-downloads', () => {
+      setOpen(false);
+      window.electron.ipcRenderer.send('win:close');
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Confirm exit</AlertDialogTitle>
+          <AlertDialogDescription>There are still downloads running</AlertDialogDescription>
+        </AlertDialogHeader>
+        <p className="text-sm">Pause all running downloads?</p>
+        <AlertDialogFooter>
+          <Button
+            className="bg-red-600 text-white hover:bg-red-500 text-xs"
+            onClick={pauseAllRunningDownloadsAndExit}
+          >
+            Pause all and exit
+          </Button>
+          <AlertDialogCancel className="text-xs">Cancel</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

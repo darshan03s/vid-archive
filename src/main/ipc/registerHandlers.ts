@@ -20,7 +20,8 @@ import {
   deleteAllFromDownloadHistory,
   getDownloadHistory,
   pauseDownload,
-  resumeDownload
+  resumeDownload,
+  pauseAllDownloads
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -69,6 +70,8 @@ async function registerHanlders() {
   ipcMain.on('yt-dlp:pause-download', pauseDownload);
 
   ipcMain.on('yt-dlp:resume-download', resumeDownload);
+
+  ipcMain.on('yt-dlp:pause-all-downloads', pauseAllDownloads);
 }
 
 export default registerHanlders;

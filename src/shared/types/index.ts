@@ -64,4 +64,5 @@ export type Api = {
   downloadHistorySearch: (searchInput: string) => Promise<DownloadHistoryList>;
   pauseDownload: (id: string) => void;
   resumeDownload: (id: string) => void;
+  pauseAllDownloads: () => void;
 };
