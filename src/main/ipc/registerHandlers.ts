@@ -8,7 +8,7 @@ import {
   downloadFfmpeg,
   downloadYtdlp,
   getUrlHistory,
-  getYoutubeVideoInfoJson,
+  getMediaInfoJson,
   rendererInit,
   downloadMedia,
   getRunningDownloads,
@@ -41,7 +41,7 @@ async function registerHanlders() {
 
   ipcMain.handle('check-url', checkUrl);
 
-  ipcMain.on('yt-dlp:get-youtube-video-info-json', getYoutubeVideoInfoJson);
+  ipcMain.on('yt-dlp:get-media-info-json', getMediaInfoJson);
 
   ipcMain.handle('url-history:get-all', getUrlHistory);
 

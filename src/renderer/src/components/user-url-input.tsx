@@ -4,19 +4,23 @@ import { Input } from './ui/input';
 import { IconCloudDown, IconReload } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import logger from '@shared/logger';
 import { TooltipWrapper } from './wrappers';
+import { Source } from '@/shared/types';
 
 type UserUrlInputProps = {
   showRefetch: boolean;
-  url?: string;
 };
 
-const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
+const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
   const [userEnteredUrl, setUserEnteredUrl] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const url = useMediaInfoStore((state) => state.url);
+  const source = useMediaInfoStore((state) => state.source) as Source;
 
   function isUrl(url: string): boolean {
     try {
@@ -29,7 +33,7 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
 
   function handleRefetchMediaInfo() {
     useMediaInfoStore.setState({ mediaInfo: {} });
-    window.api.getYoutubeVideoInfoJson(url, false, true);
+    window.api.getMediaInfoJson(url, source, false, true);
   }
 
   async function handleFetchMediaInfo() {
@@ -61,8 +65,8 @@ const UserUrlInput = ({ showRefetch, url = '' }: UserUrlInputProps) => {
         type="url"
         onChange={handleUrlInput}
         onKeyDown={handleUrlInputEnter}
-        defaultValue={url}
-        disabled={!!url}
+        value={isHome ? userEnteredUrl : url}
+        disabled={!!url && !isHome}
       />
       {showRefetch ? (
         <TooltipWrapper message="Refetch" side="bottom">

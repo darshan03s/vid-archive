@@ -1,5 +1,4 @@
-import { YoutubePlaylistInfoJson } from './info-json/youtube-playlist';
-import { YoutubeFormat, YoutubeVideoInfoJson } from './info-json/youtube-video';
+import { MediaFormat, MediaInfoJson } from './info-json';
 
 export type DownloadStatus = 'downloading' | 'completed' | 'failed' | 'paused';
 
@@ -24,13 +23,13 @@ export interface ExtraOptions {
 
 export type DownloadOptions = {
   downloadId: string;
-  selectedFormat: Partial<YoutubeFormat>;
+  selectedFormat: Partial<MediaFormat>;
   downloadSections: DownloadSections;
   selectedDownloadFolder: string;
   extraOptions: ExtraOptions;
   url: string;
   source: string;
-  mediaInfo: YoutubeVideoInfoJson | YoutubePlaylistInfoJson | object;
+  mediaInfo: MediaInfoJson;
 };
 
 export type ProgressDetails = {

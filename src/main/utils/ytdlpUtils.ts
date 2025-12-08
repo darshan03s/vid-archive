@@ -3,16 +3,15 @@ import { mainWindow, MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
 import path from 'node:path';
 import { URL } from 'node:url';
 import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
-import { LiveFromStartFormats, YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
+import { LiveFromStartFormats, MediaInfoJson } from '@shared/types/info-json';
 import { Source } from '@shared/types';
-import { YoutubePlaylistInfoJson } from '@shared/types/info-json/youtube-playlist';
 import logger from '@shared/logger';
 import { writeFile } from 'node:fs/promises';
 import { getStoreManager } from '@main/store';
 import { DownloadManager } from '@main/downloadManager';
 import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
-import { getYouTubeVideoId } from './appUtils';
+import { getYouTubeVideoId } from '@shared/utils';
 
 function getInfoJsonPath(url: string, source: Source): string {
   if (source === 'youtube-video') {
@@ -32,7 +31,7 @@ export async function getInfoJson(
   url: string,
   source: Source,
   refetch?: boolean
-): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
+): Promise<MediaInfoJson | null> {
   if (source === 'youtube-video') {
     const infoJsonPath = getInfoJsonPath(url, source);
     if (refetch) {
@@ -44,10 +43,10 @@ export async function getInfoJson(
       if (new Date().toISOString() > expireTime!) {
         logger.info(`Video Links expired for ${url} on ${new Date(expireTime!)}`);
         logger.info(`Re-creating info-json for ${url}`);
-        return (await createInfoJson(url, source, infoJsonPath)) as YoutubeVideoInfoJson;
+        return (await createInfoJson(url, source, infoJsonPath)) as MediaInfoJson;
       } else {
         logger.info(`Video Links for ${url} expire at ${new Date(expireTime!)}`);
-        return await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+        return await readJson<MediaInfoJson>(infoJsonPath);
       }
     } else {
       return await createInfoJson(url, source, infoJsonPath);
@@ -60,7 +59,7 @@ export async function createInfoJson(
   url: string,
   source: Source,
   infoJsonPath: string
-): Promise<YoutubeVideoInfoJson | YoutubePlaylistInfoJson | null> {
+): Promise<MediaInfoJson | null> {
   const store = await getStoreManager();
 
   return await new Promise((resolve, reject) => {
@@ -88,7 +87,7 @@ export async function createInfoJson(
       logger.info(`Created info json for ${url}`);
 
       if (source === 'youtube-video') {
-        let infoJson = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+        let infoJson = await readJson<MediaInfoJson>(infoJsonPath);
         infoJson = await addCreatedAt(infoJson);
         infoJson = await addExpiresAt(infoJson);
         infoJson = await downloadThumbnail(infoJson);
@@ -107,13 +106,13 @@ export async function createInfoJson(
   });
 }
 
-async function addLiveFromStartFormats(url, infoJson: YoutubeVideoInfoJson) {
+async function addLiveFromStartFormats(url: string, infoJson: MediaInfoJson) {
   const store = await getStoreManager();
   const jsRuntimePath = `quickjs:${store.get('jsRuntimePath')}`;
   const baseCommand = YTDLP_EXE_PATH;
   const args = ['--js-runtimes', jsRuntimePath, '-F', url, '--live-from-start'];
 
-  return new Promise<YoutubeVideoInfoJson>((resolve) => {
+  return new Promise<MediaInfoJson>((resolve) => {
     let formatsString: string;
     const child = spawn(baseCommand, args);
 
@@ -192,12 +191,12 @@ async function parseLiveFromStartFormatsString(formatsString: string) {
   return parsedFormats;
 }
 
-async function addCreatedAt(infoJson: YoutubeVideoInfoJson) {
+async function addCreatedAt(infoJson: MediaInfoJson) {
   infoJson.created_at = new Date().toISOString();
   return infoJson;
 }
 
-async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
+async function addExpiresAt(infoJson: MediaInfoJson) {
   const format = infoJson.formats.find((f) => f.vcodec !== 'none' && f.url);
 
   if (!format?.url) {
@@ -226,11 +225,11 @@ async function addExpiresAt(infoJson: YoutubeVideoInfoJson) {
 }
 
 async function getExpireTime(infoJsonPath: string) {
-  const json = await readJson<YoutubeVideoInfoJson>(infoJsonPath);
+  const json = await readJson<MediaInfoJson>(infoJsonPath);
   return json.expires_at;
 }
 
-async function downloadThumbnail(infoJson: YoutubeVideoInfoJson) {
+async function downloadThumbnail(infoJson: MediaInfoJson) {
   const safeTitle = sanitizeFileName(infoJson.fulltitle);
   const thumbnailUrl = new URL(infoJson.thumbnail);
   thumbnailUrl.search = '';
@@ -251,7 +250,7 @@ async function downloadThumbnail(infoJson: YoutubeVideoInfoJson) {
   return infoJson;
 }
 
-async function writeDescription(infoJson: YoutubeVideoInfoJson) {
+async function writeDescription(infoJson: MediaInfoJson) {
   const safeTitle = sanitizeFileName(infoJson.fulltitle);
 
   const descriptionLocalPath = path.join(
@@ -278,7 +277,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     const { url, source, selectedFormat, downloadSections, selectedDownloadFolder, extraOptions } =
       downloadOptions;
     console.log({ url, source, selectedFormat, downloadSections, extraOptions });
-    const mediaInfo = downloadOptions.mediaInfo as YoutubeVideoInfoJson;
+    const mediaInfo = downloadOptions.mediaInfo as MediaInfoJson;
     const infoJsonPath = getInfoJsonPath(url, source);
     const formatId = selectedFormat.format_id!;
     let targetDownloadFileName = `${mediaInfo.fulltitle} [${selectedFormat.resolution}] [${selectedFormat.format_id}]`;

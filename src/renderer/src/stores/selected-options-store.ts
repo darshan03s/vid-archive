@@ -1,8 +1,8 @@
 import { DownloadSections, ExtraOptions } from '@/shared/types/download';
-import { YoutubeFormat } from '@/shared/types/info-json/youtube-video';
+import { MediaFormat } from '@/shared/types/info-json';
 import { create } from 'zustand';
 
-export interface SelectedFormat extends Partial<YoutubeFormat> {}
+export interface SelectedFormat extends Partial<MediaFormat> {}
 
 interface SelectedOptionsStore {
   selectedFormat: SelectedFormat;

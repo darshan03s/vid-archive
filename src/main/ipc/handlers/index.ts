@@ -24,7 +24,6 @@ import { downloadFromYtdlp, getInfoJson } from '@main/utils/ytdlpUtils';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
 import { Api, AppSettingsChange, Source } from '@shared/types';
-import { YoutubeVideoInfoJson } from '@shared/types/info-json/youtube-video';
 import SevenZip from '7zip-min';
 import path from 'node:path';
 import { dialog, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
@@ -33,6 +32,7 @@ import { is } from '@electron-toolkit/utils';
 import { DownloadManager } from '@main/downloadManager';
 import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
+import { MediaInfoJson } from '@shared/types/info-json';
 
 export async function rendererInit(): ReturnType<Api['rendererInit']> {
   try {
@@ -216,9 +216,10 @@ export async function checkUrl(
 
 let fetchingInfoJsonForUrls: string[] = [];
 
-export async function getYoutubeVideoInfoJson(
+export async function getMediaInfoJson(
   _event: IpcMainEvent,
   url: string,
+  source: Source,
   updateUrlHistory: boolean,
   refetch?: boolean
 ) {
@@ -228,11 +229,7 @@ export async function getYoutubeVideoInfoJson(
   logger.info(`Fetching info json for ${url}`);
   fetchingInfoJsonForUrls.push(url);
   try {
-    const infoJson = (await getInfoJson(
-      url,
-      'youtube-video' as Source,
-      refetch
-    )) as YoutubeVideoInfoJson | null;
+    const infoJson = (await getInfoJson(url, source, refetch)) as MediaInfoJson;
     if (infoJson) {
       logger.info(`Fetched info json for ${url}`);
       if (updateUrlHistory) {
@@ -241,14 +238,13 @@ export async function getYoutubeVideoInfoJson(
             url,
             thumbnail: infoJson.thumbnail,
             title: infoJson.fulltitle,
-            source: 'youtube-video' as Source,
+            source: source,
             thumbnail_local: infoJson.thumbnail_local ?? '',
             uploader: infoJson.uploader,
             uploader_url: infoJson.uploader_url ?? infoJson.channel_url,
             created_at: infoJson.upload_date,
             duration: infoJson.duration_string ?? ''
           };
-          console.log({ newUrlHistoryItem });
           await urlHistoryOperations.upsertByUrl(url, newUrlHistoryItem);
           logger.info('Updated url history');
           const updatedUrlHistory = await getUrlHistory();
@@ -257,11 +253,11 @@ export async function getYoutubeVideoInfoJson(
           logger.error(`Could not update url history \n${e}`);
         }
       }
-      mainWindow.webContents.send('yt-dlp:recieve-youtube-video-info-json', infoJson);
+      mainWindow.webContents.send('yt-dlp:recieve-media-info-json', infoJson);
       fetchingInfoJsonForUrls = fetchingInfoJsonForUrls.filter((u) => u != url);
     } else {
       logger.error(`Could not fetch info json for ${url}`);
-      mainWindow.webContents.send('yt-dlp:recieve-youtube-video-info-json', null);
+      mainWindow.webContents.send('yt-dlp:recieve-media-info-json', null);
       fetchingInfoJsonForUrls = fetchingInfoJsonForUrls.filter((u) => u != url);
     }
   } catch (e) {

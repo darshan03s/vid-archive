@@ -15,11 +15,11 @@ interface Extra {
   live_from_start_formats: LiveFromStartFormats[];
 }
 
-export interface YoutubeVideoInfoJson extends Extra {
+export interface MediaInfoJson extends Extra {
   id: string;
   title: string;
-  formats: YoutubeFormat[];
-  thumbnails: YoutubeThumbnail[];
+  formats: MediaFormat[];
+  thumbnails: MediaThumbnail[];
   thumbnail: string;
   description: string;
   channel_id: string;
@@ -33,8 +33,8 @@ export interface YoutubeVideoInfoJson extends Extra {
   playable_in_embed: boolean;
   live_status: 'not_live' | 'live' | 'was_live' | string;
   media_type: 'video' | 'audio' | string;
-  automatic_captions: YoutubeAutomaticCaptions;
-  subtitles: YoutubeSubtitles;
+  automatic_captions: MediaAutomaticCaptions;
+  subtitles: MediaSubtitles;
   comment_count: number;
   like_count: number;
   channel: string;
@@ -78,7 +78,7 @@ export interface YoutubeVideoInfoJson extends Extra {
   audio_channels: number;
 }
 
-export interface YoutubeFormat {
+export interface MediaFormat {
   format: string;
   format_id: string;
   format_note: string;
@@ -108,7 +108,7 @@ export interface YoutubeFormat {
   protocol: string;
 }
 
-export interface YoutubeThumbnail {
+export interface MediaThumbnail {
   id: string;
   url: string;
   width: number;
@@ -116,22 +116,22 @@ export interface YoutubeThumbnail {
   resolution: string;
 }
 
-export interface YoutubeAutomaticCaption {
+export interface MediaAutomaticCaption {
   ext: string;
   url: string;
   name: string;
 }
 
-export interface YoutubeSubtitle {
+export interface MediaSubtitle {
   ext: string;
   url: string;
   name: string;
 }
 
-export interface YoutubeAutomaticCaptions {
-  [key: string]: YoutubeAutomaticCaption[];
+export interface MediaAutomaticCaptions {
+  [key: string]: MediaAutomaticCaption[];
 }
 
-export interface YoutubeSubtitles {
-  [key: string]: YoutubeSubtitle[];
+export interface MediaSubtitles {
+  [key: string]: MediaSubtitle[];
 }

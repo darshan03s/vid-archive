@@ -1,6 +1,7 @@
 import { getStoreManager } from '@main/store';
 import logger from '@shared/logger';
 import { Api, AppSettings, Source } from '@shared/types';
+import { getYouTubeVideoId } from '@shared/utils';
 import { ChildProcess, exec } from 'child_process';
 import { promisify } from 'util';
 const execPromise = promisify(exec);
@@ -102,28 +103,6 @@ export function getSourceFromUrl(url: string): Source | null {
     return 'youtube-playlist';
   }
   return null;
-}
-
-export function getYouTubeVideoId(url: string): string | null {
-  let videoId: string | null = null;
-  try {
-    const parsed = new URL(url);
-    // shortened url
-    if (parsed.hostname === 'youtu.be') {
-      videoId = parsed.pathname.slice(1);
-    }
-    if (parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com') {
-      // url with watch?v
-      if (parsed.pathname.includes('watch')) videoId = parsed.searchParams.get('v');
-      // shorts and embed url
-      if (parsed.pathname.includes('shorts') || parsed.pathname.includes('embed'))
-        videoId = parsed.pathname.split('/')[2];
-    }
-    console.log({ url, videoId });
-    return videoId;
-  } catch {
-    return null;
-  }
 }
 
 export function getNormalizedUrl(source: Source, url: string) {

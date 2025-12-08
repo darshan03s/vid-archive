@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import logger from '@shared/logger';
-import { AppSettingsChange, type Api } from '@shared/types';
+import { AppSettingsChange, Source, type Api } from '@shared/types';
 import { DownloadOptions } from '@shared/types/download';
 
 // Custom APIs for renderer
@@ -12,8 +12,8 @@ const api: Api = {
   downloadYtdlp: () => ipcRenderer.invoke('yt-dlp:download'),
   downloadFfmpeg: () => ipcRenderer.invoke('ffmpeg:download'),
   checkUrl: (url: string) => ipcRenderer.invoke('check-url', url),
-  getYoutubeVideoInfoJson: (url: string, updateUrlHistory: boolean, refetch?: boolean) =>
-    ipcRenderer.send('yt-dlp:get-youtube-video-info-json', url, updateUrlHistory, refetch),
+  getMediaInfoJson: (url: string, source: Source, updateUrlHistory: boolean, refetch?: boolean) =>
+    ipcRenderer.send('yt-dlp:get-media-info-json', url, source, updateUrlHistory, refetch),
   getUrlHistory: () => ipcRenderer.invoke('url-history:get-all'),
   deleteFromUrlHistory: (id: string) => ipcRenderer.invoke('url-history:delete-one', id),
   deleteFromDownloadHistory: (id: string) => ipcRenderer.invoke('download-history:delete-one', id),
