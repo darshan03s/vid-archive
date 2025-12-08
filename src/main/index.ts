@@ -7,6 +7,7 @@ import logger from '@shared/logger';
 import { init } from './init';
 import registerHanlders from './ipc/registerHandlers';
 import registerProtocolHandlers from './protocolHanlders';
+import runServer from './server';
 
 const logsFolderName = new Date().toISOString().split('T')[0];
 
@@ -90,6 +91,8 @@ app.whenReady().then(async () => {
   await init();
 
   await registerHanlders();
+
+  runServer();
 
   createWindow();
 

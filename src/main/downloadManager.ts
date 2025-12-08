@@ -51,6 +51,9 @@ export class DownloadManager {
 
     downloadingItem.download_progress_string = 'Downloading...';
 
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+
     child.stdout.on('data', (data) => {
       const text = data.toString();
       console.log(`[${child.pid}] stdout: ${text}`);

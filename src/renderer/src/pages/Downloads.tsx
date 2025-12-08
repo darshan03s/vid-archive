@@ -37,6 +37,7 @@ import { Button } from '@renderer/components/ui/button';
 import { useSearchStore } from '@renderer/stores/search-store';
 import { ButtonGroup } from '@renderer/components/ui/button-group';
 import { Input } from '@renderer/components/ui/input';
+import { SERVER_BASE_URL, SERVER_PORT } from '@shared/data';
 
 function updateDownloadHistoryInStore() {
   window.api.getDownloadHistory().then((downloadsHistory: DownloadHistoryList) => {
@@ -199,6 +200,7 @@ const DownloadCard = ({
   progressDetails?: ProgressDetails;
 }) => {
   const [isMoreInfoModalOpen, setIsMoreInfoModalOpen] = useState(false);
+  const [isPlayVideoModalOpen, setIsPlayVideoModalOpen] = useState(false);
   const navigate = useNavigate();
 
   function handleNavigateToDisplayInfo() {
@@ -222,6 +224,10 @@ const DownloadCard = ({
 
   function handleResumeDownload(id: string) {
     window.api.resumeDownload(id);
+  }
+
+  function handlePlay() {
+    setIsPlayVideoModalOpen(true);
   }
 
   return (
@@ -305,6 +311,18 @@ const DownloadCard = ({
             </TooltipWrapper>
           </div>
           <div className="downloads-history-item-footer-right flex items-center gap-2">
+            {downloadItem.download_status === 'completed' && (
+              <TooltipWrapper message={`Play`}>
+                <Button
+                  onClick={() => handlePlay()}
+                  variant={'ghost'}
+                  size={'icon-sm'}
+                  className="size-6"
+                >
+                  <IconPlayerPlay className="size-4" />
+                </Button>
+              </TooltipWrapper>
+            )}
             {downloadItem.download_status === 'downloading' && (
               <TooltipWrapper message={`Pause download`}>
                 <Button
@@ -344,6 +362,11 @@ const DownloadCard = ({
         </ItemFooter>
       </Item>
       <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} data={downloadItem} />
+      <PlayVideoModal
+        open={isPlayVideoModalOpen}
+        setOpen={setIsPlayVideoModalOpen}
+        data={downloadItem}
+      />
     </>
   );
 };
@@ -364,7 +387,7 @@ const MoreInfo = ({
           <DialogTitle>Info</DialogTitle>
           <DialogDescription>More info of download</DialogDescription>
         </DialogHeader>
-        <div className="w-full font-mono flex flex-col gap-2 text-xs h-68 overflow-y-auto px-1">
+        <div className="w-full font-mono flex flex-col gap-2 text-xs h-68 overflow-y-auto px-1 pb-2">
           <div>
             <span className="font-semibold">Title</span>: <span>{data.title}</span>
           </div>
@@ -404,10 +427,12 @@ const MoreInfo = ({
             <span className="font-semibold">Added At</span>:{' '}
             <span>{new Date(data.added_at!).toLocaleString()}</span>
           </div>
-          <div>
-            <span className="font-semibold">Completed At</span>:{' '}
-            <span>{new Date(data.download_completed_at!).toLocaleString()}</span>
-          </div>
+          {data.download_completed_at && (
+            <div>
+              <span className="font-semibold">Completed At</span>:{' '}
+              <span>{new Date(data.download_completed_at).toLocaleString()}</span>
+            </div>
+          )}
           <div>
             <span className="font-semibold">Download Path</span>: <span>{data.download_path}</span>
           </div>
@@ -430,6 +455,36 @@ const MoreInfo = ({
               />
             ) : null}
           </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const PlayVideoModal = ({
+  open,
+  setOpen,
+  data
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  data: RunningDownloadItem | DownloadHistoryItem;
+}) => {
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Play video</DialogTitle>
+          <DialogDescription className="line-clamp-1"></DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-3">
+          <video
+            className="w-[500px] aspect-video rounded-md outline-1"
+            controls
+            autoPlay
+            src={`${SERVER_BASE_URL}:${SERVER_PORT}/play-video?path=${encodeURIComponent(data.download_path)}`}
+          />
+          <p className="text-sm">{data.title}</p>
         </div>
       </DialogContent>
     </Dialog>
