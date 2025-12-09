@@ -9,8 +9,9 @@ import {
 } from '@renderer/components/ui/dialog';
 import { Anchor } from '@renderer/components/wrappers';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
-import { formatDate } from '@renderer/utils';
+import { formatDate, secondsToHMS } from '@renderer/utils';
 import { Dispatch, SetStateAction } from 'react';
+import numeral from 'numeral';
 
 interface MoreDetailsModalProps {
   infoJson: MediaInfoJson;
@@ -71,9 +72,22 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
               {infoJson.thumbnail ?? infoJson.thumbnails.at(-1)?.url ?? 'N/A'}
             </Anchor>
           </div>
-          {source === 'youtube-playlist' && (
+          {infoJson.view_count && (
             <div>
-              <span className="font-semibold">View Count</span>: <span>{infoJson.view_count}</span>
+              <span className="font-semibold">View Count</span>:{' '}
+              <span>{numeral(infoJson.view_count).format('0.00a')}</span>
+            </div>
+          )}
+          {infoJson.comment_count && (
+            <div>
+              <span className="font-semibold">Comment Count</span>:{' '}
+              <span>{numeral(infoJson.comment_count).format('0.00a')}</span>
+            </div>
+          )}
+          {infoJson.like_count && (
+            <div>
+              <span className="font-semibold">Like Count</span>:{' '}
+              <span>{numeral(infoJson.like_count).format('0.00a')}</span>
             </div>
           )}
           {source !== 'youtube-playlist' && (
@@ -115,6 +129,18 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
             ) : (
               'N/A'
             )}
+          </div>
+          <div>
+            <span className="font-semibold">Chapters: </span>
+            <div className="flex flex-col gap-2">
+              {infoJson.chapters?.map((c) => (
+                <div key={c.start_time} className="flex flex-col">
+                  <span>Start time: {secondsToHMS(c.start_time)}</span>
+                  <span>Title: {c.title}</span>
+                  <span>End time: {secondsToHMS(c.end_time)}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </DialogContent>

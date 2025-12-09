@@ -1,6 +1,12 @@
 import { MediaInfoJson } from '@/shared/types/info-json';
 import { formatDate } from '@renderer/utils';
-import { IconCircleCheckFilled, IconClockHour3Filled, IconNumber } from '@tabler/icons-react';
+import {
+  IconCircleCheckFilled,
+  IconClockHour3Filled,
+  IconEye,
+  IconNumber,
+  IconThumbUp
+} from '@tabler/icons-react';
 import { useState } from 'react';
 import LiveStatus from './live-status';
 import DownloadButton from './download-button';
@@ -11,6 +17,7 @@ import ExtraOptions from './extra-options';
 import MoreDetailsModal from './more-details-modal';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { Source } from '@shared/types';
+import numeral from 'numeral';
 
 const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
@@ -41,6 +48,11 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
                     <IconCircleCheckFilled className="size-3" />
                   ) : null}
                   {infoJson.uploader}
+                  {infoJson.channel_follower_count ? (
+                    <span>
+                      {' | '} {numeral(infoJson.channel_follower_count).format('0.00a')}
+                    </span>
+                  ) : null}
                 </span>
               )}
               {infoJson.upload_date && (
@@ -59,6 +71,18 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
                 <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconNumber className="size-3" />
                   Playlist Count: {infoJson.playlist_count}
+                </span>
+              )}
+              {infoJson.view_count && (
+                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                  <IconEye className="size-3" />
+                  {numeral(infoJson.view_count).format('0.00a')}
+                </span>
+              )}
+              {infoJson.like_count && (
+                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                  <IconThumbUp className="size-3" />
+                  {numeral(infoJson.like_count).format('0.00a')}
                 </span>
               )}
               <span className="text-xs inline-flex items-center gap-1">

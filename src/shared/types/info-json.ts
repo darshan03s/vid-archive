@@ -79,6 +79,7 @@ export interface MediaInfoJson extends Extra {
   abr: number;
   asr: number;
   audio_channels: number;
+  chapters: MediaChapter[];
 }
 
 export interface MediaFormat {
@@ -137,4 +138,10 @@ export interface MediaAutomaticCaptions {
 
 export interface MediaSubtitles {
   [key: string]: MediaSubtitle[];
+}
+
+export interface MediaChapter {
+  start_time: number;
+  title: string;
+  end_time: number;
 }

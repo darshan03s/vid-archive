@@ -427,7 +427,7 @@ const MoreInfo = ({
             <span className="font-semibold">Added At</span>:{' '}
             <span>{new Date(data.added_at!).toLocaleString()}</span>
           </div>
-          {data.download_completed_at && (
+          {data.download_status !== 'downloading' && data.download_completed_at && (
             <div>
               <span className="font-semibold">Completed At</span>:{' '}
               <span>{new Date(data.download_completed_at).toLocaleString()}</span>

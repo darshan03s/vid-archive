@@ -2,8 +2,10 @@ import { LiveFromStartFormats, MediaFormat, MediaInfoJson } from '@/shared/types
 import { Button } from '@renderer/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle
 } from '@renderer/components/ui/dialog';
@@ -163,11 +165,16 @@ const AllFormatsModal = ({
             </Button>
           ))}
         </div>
-        <div className="w-full font-mono flex flex-col gap-2 h-70 overflow-auto">
+        <div className="w-full font-mono flex flex-col gap-2 h-53 overflow-auto">
           {formatMap[selectedFilter]?.map((format) => (
             <Format key={format.format_id} format={format} />
           ))}
         </div>
+        <DialogFooter>
+          <DialogClose>
+            <Button className="text-xs">OK</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

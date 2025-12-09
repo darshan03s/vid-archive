@@ -65,3 +65,19 @@ export function acodec(codec: string | undefined): string {
   }
   return codec || '';
 }
+
+export function secondsToHMS(totalSeconds: number): string {
+  if (typeof totalSeconds !== 'number' || Number.isNaN(totalSeconds) || totalSeconds < 0) {
+    throw new Error('Input must be a non-negative number');
+  }
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+
+  const hh = hours.toString().padStart(2, '0');
+  const mm = minutes.toString().padStart(2, '0');
+  const ss = seconds.toString().padStart(2, '0');
+
+  return `${hh}:${mm}:${ss}`;
+}
