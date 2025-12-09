@@ -1,3 +1,4 @@
+import { Source } from '@shared/types';
 import { DownloadOptions } from '@/shared/types/download';
 import { MediaInfoJson } from '@/shared/types/info-json';
 import { Button } from '@renderer/components/ui/button';
@@ -12,7 +13,7 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
   const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
   const extraOptions = useSelectedOptionsStore((state) => state.extraOptions);
   const url = useMediaInfoStore.getState().url;
-  const source = useMediaInfoStore.getState().source;
+  const source = useMediaInfoStore.getState().source as Source;
   const mediaInfo = useMediaInfoStore((state) => state.mediaInfo) as MediaInfoJson;
 
   function validTime(time: string) {
