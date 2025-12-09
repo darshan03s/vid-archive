@@ -6,6 +6,7 @@ import { downloadHistoryOperations } from './utils/dbUtils';
 import logger from '@shared/logger';
 import mime from 'mime-types';
 import { Source } from '@shared/types';
+import { isAudio, isVideo } from '@shared/utils';
 
 const statAsync = promisify(stat);
 
@@ -19,8 +20,8 @@ function runServer() {
     const reqUrl = req.url;
     if (reqUrl) {
       const parsedUrl = new URL(reqUrl, SERVER_BASE_URL);
-      // /play-video?path=/path/to/video
-      if (parsedUrl.pathname === '/play-video') {
+      // /play-media?path=/path/to/media
+      if (parsedUrl.pathname === '/play-media') {
         const filePath = parsedUrl.searchParams.get('path');
         if (!filePath) {
           res.writeHead(400);
@@ -28,7 +29,7 @@ function runServer() {
           return;
         }
 
-        if (!/\.(avi|flv|mkv|mov|m4v|webm|mp4)$/i.test(filePath)) {
+        if (!isVideo(filePath) && !isAudio(filePath)) {
           res.writeHead(415);
           res.end('Unsupported media type');
           return;
@@ -85,9 +86,9 @@ function runServer() {
           return;
         }
 
-        if (source === 'youtube-video') {
-          const videoId = new URL(urlToEmbed).searchParams.get('v');
-          const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        if (source === 'youtube-video' || source === 'youtube-music') {
+          const videoOrMusicId = new URL(urlToEmbed).searchParams.get('v');
+          const embedUrl = `https://www.youtube.com/embed/${videoOrMusicId}`;
           const embedHtml = getEmbedHtml(embedUrl);
           res.writeHead(200, { 'Content-Type': 'text/html' });
           res.end(embedHtml);

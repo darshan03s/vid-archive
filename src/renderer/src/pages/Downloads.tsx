@@ -38,6 +38,7 @@ import { useSearchStore } from '@renderer/stores/search-store';
 import { ButtonGroup } from '@renderer/components/ui/button-group';
 import { Input } from '@renderer/components/ui/input';
 import { SERVER_BASE_URL, SERVER_PORT } from '@shared/data';
+import { isAudio } from '@shared/utils';
 
 function updateDownloadHistoryInStore() {
   window.api.getDownloadHistory().then((downloadsHistory: DownloadHistoryList) => {
@@ -362,7 +363,7 @@ const DownloadCard = ({
         </ItemFooter>
       </Item>
       <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} data={downloadItem} />
-      <PlayVideoModal
+      <PlayMediaModal
         open={isPlayVideoModalOpen}
         setOpen={setIsPlayVideoModalOpen}
         data={downloadItem}
@@ -461,7 +462,7 @@ const MoreInfo = ({
   );
 };
 
-const PlayVideoModal = ({
+const PlayMediaModal = ({
   open,
   setOpen,
   data
@@ -474,17 +475,27 @@ const PlayVideoModal = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Play video</DialogTitle>
+          <DialogTitle>Play media</DialogTitle>
           <DialogDescription className="line-clamp-1"></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          <video
-            className="w-[500px] aspect-video rounded-md outline-1"
-            controls
-            controlsList="nofullscreen"
-            autoPlay
-            src={`${SERVER_BASE_URL}:${SERVER_PORT}/play-video?path=${encodeURIComponent(data.download_path)}`}
-          />
+          {isAudio(data.download_path) ? (
+            <audio
+              controls
+              controlsList="nofullscreen"
+              autoPlay
+              className="w-full"
+              src={`${SERVER_BASE_URL}:${SERVER_PORT}/play-media?path=${encodeURIComponent(data.download_path)}`}
+            />
+          ) : (
+            <video
+              className="w-[500px] aspect-video rounded-md outline-1"
+              controls
+              controlsList="nofullscreen"
+              autoPlay
+              src={`${SERVER_BASE_URL}:${SERVER_PORT}/play-media?path=${encodeURIComponent(data.download_path)}`}
+            />
+          )}
           <p className="text-sm">{data.title}</p>
         </div>
       </DialogContent>

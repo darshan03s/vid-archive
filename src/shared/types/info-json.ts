@@ -16,6 +16,13 @@ interface Extra {
   modified_date: string;
   playlist_count: number;
   view_count: number;
+  album: string;
+  artist: string;
+  artists: string[];
+  creator: string;
+  track: string;
+  release_year: number;
+  alt_title: string;
 }
 
 export interface MediaInfoJson extends Extra {

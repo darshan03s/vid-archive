@@ -17,7 +17,7 @@ const Preview = ({
   url: string;
   source: Source;
 }) => {
-  if (source === 'youtube-video') {
+  if (source === 'youtube-video' || source === 'youtube-music') {
     return (
       <div className="w-full h-60 bg-black flex items-center justify-center">
         <iframe

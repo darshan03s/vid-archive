@@ -11,7 +11,7 @@ import { getStoreManager } from '@main/store';
 import { DownloadManager } from '@main/downloadManager';
 import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
-import { getYoutubePlaylistId, getYouTubeVideoId } from '@shared/utils';
+import { getYoutubeMusicId, getYoutubePlaylistId, getYouTubeVideoId } from '@shared/utils';
 
 function getInfoJsonPath(url: string, source: Source): string {
   if (source === 'youtube-video') {
@@ -35,6 +35,17 @@ function getInfoJsonPath(url: string, source: Source): string {
     );
     return infoJsonPath;
   }
+
+  if (source === 'youtube-music') {
+    const musicId = getYoutubeMusicId(url);
+    const infoJsonPath = path.join(
+      MEDIA_DATA_FOLDER_PATH,
+      source,
+      musicId!,
+      musicId + '.info.json'
+    );
+    return infoJsonPath;
+  }
   return '';
 }
 
@@ -44,7 +55,7 @@ export async function getInfoJson(
   refetch?: boolean
 ): Promise<MediaInfoJson | null> {
   const infoJsonPath = getInfoJsonPath(url, source);
-  if (source === 'youtube-video') {
+  if (source === 'youtube-video' || source === 'youtube-music') {
     if (refetch) {
       logger.info(`Re-fetching info-json for ${url}`);
       return await createInfoJson(url, source, infoJsonPath);
@@ -52,11 +63,11 @@ export async function getInfoJson(
     if (await pathExists(infoJsonPath)) {
       const expireTime = await getExpireTime(infoJsonPath);
       if (new Date().toISOString() > expireTime!) {
-        logger.info(`Video Links expired for ${url} on ${new Date(expireTime!)}`);
+        logger.info(`Links expired for ${url} on ${new Date(expireTime!)}`);
         logger.info(`Re-creating info-json for ${url}`);
         return (await createInfoJson(url, source, infoJsonPath)) as MediaInfoJson;
       } else {
-        logger.info(`Video Links for ${url} expire at ${new Date(expireTime!)}`);
+        logger.info(`Links for ${url} expire at ${new Date(expireTime!)}`);
         return await readJson<MediaInfoJson>(infoJsonPath);
       }
     } else {
@@ -127,12 +138,12 @@ export async function createInfoJson(
 
       logger.info(`Created info json for ${url}`);
 
-      if (source === 'youtube-video') {
+      if (source === 'youtube-video' || source === 'youtube-music') {
         let infoJson = await readJson<MediaInfoJson>(infoJsonPath);
         infoJson = await addCreatedAt(infoJson);
         infoJson = await addExpiresAt(infoJson);
         infoJson = await downloadThumbnail(infoJson, source, url);
-        infoJson = await writeDescription(infoJson);
+        infoJson = await writeDescription(infoJson, source);
         if (infoJson.is_live) {
           infoJson = await addLiveFromStartFormats(url, infoJson);
         }
@@ -282,7 +293,7 @@ async function getExpireTime(infoJsonPath: string) {
 async function downloadThumbnail(infoJson: MediaInfoJson, source: Source, url: string) {
   const safeTitle = sanitizeFileName(infoJson.fulltitle ?? infoJson.title);
   let thumbnailUrl: URL | null = null;
-  if (source === 'youtube-video') {
+  if (source === 'youtube-video' || source === 'youtube-music') {
     thumbnailUrl = new URL(infoJson.thumbnail);
   }
   if (source === 'youtube-playlist') {
@@ -312,12 +323,12 @@ async function downloadThumbnail(infoJson: MediaInfoJson, source: Source, url: s
   return infoJson;
 }
 
-async function writeDescription(infoJson: MediaInfoJson) {
-  const safeTitle = sanitizeFileName(infoJson.fulltitle);
+async function writeDescription(infoJson: MediaInfoJson, source: Source) {
+  const safeTitle = sanitizeFileName(infoJson.fulltitle ?? infoJson.title);
 
   const descriptionLocalPath = path.join(
     MEDIA_DATA_FOLDER_PATH,
-    'youtube-video',
+    source,
     infoJson.id,
     safeTitle + '.description'
   );
@@ -334,10 +345,10 @@ async function writeDescription(infoJson: MediaInfoJson) {
 
 export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
   const store = await getStoreManager();
+  const { url, source, selectedFormat, downloadSections, selectedDownloadFolder, extraOptions } =
+    downloadOptions;
 
-  if (downloadOptions.source === ('youtube-video' as Source)) {
-    const { url, source, selectedFormat, downloadSections, selectedDownloadFolder, extraOptions } =
-      downloadOptions;
+  if (source === 'youtube-video' || source === 'youtube-music') {
     console.log({ url, source, selectedFormat, downloadSections, extraOptions });
     const mediaInfo = downloadOptions.mediaInfo as MediaInfoJson;
     const infoJsonPath = getInfoJsonPath(url, source);

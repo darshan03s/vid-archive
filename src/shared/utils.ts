@@ -29,3 +29,73 @@ export function getYoutubePlaylistId(url: string): string | null {
     return null;
   }
 }
+
+export function getYoutubeMusicId(url: string): string | null {
+  let musicId: string | null = null;
+  try {
+    const parsed = new URL(url);
+    musicId = parsed.searchParams.get('v');
+    return musicId;
+  } catch {
+    return null;
+  }
+}
+
+export const AUDIO_EXTS = new Set([
+  '.mp3',
+  '.m4a',
+  '.aac',
+  '.wav',
+  '.flac',
+  '.alac',
+  '.ogg',
+  '.oga',
+  '.opus',
+  '.amr',
+  '.aiff',
+  '.aif',
+  '.aifc',
+  '.wv',
+  '.wma',
+  '.mp2',
+  '.mp1',
+  '.mka',
+  '.ra',
+  '.rm',
+  '.dsf',
+  '.dff'
+]);
+
+export function isAudio(filePath: string): boolean {
+  const clean = filePath.toLowerCase();
+  return Array.from(AUDIO_EXTS).some((ext) => clean.endsWith(ext));
+}
+
+export const VIDEO_EXTS = new Set([
+  '.mp4',
+  '.mkv',
+  '.webm',
+  '.mov',
+  '.avi',
+  '.wmv',
+  '.flv',
+  '.f4v',
+  '.m4v',
+  '.mpeg',
+  '.mpg',
+  '.mp2v',
+  '.3gp',
+  '.3g2',
+  '.mts',
+  '.m2ts',
+  '.ts',
+  '.vob',
+  '.ogv',
+  '.rm',
+  '.rmvb'
+]);
+
+export function isVideo(filePath: string): boolean {
+  const clean = filePath.toLowerCase();
+  return Array.from(VIDEO_EXTS).some((ext) => clean.endsWith(ext));
+}

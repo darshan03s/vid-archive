@@ -21,6 +21,7 @@ interface MoreDetailsModalProps {
 
 const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) => {
   const source = useMediaInfoStore((state) => state.source) as Source;
+  const url = useMediaInfoStore((state) => state.url);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -33,9 +34,16 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
             <span className="font-semibold">Title</span>:{' '}
             <span>{infoJson.fulltitle ?? infoJson.title ?? 'N/A'}</span>
           </div>
+          {infoJson.alt_title && (
+            <div>
+              <span className="font-semibold">Alt Title</span>: <span>{infoJson.alt_title}</span>
+            </div>
+          )}
           <div>
             <span className="font-semibold">URL</span>:{' '}
-            <Anchor href={infoJson.webpage_url || ''}>{infoJson.webpage_url || 'N/A'}</Anchor>
+            <Anchor href={url || infoJson.webpage_url || ''}>
+              {url || infoJson.webpage_url || 'N/A'}
+            </Anchor>
           </div>
           {source !== 'youtube-playlist' && (
             <div>
@@ -49,6 +57,16 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
             <span className="font-semibold">Uploader</span>:{' '}
             <span>{infoJson.uploader || 'N/A'}</span>
           </div>
+          {infoJson.artist && (
+            <div>
+              <span className="font-semibold">Artist</span>: <span>{infoJson.artist}</span>
+            </div>
+          )}
+          {infoJson.creator && (
+            <div>
+              <span className="font-semibold">Creator</span>: <span>{infoJson.creator}</span>
+            </div>
+          )}
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
             <Anchor href={infoJson.uploader_url || infoJson.channel_url || ''}>
@@ -96,15 +114,39 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
               <span>{infoJson.is_live ? 'Live Now' : infoJson.was_live ? 'Was Live' : 'N/A'}</span>
             </div>
           )}
-          {source !== 'youtube-playlist' && (
+          {infoJson.categories && (
             <div>
               <span className="font-semibold">Categories</span>:{' '}
               <span>{infoJson.categories?.join(', ')}</span>
             </div>
           )}
-          <div>
-            <span className="font-semibold">Tags</span>: <span>{infoJson.tags?.join(', ')}</span>
-          </div>
+          {infoJson.tags && (
+            <div>
+              <span className="font-semibold">Tags</span>: <span>{infoJson.tags?.join(', ')}</span>
+            </div>
+          )}
+          {infoJson.album && (
+            <div>
+              <span className="font-semibold">Album</span>: <span>{infoJson.album}</span>
+            </div>
+          )}
+          {infoJson.artists && (
+            <div>
+              <span className="font-semibold">Artists</span>:{' '}
+              <span>{infoJson.artists?.join(', ')}</span>
+            </div>
+          )}
+          {infoJson.track && (
+            <div>
+              <span className="font-semibold">Track</span>: <span>{infoJson.track}</span>
+            </div>
+          )}
+          {infoJson.release_year && (
+            <div>
+              <span className="font-semibold">Release Year</span>:{' '}
+              <span>{infoJson.release_year}</span>
+            </div>
+          )}
           <div>
             <span className="font-semibold">Availablity</span>:{' '}
             <span>{infoJson.availability || 'N/A'}</span>
@@ -130,18 +172,20 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
               'N/A'
             )}
           </div>
-          <div>
-            <span className="font-semibold">Chapters: </span>
-            <div className="flex flex-col gap-2">
-              {infoJson.chapters?.map((c) => (
-                <div key={c.start_time} className="flex flex-col">
-                  <span>Start time: {secondsToHMS(c.start_time)}</span>
-                  <span>Title: {c.title}</span>
-                  <span>End time: {secondsToHMS(c.end_time)}</span>
-                </div>
-              ))}
+          {infoJson.chapters && (
+            <div>
+              <span className="font-semibold">Chapters: </span>
+              <div className="flex flex-col gap-2">
+                {infoJson.chapters?.map((c) => (
+                  <div key={c.start_time} className="flex flex-col">
+                    <span>Start time: {secondsToHMS(c.start_time)}</span>
+                    <span>Title: {c.title}</span>
+                    <span>End time: {secondsToHMS(c.end_time)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

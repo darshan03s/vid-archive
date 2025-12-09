@@ -1,7 +1,7 @@
 import { getStoreManager } from '@main/store';
 import logger from '@shared/logger';
 import { Api, AppSettings, Source } from '@shared/types';
-import { getYoutubePlaylistId, getYouTubeVideoId } from '@shared/utils';
+import { getYoutubeMusicId, getYoutubePlaylistId, getYouTubeVideoId } from '@shared/utils';
 import { ChildProcess, exec } from 'child_process';
 import { promisify } from 'util';
 const execPromise = promisify(exec);
@@ -109,6 +109,9 @@ export function getSourceFromUrl(url: string): Source | null {
   if (parsedUrl.hostname.includes('youtu.be')) {
     return 'youtube-video';
   }
+  if (parsedUrl.hostname.includes('music.youtube.com')) {
+    return 'youtube-music';
+  }
   return null;
 }
 
@@ -120,6 +123,10 @@ export function getNormalizedUrl(source: Source, url: string) {
   if (source === 'youtube-playlist') {
     const playlistId = getYoutubePlaylistId(url);
     return `https://youtube.com/playlist?list=${playlistId}`;
+  }
+  if (source === 'youtube-music') {
+    const musicId = getYoutubeMusicId(url);
+    return `https://music.youtube.com/watch?v=${musicId}`;
   }
   return '';
 }

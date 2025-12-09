@@ -1,3 +1,4 @@
+import { Source } from '.';
 import { MediaFormat, MediaInfoJson } from './info-json';
 
 export type DownloadStatus = 'downloading' | 'completed' | 'failed' | 'paused';
@@ -28,7 +29,7 @@ export type DownloadOptions = {
   selectedDownloadFolder: string;
   extraOptions: ExtraOptions;
   url: string;
-  source: string;
+  source: Source;
   mediaInfo: MediaInfoJson;
 };
 
