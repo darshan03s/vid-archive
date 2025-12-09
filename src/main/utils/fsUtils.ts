@@ -103,6 +103,7 @@ export function sanitizeFileName(name: string, replace: string = ''): string {
   let sanitized = name.normalize('NFKD');
   sanitized = sanitized.replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-');
   sanitized = sanitized.replace(/\u2019/g, "'");
+  sanitized = sanitized.replace(/[\u201C\u201D]/g, '"');
   sanitized = sanitized.replace(/[<>:"/\\|?*]/g, replace).trim();
   return sanitized;
 }

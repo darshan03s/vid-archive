@@ -161,7 +161,7 @@ const AllFormatsModal = ({
               variant={'secondary'}
               className={`text-xs border-none shadow-none outline-none ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=on]:outline-none data-[state=on]:ring-0 ${formatFilter === selectedFilter ? 'hover:bg-primary text-primary-foreground' : ''} ${formatFilter === selectedFilter ? 'bg-primary text-primary-foreground' : ''}`}
             >
-              {formatFiltersObj[formatFilter]}
+              {formatFiltersObj[formatFilter]} ({formatMap[formatFilter].length})
             </Button>
           ))}
         </div>
