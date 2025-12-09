@@ -108,6 +108,20 @@ export async function createInfoJson(
 
     child.on('error', reject);
 
+    child.stdout.setEncoding('utf-8');
+    child.stderr.setEncoding('utf-8');
+
+    child.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    child.stderr.on('data', (data) => {
+      console.log(`stderr: ${data}`);
+      if (data.includes('ERROR')) {
+        mainWindow.webContents.send('yt-dlp:error', data);
+      }
+    });
+
     child.on('close', async (code) => {
       if (code !== 0) return resolve(null);
 

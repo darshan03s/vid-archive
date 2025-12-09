@@ -75,6 +75,9 @@ export class DownloadManager {
       mainWindow.webContents.send(`download-progress:${newDownload.id}`, {
         progressString: text
       } as ProgressDetails);
+      if (text.includes('ERROR')) {
+        mainWindow.webContents.send('yt-dlp:error', text);
+      }
     });
 
     child.on('close', (code, signal) => {
