@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import { DATA_DIR, DB_PATH, MEDIA_DATA_FOLDER_PATH, SETTINGS_PATH } from '.';
 import { initDatabase, runMigrations } from './db';
 import { getDefaultAppSettings } from './defaultSettings';
@@ -5,6 +6,11 @@ import { DownloadManager } from './downloadManager';
 import { initStoreManager } from './store';
 import { makeDirs, pathExistsSync } from './utils/fsUtils';
 import logger from '@shared/logger';
+
+async function applyUpdates() {
+  runMigrations();
+  logger.info('Applied updates');
+}
 
 export async function init() {
   const store = await initStoreManager();
@@ -32,18 +38,32 @@ export async function init() {
     logger.info('settings.json exists');
   }
 
+  logger.info(
+    `App version in settings: ${store.get('appVersion')} | Current version: ${app.getVersion()}`
+  );
+
   if (!pathExistsSync(DB_PATH)) {
     initDatabase();
     logger.info('Created app.db');
     try {
       runMigrations();
-      logger.info('Migrations applied');
+      logger.info('Migrations applied for new version');
     } catch (error) {
       logger.error('Migrations failed: ' + error);
     }
   } else {
     logger.info('app.db exists');
     initDatabase();
-    runMigrations();
+    if (app.getVersion() !== store.get('appVersion')) {
+      try {
+        applyUpdates();
+        store.set('appVersion', app.getVersion());
+      } catch (e) {
+        logger.error('Could not apply updates');
+        logger.error(e);
+      }
+    } else {
+      logger.info('Skipping updates');
+    }
   }
 }
