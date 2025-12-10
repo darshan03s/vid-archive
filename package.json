@@ -25,7 +25,8 @@
     "build:linux": "electron-vite build && electron-builder --linux",
     "prepare": "husky",
     "rm:app-data": "rm -rf ./app-data",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "postversion": "pnpm build:win"
   },
   "lint-staged": {
     "*.{html,css,js,ts,jsx,tsx,json,mjs}": [
