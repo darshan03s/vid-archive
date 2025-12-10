@@ -139,3 +139,9 @@ export async function deleteFile(filePath: string): Promise<void> {
     throw new Error(`Failed to remove file "${filePath}": ${(error as Error).message}`);
   }
 }
+
+export function getFileExtension(filePath: string | undefined): string {
+  if (!filePath) return '';
+  const ext = path.extname(filePath).trim();
+  return ext.startsWith('.') ? ext.slice(1) : ext;
+}

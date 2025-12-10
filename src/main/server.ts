@@ -18,11 +18,13 @@ function runServer() {
       return;
     }
     const reqUrl = req.url;
+    console.log({ reqUrl });
     if (reqUrl) {
       const parsedUrl = new URL(reqUrl, SERVER_BASE_URL);
       // /play-media?path=/path/to/media
       if (parsedUrl.pathname === '/play-media') {
         const filePath = parsedUrl.searchParams.get('path');
+        console.log({ filePath });
         if (!filePath) {
           res.writeHead(400);
           res.end('Missing path');

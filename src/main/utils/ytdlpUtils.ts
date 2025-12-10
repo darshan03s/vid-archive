@@ -451,8 +451,12 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     }
 
     // output filename
-    targetDownloadFileName = targetDownloadFileName + '.%(ext)s';
-    targetDownloadFileName = sanitizeFileName(targetDownloadFileName, '_');
+    const targetDownloadFileNameWithoutExt = sanitizeFileName(targetDownloadFileName, '_');
+    const targetDownloadFilePathWithoutExt = path.join(
+      selectedDownloadFolder,
+      targetDownloadFileNameWithoutExt
+    );
+    targetDownloadFileName = targetDownloadFileNameWithoutExt + '.%(ext)s';
     const targetDownloadFilePath = path.join(selectedDownloadFolder, targetDownloadFileName);
     downloadCommandArgs.push('-o', targetDownloadFilePath);
     const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
@@ -486,7 +490,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       download_progress_string: '',
       command: completeCommand,
       complete_output: '',
-      download_path: '',
+      download_path: targetDownloadFilePathWithoutExt,
       download_status: 'downloading',
       download_completed_at: '',
       download_command_base: downloadCommandBase,

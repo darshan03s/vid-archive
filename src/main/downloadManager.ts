@@ -3,6 +3,7 @@ import { NewDownloadHistoryItem } from './types/db';
 import { downloadHistoryOperations } from './utils/dbUtils';
 import { mainWindow } from '.';
 import { ProgressDetails } from '@shared/types/download';
+import { getFileExtension } from './utils/fsUtils';
 
 type RunningDownload = {
   downloadingItem: NewDownloadHistoryItem;
@@ -93,18 +94,19 @@ export class DownloadManager {
           .filter(Boolean);
 
         const filepath = lines.at(-1);
-        downloadingItem.download_path = filepath ?? '';
+        const ext = getFileExtension(filepath);
+        downloadingItem.download_path = downloadingItem.download_path + `.${ext}`;
       } else {
         if (downloadingItem.download_status === 'paused') {
           downloadingItem.download_completed_at = new Date().toISOString();
           downloadingItem.download_progress_string = 'Download Paused';
-          downloadingItem.download_path = '';
+          // downloadingItem.download_path = '';
           downloadingItem.complete_output += '\nDownload Paused';
         } else {
           downloadingItem.download_status = 'failed';
           downloadingItem.download_completed_at = new Date().toISOString();
           downloadingItem.download_progress_string = 'Download Failed';
-          downloadingItem.download_path = '';
+          // downloadingItem.download_path = '';
           downloadingItem.complete_output += '\nDownload Failed';
           mainWindow.webContents.send(
             'yt-dlp:download-failed',
