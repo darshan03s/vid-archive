@@ -21,7 +21,7 @@ const APP_USER_MODEL_ID = 'com.ytdlpdesk.app';
 export const APP_PATH = app.getAppPath();
 export const APP_DATA_PATH = is.dev ? path.join(APP_PATH, 'app-data') : app.getPath('userData');
 app.setPath('userData', APP_DATA_PATH);
-export const DATA_DIR = path.join(APP_DATA_PATH, 'data');
+export const DATA_DIR = path.join(APP_DATA_PATH, 'User');
 export const DB_PATH = path.join(DATA_DIR, 'app.db');
 export const SETTINGS_PATH = path.join(DATA_DIR, 'settings.json');
 export const MEDIA_DATA_FOLDER_PATH = path.join(DATA_DIR, 'media-data');
