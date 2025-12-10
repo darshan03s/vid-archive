@@ -24,5 +24,4 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  include: build/installer.nsh
 npmRebuild: false
