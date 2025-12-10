@@ -44,7 +44,7 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
       useMediaInfoStore.setState({ source: source, url: url, mediaInfo: {} });
       navigate('/display-media-info?updateUrlHistory=1');
     } else {
-      toast.error('This url is currently not supported for displaying info');
+      toast.error('Source not supported');
     }
   }
 
