@@ -27,8 +27,7 @@
     "build:win": "pnpm run build && electron-builder --win",
     "prepare": "husky",
     "rm:app-data": "rm -rf ./app-data",
-    "db:generate": "drizzle-kit generate",
-    "postversion": "pnpm build:win"
+    "db:generate": "drizzle-kit generate"
   },
   "lint-staged": {
     "*.{html,css,js,ts,jsx,tsx,json,mjs}": [
