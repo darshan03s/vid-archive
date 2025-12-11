@@ -18,9 +18,9 @@ asarUnpack:
   - node_modules/better-sqlite3/**
   - node_modules/7zip-min/**/*
 win:
-  executableName: yt-dlp-desk
+  executableName: yt-dlp Desk
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${name}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
