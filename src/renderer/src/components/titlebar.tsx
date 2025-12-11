@@ -46,7 +46,7 @@ const Titlebar = () => {
   return (
     <div className="titlebar h-(--titlebar-height) w-full bg-black text-white flex items-center select-none relative z-9999 pointer-events-auto">
       <div className="titlebar-left px-2 flex items-center gap-2">
-        <img src={appIcon} alt="icon" width={18} height={18} />
+        <img src={appIcon} alt="icon" width={18} height={18} className="rounded-[4px]" />
         <div className="flex items-center gap-1">
           <button title="Go Back" onClick={goBack} className="opacity-60 hover:opacity-100">
             <IconArrowLeft className="size-4" />
