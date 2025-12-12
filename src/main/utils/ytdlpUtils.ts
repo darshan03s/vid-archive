@@ -189,7 +189,7 @@ export async function createInfoJson(
         let infoJson = await readJson<MediaInfoJson>(infoJsonPath);
         infoJson = await addCreatedAt(infoJson);
         infoJson = await downloadThumbnail(infoJson, source, url);
-        infoJson = await addExpiresAt(infoJson);
+        infoJson = await addExpiresAt(infoJson, source);
         infoJson = await writeDescription(infoJson, source);
         if (infoJson.is_live) {
           infoJson = await addLiveFromStartFormats(url, infoJson);
@@ -243,15 +243,34 @@ async function addLiveFromStartFormats(url: string, infoJson: MediaInfoJson) {
   const baseCommand = YTDLP_EXE_PATH;
   const args = ['--js-runtimes', jsRuntimePath, '-F', url, '--live-from-start'];
 
+  if (
+    settings.get('cookiesFilePath').length > 0 &&
+    pathExistsSync(settings.get('cookiesFilePath'))
+  ) {
+    args.push('--cookies');
+    args.push(settings.get('cookiesFilePath'));
+  }
+
+  const completeCommand = baseCommand.concat(' ').concat(args.join(' '));
+
+  console.log(`Live from start command: \n${completeCommand}`);
+
   return new Promise<MediaInfoJson>((resolve) => {
     let formatsString: string;
     const child = spawn(baseCommand, args);
 
+    child.stdout.setEncoding('utf-8');
+    child.stderr.setEncoding('utf-8');
+
     child.stdout.on('data', (data) => {
-      const line = data.toString() as string;
-      if (line.includes('Available formats')) {
-        formatsString = line;
+      console.log(data);
+      if (data.includes('Available formats')) {
+        formatsString = data;
       }
+    });
+
+    child.stderr.on('data', (data) => {
+      console.log(data);
     });
 
     child.on('close', async (code) => {
@@ -263,7 +282,7 @@ async function addLiveFromStartFormats(url: string, infoJson: MediaInfoJson) {
         }
         const parsedFormats = await parseLiveFromStartFormatsString(formatsString);
         infoJson.live_from_start_formats = parsedFormats;
-        logger.info(`Added live from start formats`);
+        logger.info(`Added live from start formats for ${url}`);
         return resolve(infoJson);
       } else {
         infoJson.live_from_start_formats = [];
@@ -319,6 +338,7 @@ async function parseLiveFromStartFormatsString(formatsString: string) {
     });
   }
 
+  logger.info(`Live from start formats found: ${parsedFormats.length}`);
   return parsedFormats;
 }
 
@@ -332,6 +352,7 @@ async function addExpiresAt(infoJson: MediaInfoJson, source?: Source) {
     const format = infoJson.formats.find((f) => f.vcodec !== 'none' && f.url);
 
     if (!format?.url) {
+      logger.info('Format not available to add expire time');
       infoJson.expires_at = new Date().toISOString();
       return infoJson;
     }
@@ -348,18 +369,22 @@ async function addExpiresAt(infoJson: MediaInfoJson, source?: Source) {
 
     if (!expireParam) {
       // default 15 min
+      logger.info(`No expire param found for: ${url}}`);
       infoJson.expires_at = new Date(Date.now() + 1000 * 60 * 15).toISOString();
       return infoJson;
     }
 
+    logger.info(`Adding expire time from expire param`);
     infoJson.expires_at = new Date(Number(expireParam) * 1000).toISOString();
     return infoJson;
   } else if (source === 'instagram-video') {
     // 6 hour
+    logger.info(`Adding default expire time for ${source}`);
     infoJson.expires_at = new Date(Date.now() + 1000 * 60 * 60 * 6).toISOString();
     return infoJson;
   }
   // 15 min
+  logger.info(`Adding default expire time for ${source}`);
   infoJson.expires_at = new Date(Date.now() + 1000 * 60 * 15).toISOString();
   return infoJson;
 }
