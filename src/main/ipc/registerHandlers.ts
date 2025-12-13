@@ -31,6 +31,7 @@ import { mainWindow } from '..';
 
 async function registerHanlders() {
   ipcMain.on('win:min', () => mainWindow.minimize());
+
   ipcMain.on('win:close', () => mainWindow.close());
 
   ipcMain.handle('renderer:init', rendererInit);

@@ -26,6 +26,8 @@ export type AppSettingsChange = Pick<
 export type Source = (typeof allowedSources)[number];
 
 export type Api = {
+  minimize: () => void;
+  close: () => void;
   rendererInit: () => Promise<AppSettings | null>;
   confirmYtdlp: () => Promise<{
     ytdlpPathInPc: string | null;

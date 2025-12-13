@@ -6,6 +6,8 @@ import { DownloadOptions } from '@shared/types/download';
 
 // Custom APIs for renderer
 const api: Api = {
+  minimize: () => ipcRenderer.send('win:min'),
+  close: () => ipcRenderer.send('win:close'),
   rendererInit: () => ipcRenderer.invoke('renderer:init'),
   confirmYtdlp: () => ipcRenderer.invoke('yt-dlp:confirm'),
   confirmFfmpeg: () => ipcRenderer.invoke('ffmpeg:confirm'),

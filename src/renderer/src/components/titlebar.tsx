@@ -29,7 +29,7 @@ const Titlebar = () => {
   }
 
   function minimize() {
-    window.electron.ipcRenderer.send('win:min');
+    window.api.minimize();
   }
 
   function close() {
@@ -38,7 +38,7 @@ const Titlebar = () => {
         setIsConfirmExitModalVisible(true);
         return;
       } else {
-        window.electron.ipcRenderer.send('win:close');
+        window.api.close();
       }
     });
   }
