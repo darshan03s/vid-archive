@@ -2,10 +2,12 @@ import {
   DATA_DIR,
   FFMPEG_FOLDER_PATH,
   mainWindow,
+  MEDIA_DATA_FOLDER_PATH,
   YTDLP_EXE_PATH,
   YTDLP_FOLDER_PATH
 } from '@main/index';
 import {
+  getAllInfoJsonFiles,
   getFfmpegFromPc,
   getFfmpegVersionFromPc,
   getNormalizedUrl,
@@ -465,4 +467,23 @@ export async function retryFailedDownload(_event: IpcMainEvent, downloadId: stri
   downloadHistoryOperations.deleteById(downloadId);
 
   mainWindow.webContents.send('refresh-downloads');
+}
+
+export async function deleteAllMetadata() {
+  const allInfoJsonFiles = await getAllInfoJsonFiles(MEDIA_DATA_FOLDER_PATH);
+
+  logger.info(`Deleting ${allInfoJsonFiles.length} info json files`);
+
+  for (const relativePath of allInfoJsonFiles) {
+    const absolutePath = path.join(MEDIA_DATA_FOLDER_PATH, relativePath);
+
+    try {
+      logger.info(`Deleting ${absolutePath}`);
+      await deleteFile(absolutePath);
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  mainWindow.webContents.send('app:delete-all-metadata');
 }

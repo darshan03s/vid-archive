@@ -77,4 +77,5 @@ export type Api = {
   showInFolder: (filePath: string) => void;
   selectFile: () => Promise<string | null>;
   retryFailedDownload: (id: string) => void;
+  deleteAllMetadata: () => void;
 };

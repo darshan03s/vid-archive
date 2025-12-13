@@ -1,11 +1,20 @@
 import { AppSettings, AppSettingsChange } from '@/shared/types';
 import { Button } from '@renderer/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@renderer/components/ui/dialog';
 import { Input } from '@renderer/components/ui/input';
 import { Switch } from '@renderer/components/ui/switch';
 import { TooltipWrapper } from '@renderer/components/wrappers';
 import { useSettingsStore } from '@renderer/stores/settings-store';
-import { IconFile, IconFolder, IconInfoCircle } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconFile, IconFolder, IconInfoCircle, IconTrash } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 const Settings = () => {
   const initial = useSettingsStore.getState();
@@ -17,6 +26,7 @@ const Settings = () => {
     rememberPreviousDownloadsFolder: initial.rememberPreviousDownloadsFolder,
     cookiesFilePath: initial.cookiesFilePath
   });
+  const [isConfirmClearAllMetadataVisible, setIsConfirmClearAllMetadataVisible] = useState(false);
 
   function handleSettingsChange(key: keyof AppSettingsChange, value: string | boolean) {
     if (key === 'rememberPreviousDownloadsFolder') {
@@ -55,6 +65,10 @@ const Settings = () => {
         cookiesFilePath: path
       }));
     }
+  }
+
+  function handleClearAllMetadata() {
+    setIsConfirmClearAllMetadataVisible(true);
   }
 
   return (
@@ -110,7 +124,7 @@ const Settings = () => {
             }
           />
         </div>
-        <div className="px-18 flex flex-col gap-2">
+        <div className="px-18 flex flex-col gap-2 pt-2">
           <h1 className="text-sm border-b pb-1 font-bold">Cookies</h1>
           <div className="flex items-center justify-between w-full">
             <span className="setting-name text-[12px] text-nowrap flex items-center gap-1">
@@ -129,9 +143,66 @@ const Settings = () => {
             </div>
           </div>
         </div>
+        <div className="px-18 flex flex-col gap-2 pt-2">
+          <h1 className="text-sm border-b pb-1 font-bold">App Data</h1>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="setting-name text-[12px] text-nowrap flex items-center gap-1 text-destructive">
+                Clear metadata for all media
+              </span>
+              <div className="h-8 flex items-center gap-2">
+                <Button
+                  variant={'destructive'}
+                  className="text-xs"
+                  size={'sm'}
+                  onClick={handleClearAllMetadata}
+                >
+                  Clear
+                  <IconTrash className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <ConfirmDeleteAllMetadataModal
+        open={isConfirmClearAllMetadataVisible}
+        setOpen={setIsConfirmClearAllMetadataVisible}
+      />
     </div>
   );
 };
 
 export default Settings;
+
+const ConfirmDeleteAllMetadataModal = ({
+  open,
+  setOpen
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  function handleConfirmDeleteAllMetadata() {
+    window.api.deleteAllMetadata();
+    setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete all metadata?</DialogTitle>
+          <DialogDescription>This action will delete all media metadata</DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="flex ">
+          <DialogClose asChild>
+            <Button variant={'outline'}>Cancel</Button>
+          </DialogClose>
+          <Button onClick={handleConfirmDeleteAllMetadata} variant={'destructive'}>
+            Continue
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

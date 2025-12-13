@@ -8,6 +8,8 @@ import {
   getYouTubeVideoId
 } from '@shared/utils';
 import { ChildProcess, exec } from 'child_process';
+import { readdir } from 'fs/promises';
+import path from 'path';
 import { promisify } from 'util';
 const execPromise = promisify(exec);
 
@@ -181,4 +183,29 @@ export function getNormalizedUrl(source: Source, url: string) {
 export function terminateProcess(process: ChildProcess) {
   const pid = process.pid;
   exec(`taskkill /PID ${pid} /T /F`);
+}
+
+export async function getAllInfoJsonFiles(
+  rootDir: string,
+  currentDir: string = rootDir
+): Promise<string[]> {
+  const entries = await readdir(currentDir, { withFileTypes: true });
+
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const fullPath = path.join(currentDir, entry.name);
+
+      if (entry.isDirectory()) {
+        return getAllInfoJsonFiles(rootDir, fullPath);
+      }
+
+      if (entry.isFile() && entry.name.endsWith('.json')) {
+        return path.relative(rootDir, fullPath);
+      }
+
+      return [];
+    })
+  );
+
+  return files.flat();
 }

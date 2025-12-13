@@ -44,7 +44,8 @@ const api: Api = {
   playMedia: (filePath: string) => ipcRenderer.send('play-media', filePath),
   showInFolder: (filePath: string) => ipcRenderer.send('show-in-folder', filePath),
   selectFile: () => ipcRenderer.invoke('select-file'),
-  retryFailedDownload: (id: string) => ipcRenderer.send('yt-dlp:retry-download', id)
+  retryFailedDownload: (id: string) => ipcRenderer.send('yt-dlp:retry-download', id),
+  deleteAllMetadata: () => ipcRenderer.send('app:delete-all-metadata')
 };
 
 if (process.contextIsolated) {

@@ -21,43 +21,33 @@ const App = () => {
   const setSettings = useSettingsStore((state) => state.setSettings);
 
   useEffect(() => {
-    const unsubscribe = window.api.on('settings:updated', (updatedSettings) => {
+    const unsubUpdatedSettings = window.api.on('settings:updated', (updatedSettings) => {
       setSettings(updatedSettings as AppSettings);
       toast.info('Settings Updated');
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = window.api.on('url-history:updated', (updatedUrlHistory) => {
+    const unsubUpdatedUrlHistory = window.api.on('url-history:updated', (updatedUrlHistory) => {
       useHistoryStore.setState({ urlHistory: (updatedUrlHistory as UrlHistoryItem[]) ?? [] });
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = window.api.on('yt-dlp:download-failed', (message) => {
+    const unsubDownloadFailed = window.api.on('yt-dlp:download-failed', (message) => {
       toast.error(message as string);
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = window.api.on('yt-dlp:error', (message) => {
+    const unsubYtdlpError = window.api.on('yt-dlp:error', (message) => {
       toast.error(message as string);
     });
 
+    const unsubDeleteAllMetadata = window.api.on('app:delete-all-metadata', () => {
+      toast.error('Deleted all media metadata');
+    });
+
     return () => {
-      unsubscribe();
+      unsubUpdatedSettings();
+      unsubUpdatedUrlHistory();
+      unsubDownloadFailed();
+      unsubYtdlpError();
+      unsubDeleteAllMetadata();
     };
   }, []);
 

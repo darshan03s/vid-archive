@@ -25,7 +25,8 @@ import {
   playMedia,
   showInFolder,
   selectFile,
-  retryFailedDownload
+  retryFailedDownload,
+  deleteAllMetadata
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -85,6 +86,8 @@ async function registerHanlders() {
   ipcMain.handle('select-file', selectFile);
 
   ipcMain.on('yt-dlp:retry-download', retryFailedDownload);
+
+  ipcMain.on('app:delete-all-metadata', deleteAllMetadata);
 }
 
 export default registerHanlders;
