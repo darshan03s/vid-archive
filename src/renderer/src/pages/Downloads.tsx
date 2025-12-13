@@ -18,6 +18,7 @@ import {
   IconPhoto,
   IconPlayerPause,
   IconPlayerPlay,
+  IconReload,
   IconSearch,
   IconTrash
 } from '@tabler/icons-react';
@@ -228,6 +229,10 @@ const DownloadCard = ({
     window.api.resumeDownload(id);
   }
 
+  function handleRetryFailedDownload(id: string) {
+    window.api.retryFailedDownload(id);
+  }
+
   function handlePlay() {
     setIsPlayVideoModalOpen(true);
   }
@@ -376,6 +381,18 @@ const DownloadCard = ({
                   className="size-6"
                 >
                   <IconPlayerPlay className="size-4" />
+                </Button>
+              </TooltipWrapper>
+            )}
+            {downloadItem.download_status === 'failed' && (
+              <TooltipWrapper message={`Retry download`}>
+                <Button
+                  onClick={() => handleRetryFailedDownload(downloadItem.id)}
+                  variant={'ghost'}
+                  size={'icon-sm'}
+                  className="size-6"
+                >
+                  <IconReload className="size-4" />
                 </Button>
               </TooltipWrapper>
             )}

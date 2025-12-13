@@ -74,4 +74,5 @@ export type Api = {
   playMedia: (filePath: string) => void;
   showInFolder: (filePath: string) => void;
   selectFile: () => Promise<string | null>;
+  retryFailedDownload: (id: string) => void;
 };

@@ -24,7 +24,8 @@ import {
   pauseAllDownloads,
   playMedia,
   showInFolder,
-  selectFile
+  selectFile,
+  retryFailedDownload
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -81,6 +82,8 @@ async function registerHanlders() {
   ipcMain.on('show-in-folder', showInFolder);
 
   ipcMain.handle('select-file', selectFile);
+
+  ipcMain.on('yt-dlp:retry-download', retryFailedDownload);
 }
 
 export default registerHanlders;

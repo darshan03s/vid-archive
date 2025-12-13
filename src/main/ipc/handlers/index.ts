@@ -443,3 +443,26 @@ export async function selectFile() {
 
   return result.filePaths[0];
 }
+
+export async function retryFailedDownload(_event: IpcMainEvent, downloadId: string) {
+  const downloadManager = DownloadManager.getInstance();
+
+  const failedDownload = await downloadHistoryOperations.getById(downloadId);
+
+  if (!failedDownload) {
+    logger.error(`Download item to retry not found`);
+    return;
+  }
+
+  failedDownload!.download_status = 'downloading';
+
+  const downloadCommandBase = failedDownload!.download_command_base;
+
+  const downloadCommandArgs = JSON.parse(failedDownload!.download_command_args);
+
+  downloadManager.addDownload(failedDownload!, downloadCommandBase, downloadCommandArgs);
+
+  downloadHistoryOperations.deleteById(downloadId);
+
+  mainWindow.webContents.send('refresh-downloads');
+}

@@ -84,6 +84,9 @@ export class DownloadManager {
         if (line.includes('ERROR')) {
           if (data.includes('No video formats found')) {
             mainWindow.webContents.send('yt-dlp:error', 'No video formats found');
+          }
+          if (data.includes('urllib3.connection.HTTPSConnection')) {
+            mainWindow.webContents.send('yt-dlp:error', 'Connection error');
           } else {
             mainWindow.webContents.send('yt-dlp:error', data);
           }
