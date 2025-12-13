@@ -1,11 +1,11 @@
 {
-  "name": "yt-dlp-desk",
+  "name": "vid-archive",
   "version": "0.16.0",
   "author": "Darshan S",
-  "description": "yt-dlp Desk",
+  "description": "VidArchive",
   "repository": {
     "type": "git",
-    "url": "https://github.com/darshan03s/yt-dlp-desk"
+    "url": "https://github.com/darshan03s/vid-archive"
   },
   "main": "./out/main/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",
     "start": "electron-vite preview",
-    "start:win-unpack": "bash -c \"./dist/win-unpacked/yt-dlp\\ Desk.exe\"",
+    "start:win-unpack": "bash -c \"./dist/win-unpacked/VidArchive.exe\"",
     "start:win-unpack:nopath": "bash ./shell-scripts/start-win-unpack-nopath.sh",
     "dev": "electron-vite dev",
     "dev:nopath": "bash ./shell-scripts/dev-nopath.sh",

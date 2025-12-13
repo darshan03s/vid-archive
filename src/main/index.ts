@@ -17,7 +17,7 @@ log.transports.file.resolvePathFn = () => {
 };
 log.transports.file.level = 'info';
 
-const APP_USER_MODEL_ID = 'com.ytdlpdesk.app';
+const APP_USER_MODEL_ID = 'com.vidarchive.app';
 export const APP_PATH = app.getAppPath();
 export const APP_DATA_PATH = is.dev ? path.join(APP_PATH, 'app-data') : app.getPath('userData');
 app.setPath('userData', APP_DATA_PATH);

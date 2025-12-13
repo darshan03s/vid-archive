@@ -1,5 +1,5 @@
-appId: com.ytdlpdesk.app
-productName: yt-dlp Desk
+appId: com.vidarchive.app
+productName: VidArchive
 directories:
   buildResources: build
 files:
@@ -18,7 +18,7 @@ asarUnpack:
   - node_modules/better-sqlite3/**
   - node_modules/7zip-min/**/*
 win:
-  executableName: yt-dlp Desk
+  executableName: VidArchive
 nsis:
   artifactName: ${name}-setup.${ext}
   shortcutName: ${productName}

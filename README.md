@@ -1,16 +1,30 @@
-# yt-dlp Desk
+# VidArchive
 
-A Modern desktop UI for [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+VidArchive is a desktop utility application for downloading video and audio through an interactive user interface.
 
-[![Watch the demo](https://res.cloudinary.com/dqzusd5rw/image/upload/v1764834680/Screenshot_2025-12-04_131806_en2ywp.png)](https://res.cloudinary.com/dqzusd5rw/video/upload/v1764834441/yt-dlp-desk_demo_eehmmq.mp4)
+Media extraction is handled via integration with yt-dlp and ffmpeg.
 
-# Tech stack
+## Tech Stack
 
 - Electron.js
 - React.js
 - TypeScript
 - Tailwind CSS
-- Shadcn UI
-- Better SQLite 3
+- shadcn/ui
+- better-sqlite3
 - Drizzle ORM
 - Zustand
+
+## Features
+
+- Download video and audio media
+- View media metadata
+- Interactively select formats and options
+- URL and download history
+- Application settings
+
+## Supported Operating Systems
+
+- ✅ Windows
+- ❌ macOS
+- ❌ Linux

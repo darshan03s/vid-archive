@@ -8,7 +8,7 @@ import {
 import { Badge } from '@renderer/components/ui/badge';
 import { Item, ItemContent, ItemFooter, ItemMedia, ItemTitle } from '@renderer/components/ui/item';
 import { Anchor, TooltipWrapper } from '@renderer/components/wrappers';
-import { Logo } from '@renderer/data/logo';
+import Logo from '@renderer/components/logo';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ProgressBar } from './components/progress-bar';
 import {
@@ -302,7 +302,7 @@ const DownloadCard = ({
           <div className="downloads-history-item-footer-left flex items-center gap-3">
             <TooltipWrapper message={`Source: ${downloadItem.source}`}>
               <span>
-                <img src={Logo(downloadItem.source)} alt={downloadItem.source} className="size-4" />
+                <Logo source={downloadItem.source} />
               </span>
             </TooltipWrapper>
             <TooltipWrapper message={`More Details`}>

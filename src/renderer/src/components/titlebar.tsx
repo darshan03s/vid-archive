@@ -58,7 +58,7 @@ const Titlebar = () => {
         </div>
       </div>
       <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-mono">
-        yt-dlp Desk {import.meta.env.DEV ? '(DEV)' : null}
+        VidArchive {import.meta.env.DEV ? '(DEV)' : null}
       </div>
       <div className="titlebar-right flex items-center">
         <button

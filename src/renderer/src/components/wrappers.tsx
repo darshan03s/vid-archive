@@ -10,7 +10,9 @@ interface TooltipWrapper {
 export const TooltipWrapper = ({ message, children, side }: TooltipWrapper) => {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipTrigger asChild className="flex items-center">
+        {children}
+      </TooltipTrigger>
       <TooltipContent side={side}>{message}</TooltipContent>
     </Tooltip>
   );

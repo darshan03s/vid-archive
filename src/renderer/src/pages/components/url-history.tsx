@@ -20,7 +20,7 @@ import {
   IconTrash
 } from '@tabler/icons-react';
 import { Button } from '@renderer/components/ui/button';
-import { Logo } from '@renderer/data/logo';
+import Logo from '@renderer/components/logo';
 
 import {
   Dialog,
@@ -150,7 +150,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
           <div className="url-history-item-footer-left flex items-center gap-3">
             <TooltipWrapper message={`Source: ${item.source}`}>
               <span>
-                <img src={Logo(item.source)} alt={item.source} className="size-4" />
+                <Logo source={item.source} />
               </span>
             </TooltipWrapper>
             <TooltipWrapper message={`More Info`}>
