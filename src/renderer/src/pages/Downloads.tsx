@@ -12,12 +12,16 @@ import Logo from '@renderer/components/logo';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ProgressBar } from './components/progress-bar';
 import {
+  IconClockFilled,
+  IconDotsVertical,
   IconExternalLink,
   IconFolder,
   IconInfoSquareRounded,
   IconPhoto,
   IconPlayerPause,
+  IconPlayerPauseFilled,
   IconPlayerPlay,
+  IconPlayerPlayFilled,
   IconReload,
   IconSearch,
   IconTrash
@@ -41,6 +45,12 @@ import { ButtonGroup } from '@renderer/components/ui/button-group';
 import { Input } from '@renderer/components/ui/input';
 import { isAudio } from '@shared/utils';
 import { FilePlay } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@renderer/components/ui/dropdown-menu';
 
 function updateDownloadHistoryInStore() {
   window.api.getDownloadHistory().then((downloadsHistory: DownloadHistoryList) => {
@@ -87,6 +97,22 @@ const Downloads = () => {
     setIsConfirmDeleteAllModalOpen(true);
   }
 
+  function handlePauseAllDownloads() {
+    window.api.pauseAllDownloads();
+  }
+
+  function handlePauseWaitingDownloads() {
+    window.api.pauseWaitingDownloads();
+  }
+
+  function handleResumePausedDownloads() {
+    window.api.resumePausedDownloads();
+  }
+
+  function handleRetryFailedDownloads() {
+    window.api.retryFailedDownloads();
+  }
+
   return (
     <>
       <div className="w-full flex flex-col gap-2">
@@ -105,16 +131,56 @@ const Downloads = () => {
           </span>
           <div className="flex items-center gap-4">
             <DownloadHistorySearch />
-            <TooltipWrapper side="bottom" message={`Delete downloads history`}>
-              <Button
-                disabled={downloadHistory?.length === 0}
-                onClick={() => handleUrlHistoryDelete()}
-                variant={'destructive'}
-                size={'icon-sm'}
-                className="size-6"
-              >
-                <IconTrash className="size-4" />
-              </Button>
+            <TooltipWrapper side="bottom" message={`Options`}>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant={'secondary'} size={'icon-sm'} className="size-7">
+                    <IconDotsVertical className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side="bottom"
+                  className="relative right-6 top-1 flex flex-col gap-2"
+                >
+                  <DropdownMenuItem
+                    onClick={handlePauseAllDownloads}
+                    className="text-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <IconPlayerPauseFilled className="size-3.5" />
+                    Pause all downloads
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handlePauseWaitingDownloads}
+                    className="text-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <IconClockFilled className="size-3.5" />
+                    Pause waiting downloads
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleResumePausedDownloads}
+                    className="text-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <IconPlayerPlayFilled className="size-3.5" />
+                    Resume paused downloads
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleRetryFailedDownloads}
+                    className="text-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <IconReload className="size-3.5" />
+                    Retry failed downloads
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={downloadHistory?.length === 0}
+                    onClick={() => handleUrlHistoryDelete()}
+                    variant={'destructive'}
+                    className="text-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <IconTrash className="size-3.5" />
+                    Delete downloads history
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TooltipWrapper>
           </div>
         </div>

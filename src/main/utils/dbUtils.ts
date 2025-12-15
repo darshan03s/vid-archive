@@ -167,5 +167,21 @@ export const downloadHistoryOperations = {
       .orderBy(desc(downloadHistory.added_at));
 
     return results;
+  },
+
+  getPausedDownloadsByCompletedAtDesc: () => {
+    return db
+      ?.select()
+      .from(downloadHistory)
+      .where(eq(downloadHistory.download_status, 'paused'))
+      .orderBy(desc(downloadHistory.download_completed_at));
+  },
+
+  getFailedDownloadsByCompletedAtAsc: () => {
+    return db
+      ?.select()
+      .from(downloadHistory)
+      .where(eq(downloadHistory.download_status, 'failed'))
+      .orderBy(asc(downloadHistory.download_completed_at));
   }
 };

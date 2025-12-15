@@ -318,6 +318,23 @@ export class DownloadManager {
     downloadHistoryOperations.deleteById(downloadId);
   }
 
+  async resumePausedDownloads() {
+    const pausedDownloads = await downloadHistoryOperations.getPausedDownloadsByCompletedAtDesc();
+
+    if (!pausedDownloads || pausedDownloads.length === 0) {
+      logger.error(`No downloads to resume`);
+      return;
+    }
+
+    for (const pausedDownload of pausedDownloads) {
+      pausedDownload!.download_status = 'downloading';
+
+      this.addDownload(pausedDownload!);
+
+      downloadHistoryOperations.deleteById(pausedDownload!.id);
+    }
+  }
+
   async retryFailedDownload(downloadId: string) {
     const failedDownload = await downloadHistoryOperations.getById(downloadId);
 
@@ -331,6 +348,23 @@ export class DownloadManager {
     this.addDownload(failedDownload!);
 
     downloadHistoryOperations.deleteById(downloadId);
+  }
+
+  async retryFailedDownloads() {
+    const failedDownloads = await downloadHistoryOperations.getFailedDownloadsByCompletedAtAsc();
+
+    if (!failedDownloads || failedDownloads.length === 0) {
+      logger.error(`No failed downloads to retry`);
+      return;
+    }
+
+    for (const failedDownload of failedDownloads) {
+      failedDownload!.download_status = 'downloading';
+
+      this.addDownload(failedDownload!);
+
+      downloadHistoryOperations.deleteById(failedDownload.id);
+    }
   }
 
   getQueuedDownloads() {

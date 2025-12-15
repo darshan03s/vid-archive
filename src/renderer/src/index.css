@@ -26,6 +26,11 @@ a {
   scrollbar-width: none;
 }
 
+::selection {
+  background: transparent;
+  color: inherit;
+}
+
 .titlebar-center {
   -webkit-app-region: drag;
 }

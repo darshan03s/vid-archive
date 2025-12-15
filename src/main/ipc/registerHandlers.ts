@@ -28,7 +28,10 @@ import {
   getQueuedDownloads,
   pauseRunningDownload,
   resumePausedDownload,
-  pauseWaitingDownload
+  pauseWaitingDownload,
+  resumePausedDownloads,
+  retryFailedDownloads,
+  pauseWaitingDownloads
 } from './handlers';
 import { mainWindow } from '..';
 
@@ -83,7 +86,13 @@ async function registerHanlders() {
 
   ipcMain.on('app:pause-all-downloads', pauseAllDownloads);
 
+  ipcMain.on('app:pause-waiting-downloads', pauseWaitingDownloads);
+
   ipcMain.on('app:resume-paused-download', resumePausedDownload);
+
+  ipcMain.on('app:resume-paused-downloads', resumePausedDownloads);
+
+  ipcMain.on('app:retry-failed-downloads', retryFailedDownloads);
 
   ipcMain.on('play-media', playMedia);
 

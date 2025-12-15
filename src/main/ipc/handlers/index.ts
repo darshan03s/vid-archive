@@ -370,6 +370,12 @@ export async function resumePausedDownload(_event: IpcMainEvent, downloadId: str
   await downloadManager.resumePausedDownload(downloadId);
 }
 
+export async function resumePausedDownloads() {
+  const downloadManager = DownloadManager.getInstance();
+
+  await downloadManager.resumePausedDownloads();
+}
+
 export async function pauseAllDownloads() {
   const downloadManager = DownloadManager.getInstance();
 
@@ -378,6 +384,12 @@ export async function pauseAllDownloads() {
   await downloadManager.pauseAllRunningDownloadsAndWait();
 
   mainWindow.webContents.send('yt-dlp:paused-all-downloads');
+}
+
+export async function pauseWaitingDownloads() {
+  const downloadManager = DownloadManager.getInstance();
+
+  downloadManager.pauseAllWaitingDownloads();
 }
 
 export async function playMedia(_event: IpcMainEvent, filePath: string) {
@@ -413,6 +425,12 @@ export async function retryFailedDownload(_event: IpcMainEvent, downloadId: stri
   const downloadManager = DownloadManager.getInstance();
 
   await downloadManager.retryFailedDownload(downloadId);
+}
+
+export async function retryFailedDownloads() {
+  const downloadManager = DownloadManager.getInstance();
+
+  await downloadManager.retryFailedDownloads();
 }
 
 export async function deleteAllMetadata() {

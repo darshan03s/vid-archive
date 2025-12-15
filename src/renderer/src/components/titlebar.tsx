@@ -76,7 +76,9 @@ const Titlebar = () => {
           <IconX className="size-4 text-white/80" />
         </button>
       </div>
-      <ConfirmExitModal open={isConfirmExitModalVisible} setOpen={setIsConfirmExitModalVisible} />
+      {isConfirmExitModalVisible && (
+        <ConfirmExitModal open={isConfirmExitModalVisible} setOpen={setIsConfirmExitModalVisible} />
+      )}
     </div>
   );
 };
