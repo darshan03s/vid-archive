@@ -4,6 +4,8 @@ VidArchive is a desktop utility application for downloading video and audio thro
 
 Media extraction is handled via integration with yt-dlp and ffmpeg.
 
+[![Watch the demo](https://res.cloudinary.com/dqzusd5rw/image/upload/v1765874362/Screenshot_2025-12-16_140211_prvwl5.png)](https://res.cloudinary.com/dqzusd5rw/video/upload/v1765874331/VidArchive_0.18.1_final_demo_1_xq7sdo.mp4)
+
 ## Tech Stack
 
 - Electron.js
