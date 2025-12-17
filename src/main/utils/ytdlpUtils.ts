@@ -19,6 +19,7 @@ import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
 import {
   getInstagramId,
+  getRedditId,
   getTweetId,
   getYoutubeMusicId,
   getYoutubePlaylistId,
@@ -80,6 +81,16 @@ function getInfoJsonPath(url: string, source: Source): string {
     );
     return infoJsonPath;
   }
+  if (source === 'reddit-video') {
+    const redditId = getRedditId(url);
+    const infoJsonPath = path.join(
+      MEDIA_DATA_FOLDER_PATH,
+      source,
+      redditId!,
+      redditId + '.info.json'
+    );
+    return infoJsonPath;
+  }
   return '';
 }
 
@@ -112,7 +123,8 @@ export async function getInfoJson(
   if (
     source === 'youtube-playlist' ||
     source === 'youtube-music-playlist' ||
-    source === 'twitter-video'
+    source === 'twitter-video' ||
+    source === 'reddit-video'
   ) {
     if (await pathExists(infoJsonPath)) {
       return await readJson<MediaInfoJson>(infoJsonPath);
@@ -173,6 +185,9 @@ export async function createInfoJson(
       if (data.includes('ERROR')) {
         if (data.includes('No video formats found')) {
           mainWindow.webContents.send('yt-dlp:error', 'No video formats found');
+        }
+        if (data.includes('HTTPError')) {
+          mainWindow.webContents.send('yt-dlp:error', 'HTTP Error');
         } else {
           mainWindow.webContents.send('yt-dlp:error', data);
         }
@@ -208,7 +223,7 @@ export async function createInfoJson(
         return resolve(infoJson);
       }
 
-      if (source === 'twitter-video') {
+      if (source === 'twitter-video' || source === 'reddit-video') {
         let infoJson = await readJson<MediaInfoJson>(infoJsonPath);
         infoJson = await addCreatedAt(infoJson);
         infoJson = await downloadThumbnail(infoJson, source, url);
@@ -467,7 +482,8 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     source === 'youtube-video' ||
     source === 'youtube-music' ||
     source === 'twitter-video' ||
-    source === 'instagram-video'
+    source === 'instagram-video' ||
+    source === 'reddit-video'
   ) {
     console.log({ url, source, selectedFormat, downloadSections, extraOptions });
     const mediaInfo = downloadOptions.mediaInfo as MediaInfoJson;

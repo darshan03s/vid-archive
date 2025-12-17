@@ -3,6 +3,7 @@ import logger from '@shared/logger';
 import { Api, AppSettings, Source } from '@shared/types';
 import {
   getInstagramId,
+  getRedditId,
   getYoutubeMusicId,
   getYoutubePlaylistId,
   getYouTubeVideoId
@@ -133,6 +134,9 @@ export function getSourceFromUrl(url: string): Source | null {
   if (parsedUrl.hostname.includes('instagram.com')) {
     return 'instagram-video';
   }
+  if (parsedUrl.hostname.includes('reddit.com')) {
+    return 'reddit-video';
+  }
   return null;
 }
 
@@ -176,6 +180,10 @@ export function getNormalizedUrl(source: Source, url: string) {
       const id = getInstagramId(url);
       return `https://www.instagram.com/reel/${id}`;
     }
+  }
+  if (source === 'reddit-video') {
+    const redditId = getRedditId(url);
+    return `https://www.reddit.com/comments/${redditId}`;
   }
   return '';
 }

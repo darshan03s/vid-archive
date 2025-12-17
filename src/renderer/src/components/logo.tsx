@@ -6,7 +6,12 @@ type LogoProps = {
 };
 
 const Logo = ({ source }: LogoProps) => {
-  if (source === 'youtube-video') {
+  if (
+    source === 'youtube-video' ||
+    source === 'twitter-video' ||
+    source === 'instagram-video' ||
+    source === 'reddit-video'
+  ) {
     return <IconVideo className="size-4" />;
   }
 
@@ -16,10 +21,6 @@ const Logo = ({ source }: LogoProps) => {
 
   if (source === 'youtube-music' || source === 'youtube-music-playlist') {
     return <IconMusic className="size-4" />;
-  }
-
-  if (source === 'twitter-video' || source === 'instagram-video') {
-    return <IconVideo className="size-4" />;
   }
 
   return null;

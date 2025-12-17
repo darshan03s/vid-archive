@@ -1,77 +1,77 @@
 export function getYouTubeVideoId(url: string): string | null {
-  let videoId: string | null = null;
   try {
     const parsed = new URL(url);
     // shortened url
     if (parsed.hostname === 'youtu.be') {
-      videoId = parsed.pathname.slice(1);
+      return parsed.pathname.slice(1);
     }
     if (parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com') {
       // url with watch?v
-      if (parsed.pathname.includes('watch')) videoId = parsed.searchParams.get('v');
+      if (parsed.pathname.includes('watch')) return parsed.searchParams.get('v');
       // shorts and embed url
       if (parsed.pathname.includes('shorts') || parsed.pathname.includes('embed'))
-        videoId = parsed.pathname.split('/')[2];
+        return parsed.pathname.split('/')[2];
     }
-    return videoId;
+    return null;
   } catch {
     return null;
   }
 }
 
 export function getYoutubePlaylistId(url: string): string | null {
-  let playlistId: string | null = null;
   try {
     const parsed = new URL(url);
-    playlistId = parsed.searchParams.get('list');
-    return playlistId;
+    return parsed.searchParams.get('list');
   } catch {
     return null;
   }
 }
 
 export function getYoutubeMusicId(url: string): string | null {
-  let musicId: string | null = null;
   try {
     const parsed = new URL(url);
-    musicId = parsed.searchParams.get('v');
-    return musicId;
+    return parsed.searchParams.get('v');
   } catch {
     return null;
   }
 }
 
 export function getTweetId(url: string): string | null {
-  let tweetId: string | null = null;
   try {
     const parsed = new URL(url);
-    tweetId = parsed.pathname.split('/').at(-1)!;
-    return tweetId;
+    return parsed.pathname.split('/').at(-1)!;
   } catch {
     return null;
   }
 }
 
 export function getInstagramId(url: string): string | null {
-  let instagramId: string | null = null;
   try {
     const parsed = new URL(url);
     if (parsed.pathname.startsWith('/p')) {
-      instagramId = parsed.pathname.split('/')[2]!;
-      return instagramId;
+      return parsed.pathname.split('/')[2]!;
     }
     if (parsed.pathname.startsWith('/reels') || parsed.pathname.startsWith('/reel')) {
-      instagramId = parsed.pathname.split('/')[2]!;
-      return instagramId;
+      return parsed.pathname.split('/')[2]!;
     }
     if (!parsed.pathname.startsWith('/reel') && parsed.pathname.includes('/reel')) {
-      instagramId = parsed.pathname.split('/')[3]!;
-      return instagramId;
+      return parsed.pathname.split('/')[3]!;
     }
     return null;
   } catch {
     return null;
   }
+}
+
+export function getRedditId(url: string): string | null {
+  const parsed = new URL(url);
+  if (parsed.pathname.startsWith('/r')) {
+    return parsed.pathname.split('/')[4];
+  }
+  if (parsed.pathname.startsWith('/comments')) {
+    return parsed.pathname.split('/')[2];
+  }
+  return null;
 }
 
 export const AUDIO_EXTS = new Set([

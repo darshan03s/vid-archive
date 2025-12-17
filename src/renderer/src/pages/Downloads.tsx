@@ -550,7 +550,8 @@ const MoreInfo = ({
             <span className="font-semibold">Uploader</span>: <span>{data.uploader}</span>
           </div>
           <div>
-            <span className="font-semibold">Uploader URL</span>: <span>{data.uploader_url}</span>
+            <span className="font-semibold">Uploader URL</span>:{' '}
+            <span>{data.uploader_url || 'N/A'}</span>
           </div>
           <div>
             <span className="font-semibold">Thumbnail</span>: <span>{data.thumbnail}</span>

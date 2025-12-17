@@ -82,7 +82,7 @@ const MoreInfo = ({
           </div>
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <Anchor href={item.uploader_url}>{item.uploader_url}</Anchor>
+            <Anchor href={item.uploader_url || ''}>{item.uploader_url || 'N/A'}</Anchor>
           </div>
           <div>
             <span className="font-semibold">Thumbnail</span>:{' '}
