@@ -150,6 +150,9 @@ export function getSourceFromUrl(url: string): Source | null {
   if (parsedUrl.hostname.includes('rumble.com')) {
     return 'rumble-video';
   }
+  if (parsedUrl.hostname.includes('tiktok.com')) {
+    return 'tiktok-video';
+  }
   return null;
 }
 
@@ -208,6 +211,11 @@ export function getNormalizedUrl(source: Source, url: string) {
   if (source === 'rumble-video') {
     const id = getRumbleId(url);
     return `https://rumble.com/${id}.html`;
+  }
+  if (source === 'tiktok-video') {
+    const parsed = new URL(url);
+    parsed.search = '';
+    return parsed.toString();
   }
   return '';
 }

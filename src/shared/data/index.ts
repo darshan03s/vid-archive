@@ -10,7 +10,8 @@ export const allowedSources = [
   'reddit-video',
   'dailymotion-video',
   'pinterest-video',
-  'rumble-video'
+  'rumble-video',
+  'tiktok-video'
 ] as const;
 
 export const mediaSources: readonly Source[] = [
@@ -21,7 +22,8 @@ export const mediaSources: readonly Source[] = [
   'reddit-video',
   'dailymotion-video',
   'pinterest-video',
-  'rumble-video'
+  'rumble-video',
+  'tiktok-video'
 ];
 
 export const playlistSources: readonly Source[] = ['youtube-playlist', 'youtube-music-playlist'];

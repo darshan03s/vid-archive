@@ -315,7 +315,7 @@ async function addCreatedAt(infoJson: MediaInfoJson) {
 }
 
 async function addExpiresAt(infoJson: MediaInfoJson, source?: Source) {
-  if (source === 'youtube-video' || source === 'youtube-music') {
+  if (source === 'youtube-video' || source === 'youtube-music' || source === 'tiktok-video') {
     const format = infoJson.formats.find((f) => f.vcodec !== 'none' && f.url);
 
     if (!format?.url) {

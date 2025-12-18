@@ -11,6 +11,7 @@ export function getMediaId(url: string, source: Source): string | null {
   if (source === 'dailymotion-video') return getDailymotionId(url);
   if (source === 'pinterest-video') return getPinterestId(url);
   if (source === 'rumble-video') return getRumbleId(url);
+  if (source === 'tiktok-video') return getTiktokId(url);
   return null;
 }
 
@@ -116,6 +117,12 @@ export function getRumbleId(url: string): string | null {
   const parsed = new URL(url);
   parsed.search = '';
   return parsed.pathname.split('html')[0].slice(1).slice(0, -1);
+}
+
+export function getTiktokId(url: string): string | null {
+  const parsed = new URL(url);
+  parsed.search = '';
+  return parsed.pathname.split('/').at(-1)!;
 }
 
 export const AUDIO_EXTS = new Set([

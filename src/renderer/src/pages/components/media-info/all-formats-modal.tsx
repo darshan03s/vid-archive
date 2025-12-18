@@ -53,7 +53,7 @@ const AllFormatsModal = ({
     all: 'All',
     'video-and-video': 'Video & Audio',
     video: 'Video',
-    audio: 'Audio',
+    audio: 'Audio Only',
     mp4: 'Video: mp4',
     webm: 'Video: webm',
     vp9: 'Video: vp9',
@@ -96,17 +96,18 @@ const AllFormatsModal = ({
 
     function handleFormatSelect() {
       setSelectedFormat({
+        ext: format.ext ?? 'N/A',
+        resolution: format.resolution ?? 'N/A',
+        format: format.format ?? 'N/A',
+        fps: format.fps ?? 0,
         vcodec: format.vcodec ?? 'N/A',
         acodec: format.acodec ?? 'N/A',
-        ext: format.ext ?? 'N/A',
         filesize_approx: format.filesize_approx ?? 0,
-        fps: format.fps ?? 0,
-        format: format.format ?? 'N/A',
+        filesize: format.filesize ?? 0,
         format_id: format.format_id ?? 'N/A',
         format_note: format.format_note ?? 'N/A',
         height: format.height ?? 0,
-        width: format.width ?? 0,
-        resolution: format.resolution ?? 'N/A'
+        width: format.width ?? 0
       });
     }
 
@@ -127,9 +128,13 @@ const AllFormatsModal = ({
             <span>fps: {format.fps || 'N/A'}</span>
             <span>vcodec: {vcodec(format.vcodec) || 'N/A'}</span>
             <span>acodec: {acodec(format.acodec) || 'N/A'}</span>
-            <span>
-              Filesize≈ {format.filesize_approx ? formatFileSize(format.filesize_approx) : 'N/A'}
-            </span>
+            {format.filesize ? (
+              <span>Filesize={format.filesize ? formatFileSize(format.filesize!) : 'N/A'}</span>
+            ) : (
+              <span>
+                Filesize≈{format.filesize_approx ? formatFileSize(format.filesize_approx!) : 'N/A'}
+              </span>
+            )}
           </div>
         </div>
         {selectedFormat.format_id === format.format_id ? (

@@ -26,6 +26,7 @@ interface Extra {
   repost_count: number;
   concurrent_view_count: number;
   dislike_count: number;
+  filesize: number;
 }
 
 export interface MediaInfoJson extends Extra {
