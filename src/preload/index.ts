@@ -1,8 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import logger from '@shared/logger';
-import { AppSettingsChange, Source, SupportedCookieBrowser, type Api } from '@shared/types';
+import { AppSettingsChange, Source, type Api } from '@shared/types';
 import { DownloadOptions } from '@shared/types/download';
+import { SupportedCookieBrowser } from 'yt-dlp-command-builder';
 
 // Custom APIs for renderer
 const api: Api = {

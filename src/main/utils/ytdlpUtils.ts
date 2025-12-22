@@ -1,15 +1,7 @@
 import { spawn } from 'node:child_process';
-import { mainWindow, MEDIA_DATA_FOLDER_PATH, YTDLP_EXE_PATH } from '..';
+import { mainWindow, MEDIA_DATA_FOLDER_PATH } from '..';
 import path from 'node:path';
-import {
-  downloadFile,
-  pathExists,
-  pathExistsSync,
-  readJson,
-  removeEmoji,
-  sanitizeFileName,
-  writeJson
-} from './fsUtils';
+import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
 import { LiveFromStartFormats, MediaInfoJson } from '@shared/types/info-json';
 import { Source } from '@shared/types';
 import logger from '@shared/logger';
@@ -20,8 +12,13 @@ import { DownloadOptions } from '@shared/types/download';
 import Settings from '@main/settings';
 import { getMediaId } from '@shared/utils';
 import { mediaSources, playlistSources } from '@shared/data';
+import {
+  getDownloadCommand,
+  getInfoJsonCommand,
+  getLiveFromStartFormatsCommand
+} from './ytdlpCommands';
 
-function getInfoJsonPath(url: string, source: Source): string {
+export function getInfoJsonPath(url: string, source: Source): string {
   const id = getMediaId(url, source);
   if (!id) {
     logger.error(`Could not get id for ${url}}`);
@@ -72,49 +69,12 @@ export async function createInfoJson(
   source: Source,
   infoJsonPath: string
 ): Promise<MediaInfoJson | null> {
-  const settings = Settings.getInstance();
-
   return await new Promise((resolve, reject) => {
-    // info json create command
-    const jsRuntimePath = `quickjs:${settings.get('jsRuntimePath')}`;
-    const infoJsonCommandBase = YTDLP_EXE_PATH;
-    const infoJsonCommandArgs = [
-      '--js-runtimes',
-      jsRuntimePath,
-      '--skip-download',
-      '--write-info-json',
-      '-o',
-      infoJsonPath.split('.info.json')[0],
-      url
-    ];
+    const builder = getInfoJsonCommand(url, source, infoJsonPath);
 
-    // cookies from file
-    if (settings.get('cookiesFilePath').length > 0 && settings.get('cookiesBrowser').length === 0) {
-      if (pathExistsSync(settings.get('cookiesFilePath'))) {
-        infoJsonCommandArgs.push('--cookies');
-        infoJsonCommandArgs.push(settings.get('cookiesFilePath'));
-      }
-    }
-
-    // cookies from browser
-    if (settings.get('cookiesBrowser').length > 0) {
-      infoJsonCommandArgs.push('--cookies-from-browser');
-      if (settings.get('cookiesBrowserProfile').length > 0) {
-        infoJsonCommandArgs.push(
-          `${settings.get('cookiesBrowser')}:${settings.get('cookiesBrowserProfile')}`
-        );
-      } else {
-        infoJsonCommandArgs.push(`${settings.get('cookiesBrowser')}`);
-      }
-    }
-
-    if (source === 'youtube-playlist' || source === 'youtube-music-playlist') {
-      infoJsonCommandArgs.push('--flat-playlist');
-    }
-
-    const completeCommand = infoJsonCommandBase.concat(' ').concat(infoJsonCommandArgs.join(' '));
+    const { baseCommand, args, completeCommand } = builder.get();
     logger.info(`Creating info-json for ${url}\nCommand: ${completeCommand}`);
-    const child = spawn(infoJsonCommandBase, infoJsonCommandArgs);
+    const child = spawn(baseCommand, args);
 
     child.on('error', reject);
 
@@ -184,31 +144,9 @@ export async function createInfoJson(
 }
 
 async function addLiveFromStartFormats(url: string, infoJson: MediaInfoJson) {
-  // live from start command
-  const settings = Settings.getInstance();
-  const jsRuntimePath = `quickjs:${settings.get('jsRuntimePath')}`;
-  const baseCommand = YTDLP_EXE_PATH;
-  const args = ['--js-runtimes', jsRuntimePath, '-F', url, '--live-from-start'];
+  const builder = getLiveFromStartFormatsCommand(url);
 
-  // cookies from file
-  if (settings.get('cookiesFilePath').length > 0 && settings.get('cookiesBrowser').length === 0) {
-    if (await pathExists(settings.get('cookiesFilePath'))) {
-      args.push('--cookies');
-      args.push(settings.get('cookiesFilePath'));
-    }
-  }
-
-  // cookies from browser
-  if (settings.get('cookiesBrowser').length > 0) {
-    args.push('--cookies-from-browser');
-    if (settings.get('cookiesBrowserProfile').length > 0) {
-      args.push(`${settings.get('cookiesBrowser')}:${settings.get('cookiesBrowserProfile')}`);
-    } else {
-      args.push(`${settings.get('cookiesBrowser')}`);
-    }
-  }
-
-  const completeCommand = baseCommand.concat(' ').concat(args.join(' '));
+  const { baseCommand, args, completeCommand } = builder.get();
 
   console.log(`Live from start command: \n${completeCommand}`);
 
@@ -424,134 +362,22 @@ async function writeDescription(infoJson: MediaInfoJson, source: Source) {
 
 export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
   const settings = Settings.getInstance();
-  const { url, source, selectedFormat, downloadSections, selectedDownloadFolder, extraOptions } =
-    downloadOptions;
+  const {
+    url,
+    source,
+    selectedFormat,
+    downloadSections,
+    selectedDownloadFolder,
+    extraOptions,
+    mediaInfo
+  } = downloadOptions;
 
   if (mediaSources.includes(source)) {
     console.log({ url, source, selectedFormat, downloadSections, extraOptions });
-    const mediaInfo = downloadOptions.mediaInfo as MediaInfoJson;
-    const infoJsonPath = getInfoJsonPath(url, source);
-    const formatId = selectedFormat.format_id!;
-    let targetDownloadFileName = `${removeEmoji(mediaInfo.fulltitle ?? mediaInfo.title, '_')} [${selectedFormat.resolution}] [${selectedFormat.format_id}]`;
 
-    // download command
-    const jsRuntimePath = `quickjs:${settings.get('jsRuntimePath')}`;
-    const downloadCommandBase = YTDLP_EXE_PATH;
-    const downloadCommandArgs = ['--js-runtimes', jsRuntimePath, '--newline'];
-
-    downloadCommandArgs.push('--ffmpeg-location');
-    downloadCommandArgs.push(settings.get('ffmpegPath'));
-
-    const hasAudio = selectedFormat.acodec && selectedFormat.acodec !== 'none';
-
-    if (hasAudio) {
-      // format already has audio
-      downloadCommandArgs.push('-f');
-      downloadCommandArgs.push(formatId);
-    } else {
-      // no audio → append bestaudio
-      downloadCommandArgs.push('-f');
-      downloadCommandArgs.push(formatId + '+ba');
-    }
-
-    // force-keyframes-at-cuts
-    if (downloadSections.forceKeyframesAtCuts) {
-      downloadCommandArgs.push('--force-keyframes-at-cuts');
-    }
-
-    // start + end
-    if (downloadSections.startTime && downloadSections.endTime) {
-      downloadCommandArgs.push(
-        '--download-sections',
-        `*${downloadSections.startTime}-${downloadSections.endTime}`
-      );
-      targetDownloadFileName =
-        targetDownloadFileName + `[${downloadSections.startTime} - ${downloadSections.endTime}]`;
-    }
-
-    // only start
-    if (downloadSections.startTime && !downloadSections.endTime) {
-      downloadCommandArgs.push('--download-sections', `*${downloadSections.startTime}-`);
-      targetDownloadFileName = targetDownloadFileName + `[${downloadSections.startTime} - ]`;
-    }
-
-    // only end
-    if (!downloadSections.startTime && downloadSections.endTime) {
-      downloadCommandArgs.push('--download-sections', `*00:00:00-${downloadSections.endTime}`);
-      targetDownloadFileName = targetDownloadFileName + `[00:00:00 - ${downloadSections.endTime}]`;
-    }
-
-    if (extraOptions.embedThumbnail) {
-      downloadCommandArgs.push('--embed-thumbnail');
-    }
-
-    if (extraOptions.embedChapters) {
-      downloadCommandArgs.push('--embed-chapters');
-    }
-
-    if (extraOptions.embedSubs) {
-      downloadCommandArgs.push('--embed-subs');
-    }
-
-    if (extraOptions.embedMetadata) {
-      downloadCommandArgs.push('--embed-metadata');
-    }
-
-    if (extraOptions.writeDescription) {
-      downloadCommandArgs.push('--write-description');
-    }
-
-    if (extraOptions.writeComments) {
-      downloadCommandArgs.push('--write-comments');
-    }
-
-    if (extraOptions.writeThumbnail) {
-      downloadCommandArgs.push('--write-thumbnail');
-    }
-
-    if (extraOptions.writeSubs) {
-      downloadCommandArgs.push('--write-subs');
-    }
-
-    if (extraOptions.writeAutoSubs) {
-      downloadCommandArgs.push('--write-auto-subs');
-    }
-
-    if (extraOptions.liveFromStart) {
-      downloadCommandArgs.push('--live-from-start');
-    }
-
-    // cookies from file
-    if (settings.get('cookiesFilePath').length > 0 && settings.get('cookiesBrowser').length === 0) {
-      if (await pathExists(settings.get('cookiesFilePath'))) {
-        downloadCommandArgs.push('--cookies');
-        downloadCommandArgs.push(settings.get('cookiesFilePath'));
-      }
-    }
-
-    // cookies from browser
-    if (settings.get('cookiesBrowser').length > 0) {
-      downloadCommandArgs.push('--cookies-from-browser');
-      if (settings.get('cookiesBrowserProfile').length > 0) {
-        downloadCommandArgs.push(
-          `${settings.get('cookiesBrowser')}:${settings.get('cookiesBrowserProfile')}`
-        );
-      } else {
-        downloadCommandArgs.push(`${settings.get('cookiesBrowser')}`);
-      }
-    }
-
-    downloadCommandArgs.push('--no-quiet');
-    downloadCommandArgs.push('--progress');
-    downloadCommandArgs.push('--print');
-    downloadCommandArgs.push('after_move:filepath');
-
-    if (extraOptions.liveFromStart) {
-      downloadCommandArgs.push(url);
-    } else {
-      downloadCommandArgs.push('--load-info-json');
-      downloadCommandArgs.push(infoJsonPath);
-    }
+    const res = getDownloadCommand(downloadOptions);
+    const builder = res.builder;
+    let targetDownloadFileName = res.targetDownloadFileName;
 
     // output filename
     const targetDownloadFileNameWithoutExt = sanitizeFileName(targetDownloadFileName, '_');
@@ -561,8 +387,9 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
     );
     targetDownloadFileName = targetDownloadFileNameWithoutExt + '.%(ext)s';
     const targetDownloadFilePath = path.join(selectedDownloadFolder, targetDownloadFileName);
-    downloadCommandArgs.push('-o', targetDownloadFilePath);
-    const completeCommand = downloadCommandBase.concat(' ').concat(downloadCommandArgs.join(' '));
+    builder.output(targetDownloadFilePath);
+
+    const { baseCommand, args, completeCommand } = builder.get();
 
     if (settings.get('rememberPreviousDownloadsFolder')) {
       const currentDownloadsFolder = settings.get('downloadsFolder');
@@ -596,8 +423,8 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       download_path: targetDownloadFilePathWithoutExt,
       download_status: 'downloading',
       download_completed_at: '',
-      download_command_base: downloadCommandBase,
-      download_command_args: JSON.stringify(downloadCommandArgs),
+      download_command_base: baseCommand,
+      download_command_args: JSON.stringify(args),
       format: selectedFormat.resolution + ' - ' + selectedFormat.format_id!,
       added_at: new Date().toISOString()
     };

@@ -107,6 +107,9 @@ importers:
       undici:
         specifier: ^7.16.0
         version: 7.16.0
+      yt-dlp-command-builder:
+        specifier: ^0.3.6
+        version: 0.3.6
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.2.7)(react@19.2.3)
@@ -4221,6 +4224,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  yt-dlp-command-builder@0.3.6:
+    resolution: {integrity: sha512-w/H4Uj/G32aEk3WUAhx6TuFvPfA/CLpQOqfqajpMctPlH3LY2OWp0QV92bZprMaUIVfpteLZnlzSkJwCpasE9w==}
 
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
@@ -8514,6 +8520,8 @@ snapshots:
       fd-slicer: 1.1.0
 
   yocto-queue@0.1.0: {}
+
+  yt-dlp-command-builder@0.3.6: {}
 
   zip-stream@4.1.1:
     dependencies:

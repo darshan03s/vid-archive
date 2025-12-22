@@ -1,5 +1,5 @@
-import { MAX_ALLOWED_CONCURRENT_DOWNLOADS, SUPPORTED_COOKIE_BROWSERS } from '@shared/data';
-import { AppSettingsChange, SupportedCookieBrowser } from '@shared/types';
+import { MAX_ALLOWED_CONCURRENT_DOWNLOADS } from '@shared/data';
+import { AppSettingsChange } from '@shared/types';
 import { Button } from '@renderer/components/ui/button';
 import {
   Dialog,
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select';
+import { SUPPORTED_COOKIE_BROWSERS, SupportedCookieBrowser } from 'yt-dlp-command-builder';
 
 const SettingsHeader = () => {
   return (

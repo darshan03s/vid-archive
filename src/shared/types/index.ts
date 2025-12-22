@@ -1,4 +1,5 @@
-import { allowedSources, SUPPORTED_COOKIE_BROWSERS } from '../data';
+import { type SupportedCookieBrowser } from 'yt-dlp-command-builder';
+import { allowedSources } from '../data';
 import { DownloadOptions } from './download';
 import { DownloadHistoryList, RunningDownloadsList, UrlHistoryList } from './history';
 
@@ -32,8 +33,6 @@ export type AppSettingsChange = Pick<
 >;
 
 export type Source = (typeof allowedSources)[number];
-
-export type SupportedCookieBrowser = (typeof SUPPORTED_COOKIE_BROWSERS)[number];
 
 export type Api = {
   minimize: () => void;

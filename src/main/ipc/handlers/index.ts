@@ -24,7 +24,7 @@ import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fsUtils';
 import { downloadFromYtdlp, getInfoJson } from '@main/utils/ytdlpUtils';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
-import { Api, AppSettingsChange, Source, SupportedCookieBrowser } from '@shared/types';
+import { Api, AppSettingsChange, Source } from '@shared/types';
 import SevenZip from '7zip-min';
 import path from 'node:path';
 import { dialog, IpcMainEvent, IpcMainInvokeEvent, shell } from 'electron';
@@ -35,6 +35,7 @@ import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
 import { MediaInfoJson } from '@shared/types/info-json';
 import Settings from '@main/settings';
+import { SupportedCookieBrowser } from 'yt-dlp-command-builder';
 
 export async function rendererInit(): ReturnType<Api['rendererInit']> {
   try {
