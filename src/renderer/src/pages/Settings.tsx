@@ -33,7 +33,7 @@ import { SUPPORTED_COOKIE_BROWSERS, SupportedCookieBrowser } from 'yt-dlp-comman
 const SettingsHeader = () => {
   return (
     <div className="px-3 py-2 h-12 text-sm flex items-center justify-between sticky top-0 left-0 bg-background/60 backdrop-blur-md text-foreground z-49">
-      <span className="text-xs">Settings</span>
+      <span className="text-xs font-satoshi font-semibold">Settings</span>
       <SaveSettingsButton />
     </div>
   );
@@ -70,7 +70,8 @@ const SaveSettingsButton = () => {
   return (
     <Button
       onClick={handleSaveSettings}
-      className="text-[11px] h-7 bg-primary text-primary-foreground"
+      size={'sm'}
+      className="text-[10px] h-6 bg-primary text-primary-foreground font-satoshi font-semibold"
     >
       Save Settings
     </Button>
@@ -100,7 +101,9 @@ const SettingsItem = ({ children, className }: { children: ReactNode; className?
 
 const SettingName = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <span className={cn('setting-name text-[12px] text-nowrap font-semibold', className)}>
+    <span
+      className={cn('setting-name text-[12px] text-nowrap font-semibold font-satoshi', className)}
+    >
       {children}
     </span>
   );
@@ -132,10 +135,12 @@ const ConfirmDeleteAllMetadataModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="font-satoshi">
         <DialogHeader>
-          <DialogTitle>Delete all metadata?</DialogTitle>
-          <DialogDescription>This action will delete all media metadata</DialogDescription>
+          <DialogTitle className="font-satoshi">Delete all metadata?</DialogTitle>
+          <DialogDescription className="font-satoshi">
+            This action will delete all media metadata
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex ">
           <DialogClose asChild>
@@ -232,7 +237,7 @@ const SettingsBlocks = () => {
   }
 
   return (
-    <div className="settings-blocks divide-y px-12 [&_div.settings-block]:p-2 [&_div.settings-block]:py-3.5 [&_div.settings-block]:first:pt-0 [&_div.settings-block]:last:pb-0">
+    <div className="settings-blocks divide-y px-12 [&_div.settings-block]:p-2 [&_div.settings-block]:py-3.5 [&_div.settings-block]:first:pt-0 [&_div.settings-block]:last:pb-0 font-satoshi">
       <SettingsBlock>
         <SettingsItem>
           <SettingName>App Version</SettingName>

@@ -34,14 +34,14 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
             onClick={() => setIsMoreDetailsModalOpen(true)}
             className="text-xs border bg-secondary text-secondary-foreground h-10 px-2 rounded-md cursor-pointer flex items-center"
           >
-            <p className="text-xs leading-5 line-clamp-1">
+            <p className="text-xs leading-5 line-clamp-1 font-satoshi">
               {infoJson.fulltitle || infoJson.title || 'N/A'}
             </p>
           </div>
         )}
         <div className="py-1 flex items-center justify-between">
           {!isInfoJsonEmpty ? (
-            <div className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-2 flex-1 font-satoshi">
               {infoJson.uploader && (
                 <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   {infoJson.channel_is_verified ? (
@@ -94,7 +94,7 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
           )}
 
           {!(source === 'youtube-playlist' || source === 'youtube-music-playlist') && (
-            <div>
+            <div className="font-satoshi">
               <DownloadButton loading={isInfoJsonEmpty} />
             </div>
           )}
@@ -108,14 +108,18 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
 
         {source !== 'youtube-playlist' && source !== 'youtube-music-playlist' && (
           <div className="download-sections pt-2">
-            <h1 className="text-xs border-border border-b mb-2 pb-1">Download Sections</h1>
+            <h1 className="text-xs border-border border-b mb-2 pb-1 font-satoshi">
+              Download Sections
+            </h1>
             <DownloadSections loading={isInfoJsonEmpty} />
           </div>
         )}
 
         {!(source === 'youtube-playlist' || source === 'youtube-music-playlist') && (
           <div className="download-location pt-2">
-            <h1 className="text-xs border-border border-b mb-2 pb-1">Download Location</h1>
+            <h1 className="text-xs border-border border-b mb-2 pb-1 font-satoshi">
+              Download Location
+            </h1>
             <DownloadLocation loading={isInfoJsonEmpty} />
           </div>
         )}

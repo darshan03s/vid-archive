@@ -183,7 +183,7 @@ const ExtraOptions = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 font-satoshi">
       {infoJson.is_live && source === 'youtube-video' && (
         <div>
           <h1 className="text-xs border-border border-b mb-2 pb-1">Live options</h1>

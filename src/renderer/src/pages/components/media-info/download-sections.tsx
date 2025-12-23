@@ -25,7 +25,7 @@ const DownloadSections = ({ loading }: { loading: boolean }) => {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 font-satoshi">
       <Input
         disabled={loading}
         type="text"

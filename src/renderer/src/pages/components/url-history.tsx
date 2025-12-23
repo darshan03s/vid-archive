@@ -56,10 +56,10 @@ const MoreInfo = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Info</DialogTitle>
-          <DialogDescription>More info of url</DialogDescription>
+          <DialogTitle className="font-satoshi font-semibold">Info</DialogTitle>
+          <DialogDescription className="font-satoshi">More info of url</DialogDescription>
         </DialogHeader>
-        <div className="w-full font-mono flex flex-col gap-2 text-xs overflow-auto">
+        <div className="w-full font-satoshi flex flex-col gap-2 text-xs overflow-auto">
           <div>
             <span className="font-semibold">Title</span>: <span>{item.title}</span>
           </div>
@@ -127,7 +127,7 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
             alt={item.title}
             className="aspect-video rounded-sm outline-1"
           />
-          <span className="bg-black text-white p-1 px-1.5 text-[10px] rounded-md absolute right-0.5 bottom-0.5">
+          <span className="bg-black text-white p-1 text-[9px] rounded absolute right-0.5 bottom-0.5">
             {item.duration || 'N/A'}
           </span>
         </ItemMedia>
@@ -208,7 +208,7 @@ const ConfirmDeleteAllModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="font-satoshi">
         <DialogHeader>
           <DialogTitle>Delete all url history?</DialogTitle>
           <DialogDescription>This action will delete all url history</DialogDescription>
@@ -252,7 +252,7 @@ const UrlHistorySearch = () => {
           }
         }}
         onChange={(e) => handleSearchInput(e.target.value)}
-        className="h-7 text-[10px] w-[260px]"
+        className="h-7 text-[10px] w-[260px] font-satoshi placeholder:font-satoshi"
         type="search"
         placeholder="Search in url history"
       />

@@ -26,10 +26,12 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <AlertDialogHeader>
-          <DialogTitle>More Details</DialogTitle>
-          <DialogDescription>More details for this media</DialogDescription>
+          <DialogTitle className="font-satoshi">More Details</DialogTitle>
+          <DialogDescription className="font-satoshi">
+            More details for this media
+          </DialogDescription>
         </AlertDialogHeader>
-        <div className="w-full font-mono flex flex-col gap-2 text-xs h-70 overflow-auto">
+        <div className="w-full font-satoshi flex flex-col gap-2 text-xs h-70 overflow-auto">
           <div>
             <span className="font-semibold">Title</span>:{' '}
             <span>{infoJson.fulltitle || infoJson.title || 'N/A'}</span>

@@ -1,11 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import './theme.css';
 
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-inter: 'Inter', sans-serif;
+  --font-satoshi: 'Satoshi', sans-serif;
   --titlebar-height: 40px;
 }
 

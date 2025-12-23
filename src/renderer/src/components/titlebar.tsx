@@ -57,7 +57,7 @@ const Titlebar = () => {
           <ModeToggle />
         </div>
       </div>
-      <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-mono">
+      <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-satoshi font-bold">
         VidArchive {import.meta.env.DEV ? '(DEV)' : null}
       </div>
       <div className="titlebar-right flex items-center">
