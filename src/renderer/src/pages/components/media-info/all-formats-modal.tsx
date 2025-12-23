@@ -114,7 +114,7 @@ const AllFormatsModal = ({
     return (
       <div
         onClick={handleFormatSelect}
-        className="selected-format p-1 relative rounded-md w-full bg-primary/10 flex items-center gap-2 cursor-pointer border border-primary/10"
+        className="selected-format p-1 relative rounded-md w-full bg-primary/10 flex items-center gap-2 cursor-pointer border-2 border-primary/10"
       >
         <div className="selected-format-left p-1 flex items-center">
           <span className="bg-primary text-primary-foreground text-xs p-2 rounded-md">
@@ -154,7 +154,7 @@ const AllFormatsModal = ({
           <DialogDescription className="font-satoshi">
             All audio and video formats
           </DialogDescription>
-          <p className="bg-yellow-300/20 text-[10px] rounded-md border p-1 px-2 text-foreground">
+          <p className="bg-yellow-300/20 text-[10px] rounded-md border p-1 px-2 text-foreground outline-none border-none">
             The final output container will be based on video and audio codecs, it may not be the
             same as displayed here
           </p>

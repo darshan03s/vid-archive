@@ -49,7 +49,7 @@ const DownloadSections = ({ loading }: { loading: boolean }) => {
         onPressedChange={handleToggle}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-primary data-[state=on]:*:[svg]:stroke-primary"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconKeyframes />
       </Toggle>
