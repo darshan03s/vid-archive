@@ -16,6 +16,7 @@ import {
 } from '@tabler/icons-react';
 import { Captions, FilePen } from 'lucide-react';
 import { useEffect } from 'react';
+import OptionBlock from './option-block';
 
 const ExtraOptions = () => {
   const extraOptions = useSelectedOptionsStore((state) => state.extraOptions);
@@ -40,7 +41,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedThumbnail', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconPhotoVideo /> <span>Embed Thumbnail</span>
       </Toggle>
@@ -55,7 +56,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedChapters', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconSection /> <span>Embed Chapters</span>
       </Toggle>
@@ -70,7 +71,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconBadgeCc /> <span>Embed Subs</span>
       </Toggle>
@@ -85,7 +86,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('embedMetadata', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconFileStack /> <span>Embed Metadata</span>
       </Toggle>
@@ -100,7 +101,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeDescription', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconFileDescription /> <span>Write Description</span>
       </Toggle>
@@ -115,7 +116,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeComments', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconMessage /> <span>Write Comments</span>
       </Toggle>
@@ -130,7 +131,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeThumbnail', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconPhotoEdit /> <span>Write Thumbnail</span>
       </Toggle>
@@ -145,7 +146,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <FilePen /> <span>Write Subs</span>
       </Toggle>
@@ -160,7 +161,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('writeAutoSubs', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <Captions /> <span>Write Auto Subs</span>
       </Toggle>
@@ -175,7 +176,7 @@ const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('liveFromStart', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
       >
         <IconArrowBackUp /> <span>Live from start</span>
       </Toggle>
@@ -186,30 +187,31 @@ const ExtraOptions = () => {
     <div className="flex flex-col gap-4 font-satoshi">
       {infoJson.is_live && source === 'youtube-video' && (
         <div>
-          <h1 className="text-xs border-border border-b mb-2 pb-1">Live options</h1>
-          <div className="flex items-center gap-2 flex-wrap">
+          <OptionBlock name="Live options">
             <LiveFromStart />
-          </div>
+          </OptionBlock>
         </div>
       )}
       <div>
-        <h1 className="text-xs border-border border-b mb-2 pb-1">Embed options</h1>
-        <div className="flex items-center gap-2 flex-wrap">
-          <EmbedThumbnail />
-          <EmbedChapters />
-          <EmbedSubs />
-          <EmbedMetadata />
-        </div>
+        <OptionBlock name="Embed options">
+          <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-3">
+            <EmbedThumbnail />
+            <EmbedChapters />
+            <EmbedSubs />
+            <EmbedMetadata />
+          </div>
+        </OptionBlock>
       </div>
-      <div className="">
-        <h1 className="text-xs border-border border-b mb-2 pb-1">Write options</h1>
-        <div className="flex items-center gap-2 flex-wrap">
-          <WriteDescription />
-          <WriteComments />
-          <WriteThumbnail />
-          <WriteSubs />
-          <WriteAutoSubs />
-        </div>
+      <div>
+        <OptionBlock name="Write options">
+          <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
+            <WriteDescription />
+            <WriteComments />
+            <WriteThumbnail />
+            <WriteSubs />
+            <WriteAutoSubs />
+          </div>
+        </OptionBlock>
       </div>
     </div>
   );

@@ -187,7 +187,9 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
           </div>
         </ItemFooter>
       </Item>
-      <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} item={item} />
+      {isMoreInfoModalOpen && (
+        <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} item={item} />
+      )}
     </>
   );
 };

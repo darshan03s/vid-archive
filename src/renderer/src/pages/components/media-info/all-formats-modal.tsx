@@ -154,7 +154,7 @@ const AllFormatsModal = ({
           <DialogDescription className="font-satoshi">
             All audio and video formats
           </DialogDescription>
-          <p className="bg-yellow-300/20 text-[10px] rounded-md border p-2 text-foreground">
+          <p className="bg-yellow-300/20 text-[10px] rounded-md border p-1 px-2 text-foreground">
             The final output container will be based on video and audio codecs, it may not be the
             same as displayed here
           </p>

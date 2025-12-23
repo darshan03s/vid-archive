@@ -512,12 +512,16 @@ const DownloadCard = ({
           </div>
         </ItemFooter>
       </Item>
-      <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} data={downloadItem} />
-      <PlayMediaModal
-        open={isPlayVideoModalOpen}
-        setOpen={setIsPlayVideoModalOpen}
-        data={downloadItem}
-      />
+      {isMoreInfoModalOpen && (
+        <MoreInfo open={isMoreInfoModalOpen} setOpen={setIsMoreInfoModalOpen} data={downloadItem} />
+      )}
+      {isPlayVideoModalOpen && (
+        <PlayMediaModal
+          open={isPlayVideoModalOpen}
+          setOpen={setIsPlayVideoModalOpen}
+          data={downloadItem}
+        />
+      )}
     </>
   );
 };
@@ -531,6 +535,8 @@ const MoreInfo = ({
   setOpen: Dispatch<SetStateAction<boolean>>;
   data: RunningDownloadItem | DownloadHistoryItem;
 }) => {
+  const [isShowLogsVisible, setIsShowLogsVisible] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="font-satoshi">
@@ -546,17 +552,18 @@ const MoreInfo = ({
             <span className="font-semibold">Source</span>: <span>{data.source}</span>
           </div>
           <div>
-            <span className="font-semibold">URL</span>: <span>{data.url}</span>
+            <span className="font-semibold">URL</span>: <Anchor href={data.url}>{data.url}</Anchor>
           </div>
           <div>
             <span className="font-semibold">Uploader</span>: <span>{data.uploader}</span>
           </div>
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <span>{data.uploader_url || 'N/A'}</span>
+            <Anchor href={data.uploader_url || ''}>{data.uploader_url || 'N/A'}</Anchor>
           </div>
           <div>
-            <span className="font-semibold">Thumbnail</span>: <span>{data.thumbnail}</span>
+            <span className="font-semibold">Thumbnail</span>:{' '}
+            <Anchor href={data.thumbnail}>{data.thumbnail}</Anchor>
           </div>
           <div>
             <span className="font-semibold">Selected Format</span>: <span>{data.format}</span>
@@ -592,19 +599,29 @@ const MoreInfo = ({
           <div className="w-full flex flex-col gap-3 text-xs">
             <textarea
               name="command"
+              value={data.command}
               className="h-44 outline-2 p-2 cursor-text resize-none rounded-md font-mono leading-4.5 overflow-y-auto"
               disabled
-            >
-              {data.command}
-            </textarea>
+            />
 
             {data.download_status !== 'downloading' ? (
-              <AutoScrollTextarea
-                name="output"
-                value={data.complete_output}
-                className="h-44 outline-2 p-2 text-muted-foreground bg-muted resize-none rounded-md font-mono leading-4.5 overflow-y-auto"
-                disabled
-              />
+              isShowLogsVisible ? (
+                <AutoScrollTextarea
+                  name="output"
+                  value={data.complete_output}
+                  className="h-44 outline-2 p-2 text-muted-foreground bg-muted resize-none rounded-md font-mono leading-4.5 overflow-y-auto"
+                  disabled
+                />
+              ) : (
+                <Button
+                  size={'sm'}
+                  className="text-xs h-8"
+                  variant={'secondary'}
+                  onClick={() => setIsShowLogsVisible(true)}
+                >
+                  Show logs
+                </Button>
+              )
             ) : null}
           </div>
         </div>

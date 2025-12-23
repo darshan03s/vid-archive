@@ -18,6 +18,7 @@ import MoreDetailsModal from './more-details-modal';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { Source } from '@shared/types';
 import numeral from 'numeral';
+import OptionBlock from './option-block';
 
 const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
@@ -108,19 +109,17 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
 
         {source !== 'youtube-playlist' && source !== 'youtube-music-playlist' && (
           <div className="download-sections pt-2">
-            <h1 className="text-xs border-border border-b mb-2 pb-1 font-satoshi">
-              Download Sections
-            </h1>
-            <DownloadSections loading={isInfoJsonEmpty} />
+            <OptionBlock name="Download Sections">
+              <DownloadSections loading={isInfoJsonEmpty} />
+            </OptionBlock>
           </div>
         )}
 
         {!(source === 'youtube-playlist' || source === 'youtube-music-playlist') && (
           <div className="download-location pt-2">
-            <h1 className="text-xs border-border border-b mb-2 pb-1 font-satoshi">
-              Download Location
-            </h1>
-            <DownloadLocation loading={isInfoJsonEmpty} />
+            <OptionBlock name="Download Location">
+              <DownloadLocation loading={isInfoJsonEmpty} />
+            </OptionBlock>
           </div>
         )}
 
