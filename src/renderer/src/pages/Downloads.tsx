@@ -421,7 +421,7 @@ const DownloadCard = ({
                 onClick={() => handleShowInFolder()}
                 variant={'ghost'}
                 size={'icon-sm'}
-                className="size-6"
+                className="size-6 rounded-sm"
               >
                 <IconFolder className="size-4" />
               </Button>
@@ -433,7 +433,7 @@ const DownloadCard = ({
                     onClick={() => handlePlayInDefaultPlayer()}
                     variant={'ghost'}
                     size={'icon-sm'}
-                    className="size-6"
+                    className="size-6 rounded-sm"
                   >
                     <FilePlay className="size-4" />
                   </Button>
@@ -443,7 +443,7 @@ const DownloadCard = ({
                     onClick={() => handlePlay()}
                     variant={'ghost'}
                     size={'icon-sm'}
-                    className="size-6"
+                    className="size-6 rounded-sm"
                   >
                     <IconPlayerPlay className="size-4" />
                   </Button>
@@ -456,7 +456,7 @@ const DownloadCard = ({
                   onClick={() => handlePauseRunningDownload(downloadItem.id)}
                   variant={'ghost'}
                   size={'icon-sm'}
-                  className="size-6"
+                  className="size-6 rounded-sm"
                 >
                   <IconPlayerPause className="size-4" />
                 </Button>
@@ -468,7 +468,7 @@ const DownloadCard = ({
                   onClick={() => handlePauseWaitingDownload(downloadItem.id)}
                   variant={'ghost'}
                   size={'icon-sm'}
-                  className="size-6"
+                  className="size-6 rounded-sm"
                 >
                   <IconPlayerPause className="size-4" />
                 </Button>
@@ -480,7 +480,7 @@ const DownloadCard = ({
                   onClick={() => handleResumePausedDownload(downloadItem.id)}
                   variant={'ghost'}
                   size={'icon-sm'}
-                  className="size-6"
+                  className="size-6 rounded-sm"
                 >
                   <IconPlayerPlay className="size-4" />
                 </Button>
@@ -492,19 +492,19 @@ const DownloadCard = ({
                   onClick={() => handleRetryFailedDownload(downloadItem.id)}
                   variant={'ghost'}
                   size={'icon-sm'}
-                  className="size-6"
+                  className="size-6 rounded-sm"
                 >
                   <IconReload className="size-4" />
                 </Button>
               </TooltipWrapper>
             )}
-            <TooltipWrapper message={`Delete from history`}>
+            <TooltipWrapper message={`Delete from history`} className="relative right-2">
               <Button
                 disabled={downloadItem.download_status === 'downloading'}
                 onClick={() => handleDownloadsHistoryItemDelete(downloadItem.id)}
                 variant={'ghost'}
                 size={'icon-sm'}
-                className="size-6 hover:bg-red-500/20 dark:hover:bg-red-500/20"
+                className="size-6 hover:bg-red-500/20 dark:hover:bg-red-500/20 rounded-sm"
               >
                 <IconTrash className="size-4 text-red-500" />
               </Button>
@@ -552,18 +552,25 @@ const MoreInfo = ({
             <span className="font-semibold">Source</span>: <span>{data.source}</span>
           </div>
           <div>
-            <span className="font-semibold">URL</span>: <Anchor href={data.url}>{data.url}</Anchor>
+            <span className="font-semibold">URL</span>:{' '}
+            <Anchor href={data.url} className="text-primary">
+              {data.url}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Uploader</span>: <span>{data.uploader}</span>
           </div>
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <Anchor href={data.uploader_url || ''}>{data.uploader_url || 'N/A'}</Anchor>
+            <Anchor href={data.uploader_url || ''} className="text-primary">
+              {data.uploader_url || 'N/A'}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Thumbnail</span>:{' '}
-            <Anchor href={data.thumbnail}>{data.thumbnail}</Anchor>
+            <Anchor href={data.thumbnail} className="text-primary">
+              {data.thumbnail}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Selected Format</span>: <span>{data.format}</span>

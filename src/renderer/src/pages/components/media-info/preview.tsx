@@ -20,7 +20,7 @@ const Preview = ({
 }) => {
   if (source === 'youtube-video' || source === 'youtube-music') {
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center">
+      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
         <iframe
           className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
           src={`${SERVER_BASE_URL}:${import.meta.env.DEV ? 12278 : SERVER_PORT}/embed?url=${url}&source=${source}`}
@@ -32,7 +32,7 @@ const Preview = ({
   if (source === 'dailymotion-video') {
     const id = getDailymotionId(url);
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center">
+      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
         <iframe
           className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
           src={`https://geo.dailymotion.com/player.html?video=${id}`}
@@ -41,7 +41,7 @@ const Preview = ({
     );
   } else {
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center">
+      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
         {loading ? (
           <div className="w-[420px] aspect-video bg-secondary animate-fast" />
         ) : (

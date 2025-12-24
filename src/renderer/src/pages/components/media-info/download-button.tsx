@@ -75,7 +75,7 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
       title="Start Download"
       disabled={loading}
       onClick={handleDownload}
-      className="text-xs h-6 px-1 flex items-center gap-1 rounded-full"
+      className="text-xs h-7 px-1 flex items-center gap-1 rounded-full"
     >
       <IconArrowDown className="size-4" />
       Download

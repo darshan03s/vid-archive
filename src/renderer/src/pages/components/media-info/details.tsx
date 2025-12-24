@@ -45,7 +45,7 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
           {!isInfoJsonEmpty ? (
             <div className="flex items-center gap-2 flex-1 font-satoshi">
               {infoJson.uploader && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   {infoJson.channel_is_verified ? (
                     <IconCircleCheckFilled className="size-3" />
                   ) : null}
@@ -58,36 +58,36 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
                 </span>
               )}
               {infoJson.upload_date && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconClockHour3Filled className="size-3" />
                   {formatDate(infoJson.upload_date || '')}
                 </span>
               )}
               {infoJson.modified_date && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconClockHour3Filled className="size-3" />
                   {formatDate(infoJson.modified_date || '')}
                 </span>
               )}
               {(source === 'youtube-playlist' || source === 'youtube-music-playlist') && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconNumber className="size-3" />
                   Playlist Count: {infoJson.playlist_count}
                 </span>
               )}
               {infoJson.view_count && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconEye className="size-3" />
                   {numeral(infoJson.view_count).format('0.00a')}
                 </span>
               )}
               {infoJson.like_count && (
-                <span className="text-xs inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
+                <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   <IconThumbUp className="size-3" />
                   {numeral(infoJson.like_count).format('0.00a')}
                 </span>
               )}
-              <span className="text-xs inline-flex items-center gap-1">
+              <span className="text-xs h-7 inline-flex items-center gap-1">
                 <LiveStatus infoJson={infoJson} />
               </span>
             </div>

@@ -67,7 +67,10 @@ const MoreInfo = ({
             <span className="font-semibold">Source</span>: <span>{item.source}</span>
           </div>
           <div>
-            <span className="font-semibold">URL</span>: <Anchor href={item.url}>{item.url}</Anchor>
+            <span className="font-semibold">URL</span>:{' '}
+            <Anchor href={item.url} className="text-primary">
+              {item.url}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Created/Uploaded At</span>:{' '}
@@ -82,11 +85,13 @@ const MoreInfo = ({
           </div>
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <Anchor href={item.uploader_url || ''}>{item.uploader_url || 'N/A'}</Anchor>
+            <Anchor href={item.uploader_url || ''} className="text-primary">
+              {item.uploader_url || 'N/A'}
+            </Anchor>
           </div>
           <div>
             <span className="font-semibold">Thumbnail</span>:{' '}
-            <Anchor href={item.thumbnail} className="overflow-auto">
+            <Anchor href={item.thumbnail} className="overflow-auto text-primary">
               {item.thumbnail}
             </Anchor>
           </div>
@@ -174,12 +179,12 @@ const UrlHistoryItem = ({ item }: { item: UrlHistoryItem }) => {
             </TooltipWrapper>
           </div>
           <div className="url-history-item-footer-right">
-            <TooltipWrapper message={`Delete from history`}>
+            <TooltipWrapper message={`Delete from history`} className="relative right-2">
               <Button
                 onClick={() => handleUrlHistoryItemDelete(item.id)}
                 variant={'ghost'}
                 size={'icon-sm'}
-                className="size-6 hover:bg-red-500/20 dark:hover:bg-red-500/20"
+                className="size-6 hover:bg-red-500/20 dark:hover:bg-red-500/20 rounded-sm"
               >
                 <IconTrash className="size-4 text-red-500" />
               </Button>
@@ -302,13 +307,13 @@ const UrlHistory = () => {
         <span className="text-xs">Url History ({urlHistory?.length})</span>
         <div className="flex items-center gap-4">
           <UrlHistorySearch />
-          <TooltipWrapper message={`Delete url history`}>
+          <TooltipWrapper message={`Delete url history`} className="relative right-2">
             <Button
               disabled={urlHistory?.length === 0}
               onClick={() => handleUrlHistoryDelete()}
               variant={'destructive'}
               size={'icon-sm'}
-              className="size-6"
+              className="size-6 rounded-sm"
             >
               <IconTrash className="size-4" />
             </Button>

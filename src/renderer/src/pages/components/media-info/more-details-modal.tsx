@@ -43,7 +43,7 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
           )}
           <div>
             <span className="font-semibold">URL</span>:{' '}
-            <Anchor href={url || infoJson.webpage_url || ''}>
+            <Anchor href={url || infoJson.webpage_url || ''} className="text-primary">
               {url || infoJson.webpage_url || 'N/A'}
             </Anchor>
           </div>
@@ -73,7 +73,10 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
           )}
           <div>
             <span className="font-semibold">Uploader URL</span>:{' '}
-            <Anchor href={infoJson.uploader_url || infoJson.channel_url || ''}>
+            <Anchor
+              href={infoJson.uploader_url || infoJson.channel_url || ''}
+              className="text-primary"
+            >
               {infoJson.uploader_url || infoJson.channel_url || 'N/A'}
             </Anchor>
           </div>
@@ -90,7 +93,10 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
           )}
           <div>
             <span className="font-semibold">Thumbnail</span>:{' '}
-            <Anchor href={infoJson.thumbnail ?? infoJson.thumbnails?.at(-1)?.url ?? ''}>
+            <Anchor
+              href={infoJson.thumbnail ?? infoJson.thumbnails?.at(-1)?.url ?? ''}
+              className="text-primary"
+            >
               {infoJson.thumbnail ?? infoJson.thumbnails?.at(-1)?.url ?? 'N/A'}
             </Anchor>
           </div>

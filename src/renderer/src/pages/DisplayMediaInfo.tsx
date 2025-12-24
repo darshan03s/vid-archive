@@ -67,15 +67,17 @@ const DisplayMediaInfo = () => {
       </div>
 
       <div className="relative z-0">
-        <div className="flex flex-col">
-          <Preview
-            previewUrl={thumbnailUrl}
-            loading={isLoadingInfoJson}
-            infoJson={infoJson}
-            url={url}
-            source={source}
-          />
-          <div className="p-2 pb-8">
+        <div className="flex flex-col gap-1.5">
+          <div className="rounded-md px-4 pt-1">
+            <Preview
+              previewUrl={thumbnailUrl}
+              loading={isLoadingInfoJson}
+              infoJson={infoJson}
+              url={url}
+              source={source}
+            />
+          </div>
+          <div className="p-2 px-4 pb-8">
             <Details infoJson={infoJson} />
           </div>
         </div>

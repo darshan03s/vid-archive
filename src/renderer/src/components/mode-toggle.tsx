@@ -8,7 +8,7 @@ const ModeToggle = () => {
     <Button
       title="Toggle theme"
       variant={'ghost'}
-      className="size-6"
+      className="size-6 rounded-sm"
       onClick={() => {
         if (theme === 'dark') {
           setTheme('light');

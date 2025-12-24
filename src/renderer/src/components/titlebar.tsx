@@ -48,10 +48,18 @@ const Titlebar = () => {
       <div className="titlebar-left px-2 flex items-center gap-2">
         <img src={appIcon} alt="icon" width={18} height={18} className="rounded-[4px]" />
         <div className="flex items-center gap-1">
-          <button title="Go Back" onClick={goBack} className="opacity-60 hover:opacity-100">
+          <button
+            title="Go Back"
+            onClick={goBack}
+            className="opacity-60 hover:opacity-100 hover:text-primary"
+          >
             <IconArrowLeft className="size-4" />
           </button>
-          <button title="Go Forward" onClick={goForward} className="opacity-60 hover:opacity-100">
+          <button
+            title="Go Forward"
+            onClick={goForward}
+            className="opacity-60 hover:opacity-100 hover:text-primary"
+          >
             <IconArrowRight className="size-4" />
           </button>
           <ModeToggle />
