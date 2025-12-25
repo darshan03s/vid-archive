@@ -654,7 +654,7 @@ const PlayMediaModal = ({
           <DialogDescription className="line-clamp-1"></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          {isAudio(data.download_path) ? (
+          {isAudio(data.download_path) || data.format.includes('audio only') ? (
             <audio
               controls
               controlsList="nofullscreen"
