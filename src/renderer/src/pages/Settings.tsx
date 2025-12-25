@@ -1,5 +1,5 @@
 import { MAX_ALLOWED_CONCURRENT_DOWNLOADS } from '@shared/data';
-import { AppSettingsChange, YtdlpVersions } from '@shared/types';
+import { AppSettingsChange } from '@shared/types';
 import { Button } from '@renderer/components/ui/button';
 import {
   Dialog,
@@ -41,6 +41,7 @@ import {
   SUPPORTED_COOKIE_BROWSERS,
   SupportedCookieBrowser
 } from 'yt-dlp-command-builder';
+import { useYtdlpVersionsStore } from '@renderer/stores/yt-dlp-versions-store';
 
 const SettingsHeader = () => {
   return (
@@ -172,17 +173,7 @@ const YtdlpUpdateModal = ({
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [versions, setVersions] = useState<YtdlpVersions>({
-    stable: [],
-    master: [],
-    nightly: []
-  });
-
-  useEffect(() => {
-    window.api.getYtdlpVersions().then((data) => {
-      setVersions(data);
-    });
-  }, []);
+  const versions = useYtdlpVersionsStore((state) => state.versions);
 
   function handleUpdate(channel: ReleaseChannel, version: string) {
     window.api.updateYtdlp(channel, version);

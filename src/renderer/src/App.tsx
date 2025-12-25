@@ -14,11 +14,13 @@ import Downloads from './pages/Downloads';
 import Settings from './pages/Settings';
 import { useHistoryStore } from './stores/history-store';
 import { UrlHistoryItem } from '@shared/types/history';
+import { useYtdlpVersionsStore } from './stores/yt-dlp-versions-store';
 
 const App = () => {
   const [loadingFromSettings, setLoadingFromSettings] = useState(true);
   const [isYtdlpFmpegConfirmModalVisible, setIsYtdlpFfmpegConfirmModalVisible] = useState(false);
   const setSettings = useSettingsStore((state) => state.setSettings);
+  const setVersions = useYtdlpVersionsStore((state) => state.setVersions);
 
   useEffect(() => {
     const unsubUpdatedSettings = window.api.on(
@@ -57,6 +59,10 @@ const App = () => {
 
     const unsubYtdlpUpdateSuccess = window.api.on('yt-dlp:update-success', () => {
       toast.info('yt-dlp Updated');
+    });
+
+    window.api.getYtdlpVersions().then((data) => {
+      setVersions(data);
     });
 
     return () => {
