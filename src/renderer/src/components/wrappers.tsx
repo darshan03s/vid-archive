@@ -14,7 +14,7 @@ export const TooltipWrapper = ({ message, children, side, className }: TooltipWr
       <TooltipTrigger asChild className="flex items-center">
         {children}
       </TooltipTrigger>
-      <TooltipContent side={side} className={cn('font-satoshi text-[11px]', className)}>
+      <TooltipContent side={side} className={cn('font-main text-[11px]', className)}>
         {message}
       </TooltipContent>
     </Tooltip>

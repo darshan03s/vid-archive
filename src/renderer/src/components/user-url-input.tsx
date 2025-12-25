@@ -61,7 +61,7 @@ const UserUrlInput = ({ showRefetch }: UserUrlInputProps) => {
     <ButtonGroup className="w-full">
       <Input
         placeholder="Enter a URL"
-        className="placeholder:text-xs text-xs font-satoshi placeholder:font-satoshi select-text h-8"
+        className="placeholder:text-xs text-xs font-main placeholder:font-main select-text h-8"
         type="url"
         onChange={handleUrlInput}
         onKeyDown={handleUrlInputEnter}

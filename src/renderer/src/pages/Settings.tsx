@@ -45,7 +45,7 @@ import {
 const SettingsHeader = () => {
   return (
     <div className="px-3 py-2 h-12 text-sm flex items-center justify-between sticky top-0 left-0 bg-background/60 backdrop-blur-md text-foreground z-49">
-      <span className="text-xs font-satoshi font-semibold">Settings</span>
+      <span className="text-xs font-main font-semibold">Settings</span>
       <SaveSettingsButton />
     </div>
   );
@@ -83,7 +83,7 @@ const SaveSettingsButton = () => {
     <Button
       onClick={handleSaveSettings}
       size={'sm'}
-      className="text-[10px] h-6 bg-primary text-primary-foreground font-satoshi font-semibold"
+      className="text-[10px] h-6 bg-primary text-primary-foreground font-main font-semibold"
     >
       Save Settings
     </Button>
@@ -113,9 +113,7 @@ const SettingsItem = ({ children, className }: { children: ReactNode; className?
 
 const SettingName = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <span
-      className={cn('setting-name text-[12px] text-nowrap font-semibold font-satoshi', className)}
-    >
+    <span className={cn('setting-name text-[12px] text-nowrap font-semibold font-main', className)}>
       {children}
     </span>
   );
@@ -147,10 +145,10 @@ const ConfirmDeleteAllMetadataModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="font-satoshi">
+      <DialogContent className="font-main">
         <DialogHeader>
-          <DialogTitle className="font-satoshi">Delete all metadata?</DialogTitle>
-          <DialogDescription className="font-satoshi">
+          <DialogTitle className="font-main">Delete all metadata?</DialogTitle>
+          <DialogDescription className="font-main">
             This action will delete all media metadata
           </DialogDescription>
         </DialogHeader>
@@ -291,10 +289,10 @@ const YtdlpUpdateModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="font-satoshi">
+      <DialogContent className="font-main">
         <DialogHeader>
-          <DialogTitle className="font-satoshi">Update yt-dlp</DialogTitle>
-          <DialogDescription className="font-satoshi"></DialogDescription>
+          <DialogTitle className="font-main">Update yt-dlp</DialogTitle>
+          <DialogDescription className="font-main"></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <UpdateToStable />
@@ -404,7 +402,7 @@ const SettingsBlocks = () => {
   }
 
   return (
-    <div className="settings-blocks divide-y px-12 [&_div.settings-block]:p-2 [&_div.settings-block]:py-3.5 [&_div.settings-block]:first:pt-0 font-satoshi">
+    <div className="settings-blocks divide-y px-12 [&_div.settings-block]:p-2 [&_div.settings-block]:py-3.5 [&_div.settings-block]:first:pt-0 font-main">
       <SettingsBlock>
         <SettingsItem>
           <SettingName>App Version</SettingName>

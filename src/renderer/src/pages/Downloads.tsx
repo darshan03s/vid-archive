@@ -117,7 +117,7 @@ const Downloads = () => {
     <>
       <div className="w-full flex flex-col gap-2">
         <div className="px-3 py-2 h-12 text-sm flex items-center justify-between sticky top-0 left-0 bg-background/60 backdrop-blur-md text-foreground z-49">
-          <span className="text-xs flex items-center gap-2 font-satoshi">
+          <span className="text-xs flex items-center gap-2 font-main">
             Downloads
             <span>
               <span title="History">({downloadHistory?.length})</span>
@@ -140,7 +140,7 @@ const Downloads = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   side="bottom"
-                  className="relative right-6 top-1 flex flex-col gap-2 font-satoshi"
+                  className="relative right-6 top-1 flex flex-col gap-2 font-main"
                 >
                   <DropdownMenuItem
                     onClick={handlePauseAllDownloads}
@@ -234,7 +234,7 @@ const DownloadHistorySearch = () => {
           }
         }}
         onChange={(e) => handleSearchInput(e.target.value)}
-        className="h-7 text-[10px] w-[260px] font-satoshi placeholder:font-satoshi"
+        className="h-7 text-[10px] w-[260px] font-main placeholder:font-main"
         type="search"
         placeholder="Search in download history"
       />
@@ -261,10 +261,10 @@ const ConfirmDeleteAllModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="font-satoshi">
+      <DialogContent className="font-main">
         <DialogHeader>
-          <DialogTitle className="font-satoshi">Delete all download history?</DialogTitle>
-          <DialogDescription className="font-satoshi">
+          <DialogTitle className="font-main">Delete all download history?</DialogTitle>
+          <DialogDescription className="font-main">
             This action will delete all download history
           </DialogDescription>
         </DialogHeader>
@@ -351,11 +351,11 @@ const DownloadCard = ({
             alt={downloadItem.title}
             className="aspect-video rounded-sm outline-1"
           />
-          <span className="bg-black text-white p-1 text-[9px] rounded absolute right-0.5 bottom-0.5 font-satoshi">
+          <span className="bg-black text-white p-1 text-[9px] rounded absolute right-0.5 bottom-0.5 font-main">
             {downloadItem.duration}
           </span>
         </ItemMedia>
-        <ItemContent className="flex flex-col gap-2 min-w-0 font-satoshi">
+        <ItemContent className="flex flex-col gap-2 min-w-0 font-main">
           <ItemTitle className="text-xs line-clamp-1">{downloadItem.title}</ItemTitle>
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-2">
@@ -539,10 +539,10 @@ const MoreInfo = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="font-satoshi">
+      <DialogContent className="font-main">
         <DialogHeader>
-          <DialogTitle className="font-satoshi">Info</DialogTitle>
-          <DialogDescription className="font-satoshi">More info of download</DialogDescription>
+          <DialogTitle className="font-main">Info</DialogTitle>
+          <DialogDescription className="font-main">More info of download</DialogDescription>
         </DialogHeader>
         <div className="w-full flex flex-col gap-2 text-xs h-68 overflow-y-auto px-1 pb-2">
           <div>

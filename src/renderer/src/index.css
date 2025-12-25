@@ -15,7 +15,7 @@
 }
 
 @theme {
-  --font-satoshi: 'Satoshi', sans-serif;
+  --font-main: 'Satoshi', sans-serif;
   --titlebar-height: 40px;
 }
 

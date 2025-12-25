@@ -36,14 +36,14 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
             title="Show more details"
             className="text-xs outline-1 outline-primary/30 bg-primary/10 text-foreground h-10 px-2 rounded-md cursor-pointer flex items-center"
           >
-            <p className="text-xs leading-5 line-clamp-1 font-satoshi">
+            <p className="text-xs leading-5 line-clamp-1 font-main">
               {infoJson.fulltitle || infoJson.title || 'N/A'}
             </p>
           </div>
         )}
         <div className="py-1 flex items-center justify-between">
           {!isInfoJsonEmpty ? (
-            <div className="flex items-center gap-2 flex-1 font-satoshi">
+            <div className="flex items-center gap-2 flex-1 font-main">
               {infoJson.uploader && (
                 <span className="text-xs h-7 inline-flex items-center gap-1 outline-1 p-1 px-2 rounded-full">
                   {infoJson.channel_is_verified ? (
@@ -96,7 +96,7 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
           )}
 
           {!(source === 'youtube-playlist' || source === 'youtube-music-playlist') && (
-            <div className="font-satoshi">
+            <div className="font-main">
               <DownloadButton loading={isInfoJsonEmpty} />
             </div>
           )}

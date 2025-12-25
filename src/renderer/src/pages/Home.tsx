@@ -8,7 +8,7 @@ const Home = () => {
         <Header />
       </div>
 
-      <div className="relative z-0 font-satoshi">
+      <div className="relative z-0 font-main">
         <UrlHistory />
       </div>
     </div>

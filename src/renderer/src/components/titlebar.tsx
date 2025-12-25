@@ -58,7 +58,7 @@ const GoForwardButton = () => {
 
 const AppName = () => {
   return (
-    <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-satoshi font-bold">
+    <div className="titlebar-center flex-1 text-center opacity-60 text-xs font-main font-bold">
       VidArchive {import.meta.env.DEV ? '(DEV)' : null}
     </div>
   );
@@ -142,7 +142,7 @@ const ConfirmExitModal = ({ open, setOpen }: ConfirmExitModalProps) => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent className="font-satoshi">
+      <AlertDialogContent className="font-main">
         <AlertDialogHeader>
           <AlertDialogTitle>Confirm exit</AlertDialogTitle>
           <AlertDialogDescription>There are still downloads running</AlertDialogDescription>

@@ -38,7 +38,7 @@ const Formats = ({ infoJson, loading }: { infoJson: MediaInfoJson; loading: bool
           <div
             onClick={() => setIsAllFormatsModalOpen(true)}
             title="Select format"
-            className="selected-format relative outline-1 outline-primary/30 px-1 h-16 rounded-md w-full bg-primary/10 flex items-center gap-2 cursor-pointer font-satoshi"
+            className="selected-format relative outline-1 outline-primary/30 px-1 h-16 rounded-md w-full bg-primary/10 flex items-center gap-2 cursor-pointer font-main"
           >
             <div className="selected-format-left p-1 flex items-center">
               <span className="bg-primary text-primary-foreground text-xs p-2 rounded-md">

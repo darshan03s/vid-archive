@@ -148,12 +148,10 @@ const AllFormatsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="font-satoshi">
+      <DialogContent className="font-main">
         <DialogHeader>
-          <DialogTitle className="font-satoshi">All formats</DialogTitle>
-          <DialogDescription className="font-satoshi">
-            All audio and video formats
-          </DialogDescription>
+          <DialogTitle className="font-main">All formats</DialogTitle>
+          <DialogDescription className="font-main">All audio and video formats</DialogDescription>
           <p className="bg-yellow-300/20 text-[10px] rounded-md border p-1 px-2 text-foreground outline-none border-none">
             The final output container will be based on video and audio codecs, it may not be the
             same as displayed here
@@ -172,14 +170,14 @@ const AllFormatsModal = ({
             </Button>
           ))}
         </div>
-        <div className="w-full font-satoshi flex flex-col gap-2 h-53 overflow-auto">
+        <div className="w-full font-main flex flex-col gap-2 h-53 overflow-auto">
           {formatMap[selectedFilter]?.map((format) => (
             <Format key={format.format_id} format={format} />
           ))}
         </div>
         <DialogFooter>
           <DialogClose>
-            <Button size={'sm'} className="text-xs font-satoshi">
+            <Button size={'sm'} className="text-xs font-main">
               OK
             </Button>
           </DialogClose>
