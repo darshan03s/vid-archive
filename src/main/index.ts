@@ -9,6 +9,7 @@ import registerHanlders from './ipc/registerHandlers';
 import registerProtocolHandlers from './protocolHanlders';
 import runServer from './server';
 import { initAutoUpdater } from './updater';
+import { captureScreen } from './utils/appUtils';
 
 const logsFolderName = new Date().toISOString().split('T')[0];
 
@@ -91,6 +92,14 @@ function createWindow(): void {
     shell.openExternal(details.url);
     return { action: 'deny' };
   });
+
+  if (is.dev) {
+    mainWindow.webContents.on('before-input-event', (_event, input) => {
+      if (input.type === 'keyDown' && input.alt && input.key.toLowerCase() === 'c') {
+        captureScreen(app.getPath('downloads'));
+      }
+    });
+  }
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);

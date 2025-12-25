@@ -12,10 +12,11 @@ import {
 } from '@shared/utils';
 import { ChildProcess, exec } from 'child_process';
 import { app } from 'electron';
-import { readdir } from 'fs/promises';
+import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 import { promisify } from 'util';
 import { listFolderItems } from './fsUtils';
+import { mainWindow } from '..';
 const execPromise = promisify(exec);
 
 export async function getYtdlpFromSettings() {
@@ -255,4 +256,36 @@ export async function getFirefoxProfiles() {
   const firefoxProfilesFolder = path.join(roamingAppDataPath, 'Mozilla', 'Firefox', 'Profiles');
   const profilesList = await listFolderItems(firefoxProfilesFolder);
   return profilesList;
+}
+
+export async function captureScreen(dirPath: string) {
+  if (!mainWindow) return;
+
+  const { debugger: dbg } = mainWindow.webContents;
+
+  dbg.attach();
+
+  const scale = 5;
+
+  await dbg.sendCommand('Emulation.setDeviceMetricsOverride', {
+    width: 0,
+    height: 0,
+    deviceScaleFactor: scale,
+    mobile: false
+  });
+
+  const { data } = await dbg.sendCommand('Page.captureScreenshot', {
+    format: 'png',
+    fromSurface: true
+  });
+
+  const buffer = Buffer.from(data, 'base64');
+  const filePath = path.join(dirPath, `vidarchive-ultra-${Date.now()}.png`);
+
+  await writeFile(filePath, buffer);
+
+  await dbg.sendCommand('Emulation.clearDeviceMetricsOverride');
+  dbg.detach();
+
+  console.log(`Saved ${scale}x Screenshot: ${filePath}`);
 }
