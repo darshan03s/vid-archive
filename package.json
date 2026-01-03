@@ -27,7 +27,9 @@
     "build:win": "pnpm run build && electron-builder --win",
     "prepare": "husky",
     "rm:app-data": "rm -rf ./app-data",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "backup": "bash ./shell-scripts/backup.sh",
+    "mock": "bash ./shell-scripts/mock.sh"
   },
   "lint-staged": {
     "*.{html,css,js,ts,jsx,tsx,json,mjs}": [
@@ -82,6 +84,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.3",
+    "baseline-browser-mapping": "^2.9.11",
     "drizzle-kit": "^0.31.6",
     "electron": "^38.1.2",
     "electron-builder": "^25.1.8",
