@@ -1,12 +1,13 @@
 import { ChildProcess, spawn } from 'node:child_process';
-import { NewDownloadHistoryItem } from './types/db';
-import { downloadHistoryOperations } from './utils/dbUtils';
-import { mainWindow } from '.';
+import { NewDownloadHistoryItem } from '../types/db';
+import { downloadHistoryOperations } from '../utils/dbUtils';
+import { mainWindow } from '..';
 import { ProgressDetails } from '@shared/types/download';
-import { getFileExtension } from './utils/fsUtils';
-import Settings from './settings';
+import { getFileExtension } from '../utils/fsUtils';
+import Settings from '../settings';
 import logger from '@shared/logger';
-import { terminateProcess } from './utils/appUtils';
+import { terminateProcess } from '../utils/appUtils';
+import { PendingQueue } from './pendingQueue';
 
 type RunningDownload = {
   downloadingItem: NewDownloadHistoryItem;
@@ -55,6 +56,22 @@ export class DownloadManager {
     // refresh downloads after adding to pending queue
     mainWindow.webContents.send('refresh-downloads');
     mainWindow.webContents.send('download-queued');
+    logger.info(`Download queued: ${newDownload.title}`);
+  }
+
+  private printStdoutLine(line: string, pid?: number) {
+    console.log(`[${pid ?? 'N/A'}] stdout: ${line}`);
+  }
+
+  private printStderrLine(line: string, pid?: number) {
+    console.log(`[${pid ?? 'N/A'}] stderr: ${line}`);
+  }
+
+  private getProgressPercent(text: string) {
+    const match = text.match(/(\d+(?:\.\d+)?)%/);
+    if (!match) return null;
+
+    return parseFloat(match[1]);
   }
 
   private startDownload(newDownload: NewDownloadHistoryItem) {
@@ -75,30 +92,32 @@ export class DownloadManager {
     child.stdout.setEncoding('utf8');
     child.stderr.setEncoding('utf8');
 
-    child.stdout.on('data', (data) => {
-      const text = data.toString();
-      const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+    const getLines = (data: string) => data.split(/\r?\n/).filter((l) => l.trim() !== '');
+
+    // Add listeners for stdout
+    child.stdout.on('data', (data: string) => {
+      const lines = getLines(data);
       for (const line of lines) {
-        console.log(`[${child.pid}] stdout: ${line}`);
+        this.printStdoutLine(line, child.pid);
         downloadingItem.download_progress_string = line;
         downloadingItem.download_progress =
-          getProgressPercent(line) ?? downloadingItem.download_progress;
+          this.getProgressPercent(line) ?? downloadingItem.download_progress;
         downloadingItem.complete_output += `\n${line}`;
-        mainWindow.webContents.send(`download-progress:${newDownload.id}`, {
+        mainWindow.webContents.send(`download-progress:${downloadingItem.id}`, {
           progressString: line,
-          progressPercentage: getProgressPercent(line) ?? downloadingItem.download_progress
+          progressPercentage: this.getProgressPercent(line) ?? downloadingItem.download_progress
         } as ProgressDetails);
       }
     });
 
-    child.stderr.on('data', (data) => {
-      const text = data.toString();
-      const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+    // Add listeners for stderr
+    child.stderr.on('data', (data: string) => {
+      const lines = getLines(data);
       for (const line of lines) {
-        console.log(`[${child.pid}] stderr: ${line}`);
+        this.printStderrLine(line, child.pid);
         downloadingItem.download_progress_string = line;
         downloadingItem.complete_output += `\n${line}`;
-        mainWindow.webContents.send(`download-progress:${newDownload.id}`, {
+        mainWindow.webContents.send(`download-progress:${downloadingItem.id}`, {
           progressString: line
         } as ProgressDetails);
         if (line.includes('ERROR')) {
@@ -130,22 +149,24 @@ export class DownloadManager {
       }
     });
 
+    // Add listener for process exit
     child.on('close', (code, signal) => {
       console.log('Exit -> ', { code, signal });
       if (code === 0) {
         // download success
-        this.onDownloadSuccess(downloadingItem);
+        this.onDownloadSuccess(downloadingItem, code);
       } else {
         if (downloadingItem.download_status === 'paused') {
           // download paused
-          this.onDownloadPause(downloadingItem);
+          this.onDownloadPause(downloadingItem, code);
         } else {
           // download failed
-          this.onDownloadFail(downloadingItem);
+          this.onDownloadFail(downloadingItem, code);
         }
       }
     });
 
+    // Add to currently running downloads
     this.currentlyRunningDownloads.unshift(runningDownload);
     mainWindow.webContents.send('download-begin');
 
@@ -153,45 +174,53 @@ export class DownloadManager {
     mainWindow.webContents.send('refresh-downloads');
   }
 
-  private onDownloadSuccess(downloadedItem: NewDownloadHistoryItem) {
+  private getCompleteOutputLines(output: string) {
+    return output
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+  }
+
+  private onDownloadSuccess(downloadedItem: NewDownloadHistoryItem, code: number) {
     downloadedItem.download_status = 'completed';
     downloadedItem.download_completed_at = new Date().toISOString();
     downloadedItem.download_progress_string = 'Download Completed';
     downloadedItem.download_progress = 100;
-    const lines = downloadedItem.complete_output
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
+    const lines = this.getCompleteOutputLines(downloadedItem.complete_output);
 
     const filepath = lines.at(-1);
     const ext = getFileExtension(filepath);
     downloadedItem.download_path = downloadedItem.download_path + `.${ext}`;
 
-    downloadedItem.complete_output += '\nProcess complete';
+    downloadedItem.complete_output += '\nProcess completed with exit code ' + code;
 
     this.updateDownloads(downloadedItem);
+    logger.info(`Download completed: ${downloadedItem.title}`);
   }
 
-  private onDownloadPause(pausedDownload: NewDownloadHistoryItem) {
+  private onDownloadPause(pausedDownload: NewDownloadHistoryItem, code: number | null) {
     pausedDownload.download_completed_at = new Date().toISOString();
     pausedDownload.download_progress_string = 'Download Paused';
     pausedDownload.complete_output += '\nDownload Paused';
 
-    pausedDownload.complete_output += '\nProcess complete';
+    pausedDownload.complete_output += '\nProcess completed with exit code ' + code;
 
     this.updateDownloads(pausedDownload);
+    logger.info(`Download paused: ${pausedDownload.title}`);
   }
 
-  private onDownloadFail(failedDownload: NewDownloadHistoryItem) {
+  private onDownloadFail(failedDownload: NewDownloadHistoryItem, code: number | null) {
     failedDownload.download_status = 'failed';
     failedDownload.download_completed_at = new Date().toISOString();
     failedDownload.download_progress_string = 'Download Failed';
     failedDownload.complete_output += '\nDownload Failed';
+    failedDownload.complete_output += '\nProcess completed with exit code ' + code;
     mainWindow.webContents.send(
       'yt-dlp:download-failed',
       `Download failed for ${failedDownload.title}`
     );
     this.updateDownloads(failedDownload);
+    logger.info(`Download failed: ${failedDownload.title}`);
   }
 
   private persistDownload(download: NewDownloadHistoryItem) {
@@ -386,92 +415,4 @@ export class DownloadManager {
   getQueuedDownloads() {
     return this.pendingQueue.toArray();
   }
-}
-
-export class PendingQueue {
-  private items: Record<number, NewDownloadHistoryItem> = {};
-  private head = 0;
-  private tail = 0;
-
-  get size(): number {
-    return this.tail - this.head;
-  }
-
-  isEmpty(): boolean {
-    return this.size === 0;
-  }
-
-  enqueue(value: NewDownloadHistoryItem): void {
-    this.items[this.tail] = value;
-    this.tail++;
-  }
-
-  dequeue(): NewDownloadHistoryItem {
-    if (this.isEmpty()) {
-      throw new Error('Queue is empty');
-    }
-
-    const value = this.items[this.head];
-    delete this.items[this.head];
-    this.head++;
-
-    return value;
-  }
-
-  clear(): void {
-    this.items = {};
-    this.head = 0;
-    this.tail = 0;
-  }
-
-  toArray(): NewDownloadHistoryItem[] {
-    const result: NewDownloadHistoryItem[] = [];
-    for (let i = this.head; i < this.tail; i++) {
-      result.push(this.items[i]);
-    }
-    return result;
-  }
-
-  remove(downloadId: string): NewDownloadHistoryItem | null {
-    if (this.isEmpty()) return null;
-
-    let writeIndex = this.head;
-    let removedItem: NewDownloadHistoryItem | null = null;
-
-    for (let readIndex = this.head; readIndex < this.tail; readIndex++) {
-      const item = this.items[readIndex];
-
-      if (!removedItem && item.id === downloadId) {
-        removedItem = item;
-        delete this.items[readIndex];
-        continue;
-      }
-
-      if (writeIndex !== readIndex) {
-        this.items[writeIndex] = item;
-        delete this.items[readIndex];
-      }
-
-      writeIndex++;
-    }
-
-    if (removedItem) {
-      this.tail--;
-    }
-
-    return removedItem;
-  }
-
-  removeAll() {
-    const items = this.toArray();
-    this.clear();
-    return items;
-  }
-}
-
-function getProgressPercent(text: string) {
-  const match = text.match(/(\d+(?:\.\d+)?)%/);
-  if (!match) return null;
-
-  return parseFloat(match[1]);
 }
