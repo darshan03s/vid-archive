@@ -7,6 +7,7 @@ import { makeDirs, pathExistsSync } from './utils/fsUtils';
 import logger from '@shared/logger';
 import Settings from './settings';
 
+// Apply necessary updates to settings when app version changes
 function updateSettings() {
   const settings = Settings.getInstance();
   const existing = settings.getAll();
@@ -63,12 +64,7 @@ export async function init() {
   if (!pathExistsSync(DB_PATH)) {
     initDatabase();
     logger.info('Created app.db');
-    try {
-      runMigrations();
-      logger.info('Migrations applied for new version');
-    } catch (error) {
-      logger.error('Migrations failed: ' + error);
-    }
+    runMigrations();
   } else {
     logger.info('app.db exists');
     initDatabase();
