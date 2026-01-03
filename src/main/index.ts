@@ -83,18 +83,21 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
+    // Close the splash window once the main window is ready
     if (splashWindow) {
       splashWindow.close();
     }
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
+    // Open links in default browser
     shell.openExternal(details.url);
     return { action: 'deny' };
   });
 
   if (is.dev) {
     mainWindow.webContents.on('before-input-event', (_event, input) => {
+      // Capture screenshot with Alt + C in dev mode
       if (input.type === 'keyDown' && input.alt && input.key.toLowerCase() === 'c') {
         captureScreen(app.getPath('downloads'));
       }
@@ -111,6 +114,7 @@ function createWindow(): void {
 const gotLock = app.requestSingleInstanceLock();
 const isPrimaryInstance = gotLock;
 
+// Prevent multiple instances
 if (!gotLock) {
   app.quit();
 } else {
@@ -144,7 +148,7 @@ app.whenReady().then(async () => {
 
   await init();
 
-  await registerHanlders();
+  registerHanlders();
 
   runServer();
 

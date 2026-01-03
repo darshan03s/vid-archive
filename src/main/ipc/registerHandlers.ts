@@ -38,7 +38,7 @@ import {
 } from './handlers';
 import { mainWindow } from '..';
 
-async function registerHanlders() {
+function registerHanlders() {
   ipcMain.on('win:min', () => mainWindow.minimize());
 
   ipcMain.on('win:close', () => mainWindow.close());
