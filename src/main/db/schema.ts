@@ -1,5 +1,6 @@
 import { real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
+import { Source } from '@shared/types';
 
 export const downloadStatusEnum = [
   'downloading',
@@ -13,12 +14,12 @@ export const urlHistory = sqliteTable('url_history', {
   id: text('id').primaryKey().notNull(),
   title: text('title').notNull(),
   url: text('url').notNull(),
-  source: text('source').notNull(),
+  source: text('source').$type<Source>().notNull(),
   thumbnail: text('thumbnail').notNull(),
   thumbnail_local: text('thumbnail_local').notNull(),
   uploader: text('uploader').notNull(),
   uploader_url: text('uploader_url').notNull(),
-  duration: text('duration'),
+  duration: text('duration').notNull(),
   created_at: text('created_at').notNull(),
   added_at: text('added_at')
     .default(sql`CURRENT_TIMESTAMP`)
@@ -29,7 +30,7 @@ export const downloadHistory = sqliteTable('download_history', {
   id: text('id').primaryKey().notNull(),
   title: text('title').notNull(),
   url: text('url').notNull(),
-  source: text('source').notNull(),
+  source: text('source').$type<Source>().notNull(),
   thumbnail: text('thumbnail').notNull(),
   thumbnail_local: text('thumbnail_local').notNull(),
   uploader: text('uploader').notNull(),
