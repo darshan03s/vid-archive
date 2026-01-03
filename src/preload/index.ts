@@ -41,10 +41,10 @@ const api: Api = {
   downloadHistorySearch: (searchInput: string) =>
     ipcRenderer.invoke('download-history:search', searchInput),
   pauseRunningDownload: (id: string) => ipcRenderer.send('app:pause-running-download', id),
-  pauseWaitingDownload: (id: string) => ipcRenderer.send('app:pause-waiting-download', id),
+  pauseQueuedDownload: (id: string) => ipcRenderer.send('app:pause-queued-download', id),
   resumePausedDownload: (id: string) => ipcRenderer.send('app:resume-paused-download', id),
   pauseAllDownloads: () => ipcRenderer.send('app:pause-all-downloads'),
-  pauseWaitingDownloads: () => ipcRenderer.send('app:pause-waiting-downloads'),
+  pauseQueuedDownloads: () => ipcRenderer.send('app:pause-queued-downloads'),
   resumePausedDownloads: () => ipcRenderer.send('app:resume-paused-downloads'),
   retryFailedDownloads: () => ipcRenderer.send('app:retry-failed-downloads'),
   playMedia: (filePath: string) => ipcRenderer.send('play-media', filePath),

@@ -372,10 +372,10 @@ export async function pauseRunningDownload(_event: IpcMainEvent, downloadId: str
   downloadManager.pauseRunningDownload(downloadId);
 }
 
-export async function pauseWaitingDownload(_event: IpcMainEvent, downloadId: string) {
+export async function pauseQueuedDownload(_event: IpcMainEvent, downloadId: string) {
   const downloadManager = DownloadManager.getInstance();
 
-  downloadManager.pauseWaitingDownload(downloadId);
+  downloadManager.pauseQueuedDownload(downloadId);
 }
 
 export async function resumePausedDownload(_event: IpcMainEvent, downloadId: string) {
@@ -393,17 +393,17 @@ export async function resumePausedDownloads() {
 export async function pauseAllDownloads() {
   const downloadManager = DownloadManager.getInstance();
 
-  downloadManager.pauseAllWaitingDownloads();
+  downloadManager.pauseAllQueuedDownloads();
 
   await downloadManager.pauseAllRunningDownloadsAndWait();
 
   mainWindow.webContents.send('yt-dlp:paused-all-downloads');
 }
 
-export async function pauseWaitingDownloads() {
+export async function pauseQueuedDownloads() {
   const downloadManager = DownloadManager.getInstance();
 
-  downloadManager.pauseAllWaitingDownloads();
+  downloadManager.pauseAllQueuedDownloads();
 }
 
 export async function playMedia(_event: IpcMainEvent, filePath: string) {

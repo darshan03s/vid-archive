@@ -234,35 +234,35 @@ export class DownloadManager {
     terminateProcess(downloadProcess);
   }
 
-  pauseWaitingDownload(downloadId: string) {
-    const waitingDownload = this.pendingQueue.remove(downloadId);
-    if (!waitingDownload) {
+  pauseQueuedDownload(downloadId: string) {
+    const queuedDownload = this.pendingQueue.remove(downloadId);
+    if (!queuedDownload) {
       logger.error(`Download to pause from pending queue not found: ${downloadId}`);
       return;
     }
-    waitingDownload.download_status = 'paused';
-    waitingDownload.download_completed_at = new Date().toISOString();
-    waitingDownload.download_progress_string = 'Download Paused';
-    waitingDownload.complete_output += '\nDownload Paused';
+    queuedDownload.download_status = 'paused';
+    queuedDownload.download_completed_at = new Date().toISOString();
+    queuedDownload.download_progress_string = 'Download Paused';
+    queuedDownload.complete_output += '\nDownload Paused';
 
-    waitingDownload.complete_output += '\nProcess complete';
+    queuedDownload.complete_output += '\nProcess complete';
 
-    this.updateDownloads(waitingDownload);
+    this.updateDownloads(queuedDownload);
   }
 
-  pauseAllWaitingDownloads() {
-    const waitingDownloads = this.pendingQueue.removeAll();
+  pauseAllQueuedDownloads() {
+    const queuedDownloads = this.pendingQueue.removeAll();
 
-    if (waitingDownloads.length === 0) return;
+    if (queuedDownloads.length === 0) return;
 
-    for (const waitingDownload of waitingDownloads) {
-      waitingDownload.download_status = 'paused';
-      waitingDownload.download_completed_at = new Date().toISOString();
-      waitingDownload.download_progress_string = 'Download Paused';
-      waitingDownload.complete_output += '\nDownload Paused';
+    for (const queuedDownload of queuedDownloads) {
+      queuedDownload.download_status = 'paused';
+      queuedDownload.download_completed_at = new Date().toISOString();
+      queuedDownload.download_progress_string = 'Download Paused';
+      queuedDownload.complete_output += '\nDownload Paused';
 
-      waitingDownload.complete_output += '\nProcess complete';
-      this.persistDownload(waitingDownload);
+      queuedDownload.complete_output += '\nProcess complete';
+      this.persistDownload(queuedDownload);
     }
     mainWindow.webContents.send('refresh-downloads');
   }

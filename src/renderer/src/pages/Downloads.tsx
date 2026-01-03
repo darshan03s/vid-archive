@@ -101,8 +101,8 @@ const Downloads = () => {
     window.api.pauseAllDownloads();
   }
 
-  function handlePauseWaitingDownloads() {
-    window.api.pauseWaitingDownloads();
+  function handlePauseQueuedDownloads() {
+    window.api.pauseQueuedDownloads();
   }
 
   function handleResumePausedDownloads() {
@@ -150,7 +150,7 @@ const Downloads = () => {
                     Pause all downloads
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={handlePauseWaitingDownloads}
+                    onClick={handlePauseQueuedDownloads}
                     className="text-xs flex items-center gap-2 cursor-pointer"
                   >
                     <IconClockFilled className="size-3.5" />
@@ -311,8 +311,8 @@ const DownloadCard = ({
     window.api.pauseRunningDownload(id);
   }
 
-  function handlePauseWaitingDownload(id: string) {
-    window.api.pauseWaitingDownload(id);
+  function handlePauseQueuedDownload(id: string) {
+    window.api.pauseQueuedDownload(id);
   }
 
   function handleResumePausedDownload(id: string) {
@@ -465,7 +465,7 @@ const DownloadCard = ({
             {downloadItem.download_status === 'waiting' && (
               <TooltipWrapper message={`Pause waiting download`}>
                 <Button
-                  onClick={() => handlePauseWaitingDownload(downloadItem.id)}
+                  onClick={() => handlePauseQueuedDownload(downloadItem.id)}
                   variant={'ghost'}
                   size={'icon-sm'}
                   className="size-6 rounded-sm"

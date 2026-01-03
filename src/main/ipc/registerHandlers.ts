@@ -28,10 +28,10 @@ import {
   getQueuedDownloads,
   pauseRunningDownload,
   resumePausedDownload,
-  pauseWaitingDownload,
+  pauseQueuedDownload,
   resumePausedDownloads,
   retryFailedDownloads,
-  pauseWaitingDownloads,
+  pauseQueuedDownloads,
   getBrowserProfiles,
   getYtdlpVersions,
   updateYtdlp
@@ -85,11 +85,11 @@ async function registerHanlders() {
 
   ipcMain.on('app:pause-running-download', pauseRunningDownload);
 
-  ipcMain.on('app:pause-waiting-download', pauseWaitingDownload);
+  ipcMain.on('app:pause-queued-download', pauseQueuedDownload);
 
   ipcMain.on('app:pause-all-downloads', pauseAllDownloads);
 
-  ipcMain.on('app:pause-waiting-downloads', pauseWaitingDownloads);
+  ipcMain.on('app:pause-queued-downloads', pauseQueuedDownloads);
 
   ipcMain.on('app:resume-paused-download', resumePausedDownload);
 
