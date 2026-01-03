@@ -12,7 +12,7 @@ import { randomUUID } from 'node:crypto';
 export const urlHistoryOperations = {
   getById: async (id: string) => {
     return db
-      ?.select()
+      .select()
       .from(urlHistory)
       .where(eq(urlHistory.id, id))
       .then((rows) => rows[0] ?? null);
@@ -20,38 +20,38 @@ export const urlHistoryOperations = {
 
   getByUrl: async (url: string) => {
     return db
-      ?.select()
+      .select()
       .from(urlHistory)
       .where(eq(urlHistory.url, url))
       .then((rows) => rows[0] ?? null);
   },
 
   getAllByAddedAtDesc: async () => {
-    return db?.select().from(urlHistory).orderBy(desc(urlHistory.added_at));
+    return db.select().from(urlHistory).orderBy(desc(urlHistory.added_at));
   },
 
   getAllByAddedAtAsc: async () => {
-    return db?.select().from(urlHistory).orderBy(asc(urlHistory.added_at));
+    return db.select().from(urlHistory).orderBy(asc(urlHistory.added_at));
   },
 
   deleteById: async (id: string) => {
-    return db?.delete(urlHistory).where(eq(urlHistory.id, id));
+    return db.delete(urlHistory).where(eq(urlHistory.id, id));
   },
 
   deleteByUrl: async (url: string) => {
-    return db?.delete(urlHistory).where(eq(urlHistory.url, url));
+    return db.delete(urlHistory).where(eq(urlHistory.url, url));
   },
 
   deleteAll: async () => {
-    return db?.delete(urlHistory);
+    return db.delete(urlHistory);
   },
 
   updateById: async (id: string, data: Partial<Omit<UrlHistoryItem, 'id' | 'added_at'>>) => {
-    return db?.update(urlHistory).set(data).where(eq(urlHistory.id, id));
+    return db.update(urlHistory).set(data).where(eq(urlHistory.id, id));
   },
 
   updateByUrl: async (url: string, data: Partial<Omit<UrlHistoryItem, 'id' | 'added_at'>>) => {
-    return db?.update(urlHistory).set(data).where(eq(urlHistory.url, url));
+    return db.update(urlHistory).set(data).where(eq(urlHistory.url, url));
   },
 
   addNew: async (data: Omit<UrlHistoryItem, 'id' | 'added_at'>) => {
@@ -60,13 +60,13 @@ export const urlHistoryOperations = {
       id: randomUUID(),
       added_at: new Date().toISOString()
     };
-    return db?.insert(urlHistory).values(completeData);
+    return db.insert(urlHistory).values(completeData);
   },
   upsertByUrl: async (url: string, data: Omit<UrlHistoryItem, 'id' | 'added_at'>) => {
     const existing = await db?.select().from(urlHistory).where(eq(urlHistory.url, url));
 
     if (existing && existing.length > 0) {
-      await db?.delete(urlHistory).where(eq(urlHistory.url, url));
+      await db.delete(urlHistory).where(eq(urlHistory.url, url));
     }
 
     return urlHistoryOperations.addNew(data);
@@ -75,7 +75,7 @@ export const urlHistoryOperations = {
     const pattern = `%${input}%`;
 
     const results = await db
-      ?.select()
+      .select()
       .from(urlHistory)
       .where(
         or(
@@ -95,7 +95,7 @@ export const urlHistoryOperations = {
 export const downloadHistoryOperations = {
   getById: async (id: string) => {
     return db
-      ?.select()
+      .select()
       .from(downloadHistory)
       .where(eq(downloadHistory.id, id))
       .then((rows) => rows[0] ?? null);
@@ -103,57 +103,57 @@ export const downloadHistoryOperations = {
 
   getByUrl: async (url: string) => {
     return db
-      ?.select()
+      .select()
       .from(downloadHistory)
       .where(eq(downloadHistory.url, url))
       .then((rows) => rows[0] ?? null);
   },
 
   getAllByAddedAtDesc: async () => {
-    return db?.select().from(downloadHistory).orderBy(desc(downloadHistory.added_at));
+    return db.select().from(downloadHistory).orderBy(desc(downloadHistory.added_at));
   },
 
   getAllByAddedAtAsc: async () => {
-    return db?.select().from(downloadHistory).orderBy(asc(downloadHistory.added_at));
+    return db.select().from(downloadHistory).orderBy(asc(downloadHistory.added_at));
   },
 
   getAllByCompletedAtDesc: async () => {
-    return db?.select().from(downloadHistory).orderBy(desc(downloadHistory.download_completed_at));
+    return db.select().from(downloadHistory).orderBy(desc(downloadHistory.download_completed_at));
   },
 
   getAllByCompletedAtAsc: async () => {
-    return db?.select().from(downloadHistory).orderBy(asc(downloadHistory.download_completed_at));
+    return db.select().from(downloadHistory).orderBy(asc(downloadHistory.download_completed_at));
   },
 
   deleteById: async (id: string) => {
-    return db?.delete(downloadHistory).where(eq(downloadHistory.id, id));
+    return db.delete(downloadHistory).where(eq(downloadHistory.id, id));
   },
 
   deleteByUrl: async (url: string) => {
-    return db?.delete(downloadHistory).where(eq(downloadHistory.url, url));
+    return db.delete(downloadHistory).where(eq(downloadHistory.url, url));
   },
 
   deleteAll: async () => {
-    return db?.delete(downloadHistory);
+    return db.delete(downloadHistory);
   },
 
   updateById: async (id: string, data: Partial<Omit<DownloadHistoryItem, 'id' | 'added_at'>>) => {
-    return db?.update(downloadHistory).set(data).where(eq(downloadHistory.id, id));
+    return db.update(downloadHistory).set(data).where(eq(downloadHistory.id, id));
   },
 
   updateByUrl: async (url: string, data: Partial<Omit<DownloadHistoryItem, 'id' | 'added_at'>>) => {
-    return db?.update(downloadHistory).set(data).where(eq(downloadHistory.url, url));
+    return db.update(downloadHistory).set(data).where(eq(downloadHistory.url, url));
   },
 
   addNew: async (data: NewDownloadHistoryItem) => {
-    return db?.insert(downloadHistory).values(data);
+    return db.insert(downloadHistory).values(data);
   },
 
   search: async (input: string) => {
     const pattern = `%${input}%`;
 
     const results = await db
-      ?.select()
+      .select()
       .from(downloadHistory)
       .where(
         or(
@@ -171,7 +171,7 @@ export const downloadHistoryOperations = {
 
   getPausedDownloadsByCompletedAtDesc: () => {
     return db
-      ?.select()
+      .select()
       .from(downloadHistory)
       .where(eq(downloadHistory.download_status, 'paused'))
       .orderBy(desc(downloadHistory.download_completed_at));
@@ -179,7 +179,7 @@ export const downloadHistoryOperations = {
 
   getFailedDownloadsByCompletedAtAsc: () => {
     return db
-      ?.select()
+      .select()
       .from(downloadHistory)
       .where(eq(downloadHistory.download_status, 'failed'))
       .orderBy(asc(downloadHistory.download_completed_at));
