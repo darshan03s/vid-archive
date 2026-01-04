@@ -1,4 +1,4 @@
-import { SERVER_BASE_URL, SERVER_PORT } from '@shared/data';
+import { DEV_SERVER_PORT, SERVER_BASE_URL, SERVER_PORT } from '@shared/data';
 import { createServer } from 'node:http';
 import { Source } from '@shared/types';
 import { is } from '@electron-toolkit/utils';
@@ -47,8 +47,8 @@ function runServer() {
     throw err;
   });
 
-  server.listen(is.dev ? 12278 : SERVER_PORT, () => {
-    console.log(`Server running on ${is.dev ? 12278 : SERVER_PORT}`);
+  server.listen(is.dev ? DEV_SERVER_PORT : SERVER_PORT, () => {
+    console.log(`Server running on ${is.dev ? DEV_SERVER_PORT : SERVER_PORT}`);
   });
 }
 
