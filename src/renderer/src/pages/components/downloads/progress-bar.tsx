@@ -1,4 +1,4 @@
-import { DownloadStatus } from '@/shared/types/download';
+import { DownloadStatus } from '@shared/types/download';
 
 type ProgressBarProps = {
   value: number;
