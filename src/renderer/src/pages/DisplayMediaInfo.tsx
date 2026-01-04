@@ -5,9 +5,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { MediaInfoJson } from '@/shared/types/info-json';
 import { toast } from 'sonner';
-import { updateUrlHistoryInStore } from './components/url-history';
 import Preview from './components/media-info/preview';
 import Details from './components/media-info/details';
+import { refreshUrlHistoryStore } from '@renderer/stores/utils';
 
 const DisplayMediaInfo = () => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const DisplayMediaInfo = () => {
       }
       setIsLoadingInfoJson(false);
 
-      updateUrlHistoryInStore();
+      refreshUrlHistoryStore();
     });
 
     return () => {

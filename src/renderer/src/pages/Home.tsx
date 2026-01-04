@@ -1,5 +1,5 @@
 import Header from '@renderer/components/header';
-import UrlHistory from './components/url-history';
+import { UrlHistory } from './components/home';
 
 const Home = () => {
   return (
