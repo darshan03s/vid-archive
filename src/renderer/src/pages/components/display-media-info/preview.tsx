@@ -1,4 +1,4 @@
-import { SERVER_BASE_URL, SERVER_PORT } from '@shared/data';
+import { getServerUrl } from '@shared/data';
 import { Source } from '@shared/types';
 import { MediaInfoJson } from '@shared/types/info-json';
 import { Anchor } from '@renderer/components/wrappers';
@@ -23,7 +23,7 @@ const Preview = ({
       <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
         <iframe
           className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
-          src={`${SERVER_BASE_URL}:${import.meta.env.DEV ? 12278 : SERVER_PORT}/embed?url=${url}&source=${source}`}
+          src={`${getServerUrl()}/embed?url=${url}&source=${source}`}
           scrolling="no"
         ></iframe>
       </div>

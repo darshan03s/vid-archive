@@ -9,7 +9,7 @@ import { Toaster } from './components/ui/sonner';
 import DisplayMediaInfo from './pages/DisplayMediaInfo';
 import logger from '@shared/logger';
 import { toast } from 'sonner';
-import Sidebar from './pages/components/sidebar';
+import Sidebar from './components/sidebar';
 import Downloads from './pages/Downloads';
 import Settings from './pages/Settings';
 import { useHistoryStore } from './stores/history-store';

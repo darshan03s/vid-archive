@@ -5,8 +5,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { MediaInfoJson } from '@/shared/types/info-json';
 import { toast } from 'sonner';
-import Preview from './components/media-info/preview';
-import Details from './components/media-info/details';
+import Preview from './components/display-media-info/preview';
+import Details from './components/display-media-info/details';
 import { refreshUrlHistoryStore } from '@renderer/stores/utils';
 
 const DisplayMediaInfo = () => {
