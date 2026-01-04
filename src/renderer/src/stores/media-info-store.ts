@@ -4,12 +4,12 @@ import { create } from 'zustand';
 
 interface MediaInfoStore {
   url: string;
-  source: Source | string;
+  source: Source | null;
   mediaInfo: MediaInfoJson | object;
 }
 
 export const useMediaInfoStore = create<MediaInfoStore>(() => ({
   url: '',
-  source: '',
+  source: null,
   mediaInfo: {}
 }));

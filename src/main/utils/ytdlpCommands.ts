@@ -1,4 +1,8 @@
-import { SupportedCookieBrowser, YtdlpCommandBuilder } from 'yt-dlp-command-builder';
+import {
+  ReleaseChannel,
+  SupportedCookieBrowser,
+  YtdlpCommandBuilder
+} from 'yt-dlp-command-builder';
 import { YTDLP_EXE_PATH } from '..';
 import Settings from '@main/settings';
 import { pathExistsSync, removeEmoji } from './fsUtils';
@@ -168,4 +172,8 @@ export function getDownloadCommand(downloadOptions: DownloadOptions) {
   }
 
   return { builder, targetDownloadFileName };
+}
+
+export function getUpdateCommand(channel: ReleaseChannel, version: string) {
+  return new YtdlpCommandBuilder(YTDLP_EXE_PATH).updateTo(channel, version);
 }

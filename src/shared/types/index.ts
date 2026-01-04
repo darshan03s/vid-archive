@@ -59,14 +59,14 @@ export type Api = {
     ffmpegVersionInPc: string | null;
   }>;
   checkUrl: (url: string) => Promise<{
-    source: Source | string;
+    source: Source | null;
     url: string;
     isMediaDisplayAvailable: boolean;
   }>;
   getMediaInfoJson: (
     url: string,
     source: Source,
-    updateUrlHistory: boolean,
+    shouldUpdateUrlHistory: boolean,
     refetch?: boolean
   ) => void;
   getUrlHistory: () => Promise<UrlHistoryList>;
@@ -76,7 +76,6 @@ export type Api = {
   deleteAllDownloadHistory: () => Promise<void>;
   download: (downloadOptions: DownloadOptions) => void;
   on: (channel: string, listener: (...args: unknown[]) => void) => () => Electron.IpcRenderer;
-  off: (channel: string, listener: (...args: unknown[]) => void) => void;
   getRunningDownloads: () => Promise<RunningDownloadsList>;
   getQueuedDownloads: () => Promise<RunningDownloadsList>;
   getDownloadHistory: () => Promise<DownloadHistoryList>;

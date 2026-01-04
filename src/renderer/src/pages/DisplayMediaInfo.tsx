@@ -14,7 +14,7 @@ const DisplayMediaInfo = () => {
   const url = useMediaInfoStore((state) => state.url);
   const source = useMediaInfoStore((state) => state.source) as Source;
   const [searchParams] = useSearchParams();
-  const updateUrlHistory = searchParams.get('updateUrlHistory') === '0' ? false : true;
+  const shouldUpdateUrlHistory = searchParams.get('updateUrlHistory') === '0' ? false : true;
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
   const infoJson = useMediaInfoStore((state) => state.mediaInfo) as MediaInfoJson;
   const [isLoadingInfoJson, setIsLoadingInfoJson] = useState<boolean>(true);
@@ -35,7 +35,7 @@ const DisplayMediaInfo = () => {
 
   useEffect(() => {
     if (Object.keys(infoJson).length !== 0) return;
-    window.api.getMediaInfoJson(url, source, updateUrlHistory);
+    window.api.getMediaInfoJson(url, source, shouldUpdateUrlHistory);
 
     const unsubscribe = window.api.on('yt-dlp:recieve-media-info-json', (data) => {
       if (!data) {

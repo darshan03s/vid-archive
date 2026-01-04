@@ -37,81 +37,52 @@ import {
   updateYtdlp
 } from './handlers';
 import { mainWindow } from '..';
+import { IPC_CHANNELS } from '../../shared/ipc/channels';
 
 function registerHanlders() {
-  ipcMain.on('win:min', () => mainWindow.minimize());
+  ipcMain.on(IPC_CHANNELS.app.window.minimize, () => mainWindow.minimize());
+  ipcMain.on(IPC_CHANNELS.app.window.close, () => mainWindow.close());
+  ipcMain.handle(IPC_CHANNELS.app.renderer.init, rendererInit);
+  ipcMain.on(IPC_CHANNELS.app.settings.save, saveSettings);
+  ipcMain.on(IPC_CHANNELS.app.metadata.deleteAll, deleteAllMetadata);
 
-  ipcMain.on('win:close', () => mainWindow.close());
+  ipcMain.handle(IPC_CHANNELS.media.url.check, checkUrl);
+  ipcMain.on(IPC_CHANNELS.media.info.get, getMediaInfoJson);
+  ipcMain.on(IPC_CHANNELS.media.play, playMedia);
+  ipcMain.on(IPC_CHANNELS.media.download, downloadMedia);
 
-  ipcMain.handle('renderer:init', rendererInit);
+  ipcMain.on(IPC_CHANNELS.download.all.pause, pauseAllDownloads);
+  ipcMain.handle(IPC_CHANNELS.download.running.getAll, getRunningDownloads);
+  ipcMain.on(IPC_CHANNELS.download.running.pause, pauseRunningDownload);
+  ipcMain.handle(IPC_CHANNELS.download.queued.getAll, getQueuedDownloads);
+  ipcMain.on(IPC_CHANNELS.download.queued.pause, pauseQueuedDownload);
+  ipcMain.on(IPC_CHANNELS.download.queued.pauseAll, pauseQueuedDownloads);
+  ipcMain.on(IPC_CHANNELS.download.paused.resume, resumePausedDownload);
+  ipcMain.on(IPC_CHANNELS.download.paused.resumeAll, resumePausedDownloads);
+  ipcMain.on(IPC_CHANNELS.download.failed.retry, retryFailedDownload);
+  ipcMain.on(IPC_CHANNELS.download.failed.retryAll, retryFailedDownloads);
+  ipcMain.handle(IPC_CHANNELS.download.history.get, getDownloadHistory);
+  ipcMain.handle(IPC_CHANNELS.download.history.deleteOne, deleteOneFromDownloadHistory);
+  ipcMain.handle(IPC_CHANNELS.download.history.deleteAll, deleteAllFromDownloadHistory);
+  ipcMain.handle(IPC_CHANNELS.download.history.search, downloadHistorySearch);
 
-  ipcMain.handle('yt-dlp:confirm', confirmYtdlp);
+  ipcMain.handle(IPC_CHANNELS.url.history.getAll, getUrlHistory);
+  ipcMain.handle(IPC_CHANNELS.url.history.deleteOne, deleteOneFromUrlHistory);
+  ipcMain.handle(IPC_CHANNELS.url.history.deleteAll, deleteAllFromUrlHistory);
+  ipcMain.handle(IPC_CHANNELS.url.history.search, urlHistorySearch);
 
-  ipcMain.handle('ffmpeg:confirm', confirmFfmpeg);
+  ipcMain.handle(IPC_CHANNELS.fs.folder.select, selectFolder);
+  ipcMain.handle(IPC_CHANNELS.fs.file.select, selectFile);
+  ipcMain.on(IPC_CHANNELS.fs.reveal, showInFolder);
 
-  ipcMain.handle('yt-dlp:download', downloadYtdlp);
+  ipcMain.handle(IPC_CHANNELS.browser.profiles.get, getBrowserProfiles);
 
-  ipcMain.handle('ffmpeg:download', downloadFfmpeg);
+  ipcMain.handle(IPC_CHANNELS['yt-dlp'].confirm, confirmYtdlp);
+  ipcMain.handle(IPC_CHANNELS['yt-dlp'].download, downloadYtdlp);
+  ipcMain.handle(IPC_CHANNELS['yt-dlp'].versions.get, getYtdlpVersions);
+  ipcMain.on(IPC_CHANNELS['yt-dlp'].update, updateYtdlp);
 
-  ipcMain.handle('check-url', checkUrl);
-
-  ipcMain.on('yt-dlp:get-media-info-json', getMediaInfoJson);
-
-  ipcMain.handle('url-history:get-all', getUrlHistory);
-
-  ipcMain.handle('url-history:delete-one', deleteOneFromUrlHistory);
-
-  ipcMain.handle('download-history:delete-one', deleteOneFromDownloadHistory);
-
-  ipcMain.handle('url-history:delete-all', deleteAllFromUrlHistory);
-
-  ipcMain.handle('download-history:delete-all', deleteAllFromDownloadHistory);
-
-  ipcMain.on('download', downloadMedia);
-
-  ipcMain.handle('running-downloads:get-all', getRunningDownloads);
-
-  ipcMain.handle('queued-downloads:get-all', getQueuedDownloads);
-
-  ipcMain.handle('download-history:get-all', getDownloadHistory);
-
-  ipcMain.handle('select-folder', selectFolder);
-
-  ipcMain.on('settings:save', saveSettings);
-
-  ipcMain.handle('url-history:search', urlHistorySearch);
-
-  ipcMain.handle('download-history:search', downloadHistorySearch);
-
-  ipcMain.on('app:pause-running-download', pauseRunningDownload);
-
-  ipcMain.on('app:pause-queued-download', pauseQueuedDownload);
-
-  ipcMain.on('app:pause-all-downloads', pauseAllDownloads);
-
-  ipcMain.on('app:pause-queued-downloads', pauseQueuedDownloads);
-
-  ipcMain.on('app:resume-paused-download', resumePausedDownload);
-
-  ipcMain.on('app:resume-paused-downloads', resumePausedDownloads);
-
-  ipcMain.on('app:retry-failed-downloads', retryFailedDownloads);
-
-  ipcMain.on('play-media', playMedia);
-
-  ipcMain.on('show-in-folder', showInFolder);
-
-  ipcMain.handle('select-file', selectFile);
-
-  ipcMain.on('app:retry-download', retryFailedDownload);
-
-  ipcMain.on('app:delete-all-metadata', deleteAllMetadata);
-
-  ipcMain.handle('get-browser-profiles', getBrowserProfiles);
-
-  ipcMain.handle('yt-dlp:get-versions', getYtdlpVersions);
-
-  ipcMain.on('yt-dlp:update', updateYtdlp);
+  ipcMain.handle(IPC_CHANNELS.ffmpeg.confirm, confirmFfmpeg);
+  ipcMain.handle(IPC_CHANNELS.ffmpeg.download, downloadFfmpeg);
 }
-
 export default registerHanlders;
