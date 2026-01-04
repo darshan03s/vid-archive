@@ -1,13 +1,9 @@
-import Header from '@renderer/components/header';
-import { UrlHistory } from './components/home';
+import { HomeHeader, UrlHistory } from './components/home';
 
 const Home = () => {
   return (
     <div className="h-full overflow-y-auto">
-      <div className="sticky top-0 left-0 z-50 bg-background/60 backdrop-blur-md">
-        <Header />
-      </div>
-
+      <HomeHeader />
       <div className="relative z-0 font-main">
         <UrlHistory />
       </div>

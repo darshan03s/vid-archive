@@ -1,13 +1,11 @@
 import { RunningDownloadsList } from '@/shared/types/history';
-import { TooltipWrapper } from '@renderer/components/wrappers';
 import { useEffect, useState } from 'react';
 import { useHistoryStore } from '@renderer/stores/history-store';
 import { useSearchStore } from '@renderer/stores/search-store';
 import {
   CompletedDownloads,
-  DownloadHistorySearch,
   DownloadHistorySearchResults,
-  OptionsDropdown,
+  DownloadsHeader,
   RunningDownloads
 } from './components/downloads';
 
@@ -48,26 +46,11 @@ const Downloads = () => {
   return (
     <>
       <div className="w-full flex flex-col gap-2">
-        <div className="px-3 py-2 h-12 text-sm flex items-center justify-between sticky top-0 left-0 bg-background/60 backdrop-blur-md text-foreground z-49">
-          <span className="text-xs flex items-center gap-2 font-main">
-            Downloads
-            <span>
-              <span title="History">({downloadHistory?.length})</span>
-              {runningDownloads && runningDownloads?.length > 0 && (
-                <span title="Running">({runningDownloads?.length})</span>
-              )}
-              {queuedDownloads && queuedDownloads?.length > 0 && (
-                <span title="Queued">({queuedDownloads?.length})</span>
-              )}
-            </span>
-          </span>
-          <div className="flex items-center gap-4">
-            <DownloadHistorySearch />
-            <TooltipWrapper side="bottom" message={`Options`}>
-              <OptionsDropdown />
-            </TooltipWrapper>
-          </div>
-        </div>
+        <DownloadsHeader
+          downloadHistory={downloadHistory}
+          runningDownloads={runningDownloads}
+          queuedDownloads={queuedDownloads}
+        />
         <div className="px-2 py-1 pb-2">
           {runningDownloads && runningDownloads.length > 0 && (
             <RunningDownloads runningDownloads={runningDownloads} />

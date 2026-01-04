@@ -2,9 +2,9 @@ import { MediaInfoJson } from '@/shared/types/info-json';
 import { SelectedFormat, useSelectedOptionsStore } from '@renderer/stores/selected-options-store';
 import { acodec, formatFileSize, vcodec } from '@renderer/utils';
 import { useEffect, useState } from 'react';
-import AllFormatsModal from './all-formats-modal';
+import { AllFormatsModal } from './all-formats-modal';
 
-const Formats = ({ infoJson, loading }: { infoJson: MediaInfoJson; loading: boolean }) => {
+export const Formats = ({ infoJson, loading }: { infoJson: MediaInfoJson; loading: boolean }) => {
   const [isAllFormatsModalOpen, setIsAllFormatsModalOpen] = useState(false);
   const setSelectedFormat = useSelectedOptionsStore((state) => state.setSelectedFormat);
   const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
@@ -85,5 +85,3 @@ const Formats = ({ infoJson, loading }: { infoJson: MediaInfoJson; loading: bool
     </>
   );
 };
-
-export default Formats;

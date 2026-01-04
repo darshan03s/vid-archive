@@ -5,7 +5,7 @@ import { Anchor } from '@renderer/components/wrappers';
 import { IconExternalLink } from '@tabler/icons-react';
 import { getDailymotionId } from '@shared/utils';
 
-const Preview = ({
+export const Preview = ({
   previewUrl,
   loading,
   infoJson,
@@ -64,5 +64,3 @@ const Preview = ({
     );
   }
 };
-
-export default Preview;

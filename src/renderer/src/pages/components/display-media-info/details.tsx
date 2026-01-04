@@ -8,19 +8,19 @@ import {
   IconThumbUp
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import LiveStatus from './live-status';
-import DownloadButton from './download-button';
-import Formats from './formats';
-import DownloadSections from './download-sections';
-import DownloadLocation from './download-location';
-import ExtraOptions from './extra-options';
-import MoreDetailsModal from './more-details-modal';
+import { LiveStatus } from './live-status';
+import { DownloadButton } from './download-button';
+import { Formats } from './formats';
+import { DownloadSections } from './download-sections';
+import { DownloadLocation } from './download-location';
+import { ExtraOptions } from './extra-options';
+import { MoreDetailsModal } from './more-details-modal';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { Source } from '@shared/types';
 import numeral from 'numeral';
-import OptionBlock from './option-block';
+import { OptionBlock } from './option-block';
 
-const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
+export const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
   const [isMoreDetailsModalOpen, setIsMoreDetailsModalOpen] = useState(false);
   const isInfoJsonEmpty = Object.keys(infoJson).length === 0;
   const source = useMediaInfoStore((state) => state.source) as Source;
@@ -143,5 +143,3 @@ const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
     </>
   );
 };
-
-export default Details;

@@ -8,3 +8,4 @@ export * from './play-media-modal';
 export * from './running-download-item-comp';
 export * from './running-downloads';
 export * from './options-dropdown';
+export * from './downloads-header';

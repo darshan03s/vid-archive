@@ -4,7 +4,7 @@ import { useSelectedOptionsStore } from '@renderer/stores/selected-options-store
 import { IconKeyframes } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
-const DownloadSections = ({ loading }: { loading: boolean }) => {
+export const DownloadSections = ({ loading }: { loading: boolean }) => {
   const downloadSections = useSelectedOptionsStore((state) => state.downloadSections);
   const setDownloadSections = useSelectedOptionsStore((state) => state.setDownloadSections);
 
@@ -56,5 +56,3 @@ const DownloadSections = ({ loading }: { loading: boolean }) => {
     </div>
   );
 };
-
-export default DownloadSections;

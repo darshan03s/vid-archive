@@ -1,7 +1,7 @@
 import { cn } from '@renderer/lib/utils';
 import { ReactNode } from 'react';
 
-const OptionBlock = ({
+export const OptionBlock = ({
   children,
   className,
   name
@@ -17,5 +17,3 @@ const OptionBlock = ({
     </div>
   );
 };
-
-export default OptionBlock;

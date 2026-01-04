@@ -5,7 +5,7 @@ import { useSettingsStore } from '@renderer/stores/settings-store';
 import { IconFolder } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
-const DownloadLocation = ({ loading }: { loading: boolean }) => {
+export const DownloadLocation = ({ loading }: { loading: boolean }) => {
   const downloadsFolderFromSettings = useSettingsStore((state) => state.settings.downloadsFolder);
   const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
 
@@ -35,5 +35,3 @@ const DownloadLocation = ({ loading }: { loading: boolean }) => {
     </div>
   );
 };
-
-export default DownloadLocation;

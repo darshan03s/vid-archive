@@ -7,7 +7,7 @@ import { useSelectedOptionsStore } from '@renderer/stores/selected-options-store
 import { IconArrowDown } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-const DownloadButton = ({ loading }: { loading: boolean }) => {
+export const DownloadButton = ({ loading }: { loading: boolean }) => {
   const selectedFormat = useSelectedOptionsStore((state) => state.selectedFormat);
   const downloadSections = useSelectedOptionsStore((state) => state.downloadSections);
   const selectedDownloadFolder = useSelectedOptionsStore((state) => state.selectedDownloadFolder);
@@ -82,5 +82,3 @@ const DownloadButton = ({ loading }: { loading: boolean }) => {
     </Button>
   );
 };
-
-export default DownloadButton;

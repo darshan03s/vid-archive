@@ -16,9 +16,9 @@ import {
 } from '@tabler/icons-react';
 import { Captions, FilePen } from 'lucide-react';
 import { useEffect } from 'react';
-import OptionBlock from './option-block';
+import { OptionBlock } from './option-block';
 
-const ExtraOptions = () => {
+export const ExtraOptions = () => {
   const extraOptions = useSelectedOptionsStore((state) => state.extraOptions);
   const setExtraOptions = useSelectedOptionsStore((state) => state.setExtraOptions);
   const resetExtraOptions = useSelectedOptionsStore((state) => state.resetExtraOptions);
@@ -216,5 +216,3 @@ const ExtraOptions = () => {
     </div>
   );
 };
-
-export default ExtraOptions;

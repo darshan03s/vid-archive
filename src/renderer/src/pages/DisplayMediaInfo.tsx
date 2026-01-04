@@ -1,12 +1,10 @@
-import UserUrlInput from '@renderer/components/user-url-input';
 import { useMediaInfoStore } from '@renderer/stores/media-info-store';
 import { Source } from '@/shared/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { MediaInfoJson } from '@/shared/types/info-json';
 import { toast } from 'sonner';
-import Preview from './components/display-media-info/preview';
-import Details from './components/display-media-info/details';
+import { DisplayMediaInfoHeader, Preview, Details } from './components/display-media-info';
 import { refreshUrlHistoryStore } from '@renderer/stores/utils';
 
 const DisplayMediaInfo = () => {
@@ -60,12 +58,7 @@ const DisplayMediaInfo = () => {
 
   return (
     <div className="h-full overflow-y-scroll">
-      <div className="sticky left-0 top-0 z-50">
-        <header className="p-3 sticky top-0 left-0 z-50 bg-background/60 backdrop-blur-md">
-          <UserUrlInput showRefetch={true} />
-        </header>
-      </div>
-
+      <DisplayMediaInfoHeader />
       <div className="relative z-0">
         <div className="flex flex-col gap-1.5">
           <div className="rounded-md px-4 pt-1">

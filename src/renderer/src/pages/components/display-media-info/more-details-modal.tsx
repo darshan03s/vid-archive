@@ -19,7 +19,7 @@ interface MoreDetailsModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) => {
+export const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) => {
   const source = useMediaInfoStore((state) => state.source) as Source;
   const url = useMediaInfoStore((state) => state.url);
   return (
@@ -217,5 +217,3 @@ const MoreDetailsModal = ({ infoJson, open, setOpen }: MoreDetailsModalProps) =>
     </Dialog>
   );
 };
-
-export default MoreDetailsModal;

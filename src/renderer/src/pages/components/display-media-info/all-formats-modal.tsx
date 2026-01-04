@@ -21,7 +21,7 @@ interface AllFormatsModalProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const AllFormatsModal = ({
+export const AllFormatsModal = ({
   formats,
   liveFromStartFormats,
   defaultFormat,
@@ -186,5 +186,3 @@ const AllFormatsModal = ({
     </Dialog>
   );
 };
-
-export default AllFormatsModal;
