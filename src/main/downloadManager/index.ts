@@ -55,7 +55,7 @@ export class DownloadManager {
     this.pendingQueue.enqueue(newDownload);
     // refresh downloads after adding to pending queue
     mainWindow.webContents.send('refresh-downloads');
-    mainWindow.webContents.send('download-queued');
+    mainWindow.webContents.send('download-queued', newDownload.format);
     logger.info(`Download queued: ${newDownload.title}`);
   }
 
@@ -168,7 +168,7 @@ export class DownloadManager {
 
     // Add to currently running downloads
     this.currentlyRunningDownloads.unshift(runningDownload);
-    mainWindow.webContents.send('download-begin');
+    mainWindow.webContents.send('download-begin', downloadingItem.format);
 
     // refresh downloads after starting download
     mainWindow.webContents.send('refresh-downloads');

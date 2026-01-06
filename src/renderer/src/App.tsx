@@ -3,7 +3,7 @@ import YtdlpFfmpegConfirmModal from './components/ytdlp-ffmpeg-confirm-modal';
 import { Spinner } from './components/ui/spinner';
 import { type AppSettings } from '@/shared/types';
 import { useSettingsStore } from './stores/settings-store';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import { Toaster } from './components/ui/sonner';
 import DisplayMediaInfo from './pages/DisplayMediaInfo';
@@ -21,6 +21,7 @@ const App = () => {
   const [isYtdlpFmpegConfirmModalVisible, setIsYtdlpFfmpegConfirmModalVisible] = useState(false);
   const setSettings = useSettingsStore((state) => state.setSettings);
   const setVersions = useYtdlpVersionsStore((state) => state.setVersions);
+  const isDownloadsPage = useLocation().pathname === '/downloads';
 
   useEffect(() => {
     const unsubUpdatedSettings = window.api.on(
@@ -76,6 +77,23 @@ const App = () => {
       unsubYtdlpUpdateSuccess();
     };
   }, []);
+
+  useEffect(() => {
+    const unsubDownloadBegin = window.api.on('download-begin', (format) => {
+      if (isDownloadsPage) return;
+      toast.info(`Download Started: ${format}`);
+    });
+
+    const unsubDownloadQueued = window.api.on('download-queued', (format) => {
+      if (isDownloadsPage) return;
+      toast.info(`Download Queued: ${format}`);
+    });
+
+    return () => {
+      unsubDownloadBegin();
+      unsubDownloadQueued();
+    };
+  }, [isDownloadsPage]);
 
   useEffect(() => {
     window.api.rendererInit().then((settings: AppSettings | null) => {
