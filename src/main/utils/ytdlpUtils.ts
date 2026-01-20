@@ -396,7 +396,7 @@ export async function downloadFromYtdlp(downloadOptions: DownloadOptions) {
       if (currentDownloadsFolder !== selectedDownloadFolder) {
         settings.set('downloadsFolder', selectedDownloadFolder);
         const updatedSettings = settings.getAll();
-        mainWindow.webContents.send('settings:updated', updatedSettings);
+        mainWindow.webContents.send('settings:updated', updatedSettings, false);
       }
     }
 
