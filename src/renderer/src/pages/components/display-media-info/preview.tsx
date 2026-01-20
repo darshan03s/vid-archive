@@ -4,6 +4,24 @@ import { MediaInfoJson } from '@shared/types/info-json';
 import { Anchor } from '@renderer/components/wrappers';
 import { IconExternalLink } from '@tabler/icons-react';
 import { getDailymotionId } from '@shared/utils';
+import { LiveStatus } from './live-status';
+
+const PreviewContainer = ({
+  children,
+  infoJson
+}: {
+  children: React.ReactNode;
+  infoJson: MediaInfoJson;
+}) => {
+  return (
+    <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30 relative">
+      {children}
+      <span className="absolute bottom-2 right-2">
+        <LiveStatus infoJson={infoJson} />
+      </span>
+    </div>
+  );
+};
 
 export const Preview = ({
   previewUrl,
@@ -20,28 +38,28 @@ export const Preview = ({
 }) => {
   if (source === 'youtube-video' || source === 'youtube-music') {
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
+      <PreviewContainer infoJson={infoJson}>
         <iframe
           className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
           src={`${getServerUrl()}/embed?url=${url}&source=${source}`}
           scrolling="no"
         ></iframe>
-      </div>
+      </PreviewContainer>
     );
   }
   if (source === 'dailymotion-video') {
     const id = getDailymotionId(url);
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
+      <PreviewContainer infoJson={infoJson}>
         <iframe
           className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
           src={`https://geo.dailymotion.com/player.html?video=${id}`}
         ></iframe>
-      </div>
+      </PreviewContainer>
     );
   } else {
     return (
-      <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30">
+      <PreviewContainer infoJson={infoJson}>
         {loading ? (
           <div className="w-[420px] aspect-video bg-secondary animate-fast" />
         ) : (
@@ -60,7 +78,7 @@ export const Preview = ({
             </Anchor>
           </div>
         )}
-      </div>
+      </PreviewContainer>
     );
   }
 };

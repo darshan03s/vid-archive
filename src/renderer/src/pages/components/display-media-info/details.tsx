@@ -8,7 +8,6 @@ import {
   IconThumbUp
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import { LiveStatus } from './live-status';
 import { DownloadButton } from './download-button';
 import { Formats } from './formats';
 import { DownloadSections } from './download-sections';
@@ -87,9 +86,6 @@ export const Details = ({ infoJson }: { infoJson: MediaInfoJson }) => {
                   {numeral(infoJson.like_count).format('0.00a')}
                 </span>
               )}
-              <span className="text-xs h-7 inline-flex items-center gap-1">
-                <LiveStatus infoJson={infoJson} />
-              </span>
             </div>
           ) : (
             <div className="flex-1"></div>
