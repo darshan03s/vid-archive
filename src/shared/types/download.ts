@@ -1,3 +1,4 @@
+import { MergeOutputFormat } from 'yt-dlp-command-builder';
 import { Source } from '.';
 import { MediaFormat, MediaInfoJson } from './info-json';
 
@@ -20,6 +21,7 @@ export interface ExtraOptions {
   writeSubs: boolean;
   writeAutoSubs: boolean;
   liveFromStart: boolean;
+  mergeOutputFormat: undefined | MergeOutputFormat;
 }
 
 export type DownloadOptions = {

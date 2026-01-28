@@ -163,6 +163,10 @@ export function getDownloadCommand(downloadOptions: DownloadOptions) {
     builder.liveFromStart();
   }
 
+  if (extraOptions.mergeOutputFormat) {
+    builder.mergeOutputFormat(`${extraOptions.mergeOutputFormat}/mkv`);
+  }
+
   builder.noQuiet().progress().print('filepath', 'after_move');
 
   if (extraOptions.liveFromStart) {

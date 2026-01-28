@@ -45,7 +45,8 @@ const initialExtraOptionsState: ExtraOptions = {
   writeThumbnail: false,
   writeSubs: false,
   writeAutoSubs: false,
-  liveFromStart: false
+  liveFromStart: false,
+  mergeOutputFormat: undefined
 };
 
 export const useSelectedOptionsStore = create<SelectedOptionsStore>((set) => ({

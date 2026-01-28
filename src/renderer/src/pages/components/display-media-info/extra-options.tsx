@@ -14,9 +14,10 @@ import {
   IconPhotoVideo,
   IconSection
 } from '@tabler/icons-react';
-import { Captions, FilePen } from 'lucide-react';
+import { Captions, FilePen, SquaresUnite } from 'lucide-react';
 import { useEffect } from 'react';
 import { OptionBlock } from './option-block';
+import MergeOutputFormatModal from './merge-output-format-modal';
 
 export const ExtraOptions = () => {
   const extraOptions = useSelectedOptionsStore((state) => state.extraOptions);
@@ -183,6 +184,29 @@ export const ExtraOptions = () => {
     );
   };
 
+  const MergeOutputFormat = () => {
+    return (
+      <MergeOutputFormatModal
+        defaultValue={extraOptions.mergeOutputFormat}
+        onSelect={(val) => setExtraOptions({ mergeOutputFormat: val })}
+      >
+        <Toggle
+          title="Merge Output Format"
+          pressed={extraOptions.mergeOutputFormat !== undefined}
+          size="sm"
+          variant="outline"
+          className="aria-pressed:bg-primary/20 aria-pressed:*:[svg]:stroke-primary aria-pressed:*:[span]:text-primary text-xs"
+        >
+          <SquaresUnite className="size-3" />{' '}
+          <span>
+            Merge Output Format{' '}
+            {extraOptions.mergeOutputFormat && `(${extraOptions.mergeOutputFormat})`}
+          </span>
+        </Toggle>
+      </MergeOutputFormatModal>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 font-main">
       {infoJson.is_live && source === 'youtube-video' && (
@@ -210,6 +234,13 @@ export const ExtraOptions = () => {
             <WriteThumbnail />
             <WriteSubs />
             <WriteAutoSubs />
+          </div>
+        </OptionBlock>
+      </div>
+      <div>
+        <OptionBlock name="Output options">
+          <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
+            <MergeOutputFormat />
           </div>
         </OptionBlock>
       </div>
