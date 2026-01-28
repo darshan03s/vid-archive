@@ -114,8 +114,8 @@ importers:
         specifier: ^7.16.0
         version: 7.16.0
       yt-dlp-command-builder:
-        specifier: ^0.3.6
-        version: 0.3.6
+        specifier: ^0.3.7
+        version: 0.3.7
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.2.7)(react@19.2.3)
@@ -4260,8 +4260,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  yt-dlp-command-builder@0.3.6:
-    resolution: {integrity: sha512-w/H4Uj/G32aEk3WUAhx6TuFvPfA/CLpQOqfqajpMctPlH3LY2OWp0QV92bZprMaUIVfpteLZnlzSkJwCpasE9w==}
+  yt-dlp-command-builder@0.3.7:
+    resolution: {integrity: sha512-Hj4OzKoBQR8qAqVD5ELzmRqi02aAx8hB8SytQHImIUr1i/ljCcz5qZDFVLAybPCF7mNniEKiHjFiyF/ZgVsYig==}
 
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
@@ -8583,7 +8583,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  yt-dlp-command-builder@0.3.6: {}
+  yt-dlp-command-builder@0.3.7: {}
 
   zip-stream@4.1.1:
     dependencies:

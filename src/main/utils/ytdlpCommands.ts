@@ -167,6 +167,10 @@ export function getDownloadCommand(downloadOptions: DownloadOptions) {
     builder.mergeOutputFormat(`${extraOptions.mergeOutputFormat}/mkv`);
   }
 
+  if (extraOptions.recodeOutput) {
+    builder.recodeVideo(extraOptions.recodeOutput);
+  }
+
   builder.noQuiet().progress().print('filepath', 'after_move');
 
   if (extraOptions.liveFromStart) {

@@ -1,4 +1,4 @@
-import { MergeOutputFormat } from 'yt-dlp-command-builder';
+import { MergeOutputFormat, RemuxRecodeVideoFormat } from 'yt-dlp-command-builder';
 import { Source } from '.';
 import { MediaFormat, MediaInfoJson } from './info-json';
 
@@ -22,6 +22,7 @@ export interface ExtraOptions {
   writeAutoSubs: boolean;
   liveFromStart: boolean;
   mergeOutputFormat: undefined | MergeOutputFormat;
+  recodeOutput: undefined | RemuxRecodeVideoFormat;
 }
 
 export type DownloadOptions = {

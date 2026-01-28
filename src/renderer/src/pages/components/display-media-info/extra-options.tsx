@@ -14,10 +14,11 @@ import {
   IconPhotoVideo,
   IconSection
 } from '@tabler/icons-react';
-import { Captions, FilePen, SquaresUnite } from 'lucide-react';
+import { Captions, FilePen, FileVideoCamera, SquaresUnite } from 'lucide-react';
 import { useEffect } from 'react';
 import { OptionBlock } from './option-block';
 import MergeOutputFormatModal from './merge-output-format-modal';
+import RecodeOutputModal from './recode-output-modal';
 
 export const ExtraOptions = () => {
   const extraOptions = useSelectedOptionsStore((state) => state.extraOptions);
@@ -207,6 +208,26 @@ export const ExtraOptions = () => {
     );
   };
 
+  const RecodeOutput = () => {
+    return (
+      <RecodeOutputModal
+        defaultValue={extraOptions.recodeOutput}
+        onSelect={(val) => setExtraOptions({ recodeOutput: val })}
+      >
+        <Toggle
+          title="Recode Output"
+          pressed={extraOptions.recodeOutput !== undefined}
+          size="sm"
+          variant="outline"
+          className="aria-pressed:bg-primary/20 aria-pressed:*:[svg]:stroke-primary aria-pressed:*:[span]:text-primary text-xs"
+        >
+          <FileVideoCamera className="size-3" />{' '}
+          <span>Recode Output {extraOptions.recodeOutput && `(${extraOptions.recodeOutput})`}</span>
+        </Toggle>
+      </RecodeOutputModal>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 font-main">
       {infoJson.is_live && source === 'youtube-video' && (
@@ -241,6 +262,7 @@ export const ExtraOptions = () => {
         <OptionBlock name="Output options">
           <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
             <MergeOutputFormat />
+            <RecodeOutput />
           </div>
         </OptionBlock>
       </div>
