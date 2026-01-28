@@ -34,7 +34,10 @@ const MergeOutputFormatModal = ({
         <DialogHeader>
           <DialogTitle className="font-main">Merge output format</DialogTitle>
           <DialogDescription className="font-main flex flex-col gap-2">
-            <span>Select format to which the output should be merged</span>
+            <span>
+              Choose which container may be used when merging separate audio and video streams
+            </span>
+
             <p className="bg-yellow-300/20 text-[10px] rounded-md border p-1 px-2 text-foreground font-main">
               This option only controls the container used when separate video and audio streams
               must be merged. It does not force the final format. The actual output container still
