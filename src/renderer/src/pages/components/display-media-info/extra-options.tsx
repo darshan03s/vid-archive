@@ -178,7 +178,7 @@ export const ExtraOptions = () => {
         onPressedChange={(pressed) => handleOptionToggle('liveFromStart', pressed)}
         size="sm"
         variant="outline"
-        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs"
+        className="data-[state=on]:bg-primary/20 data-[state=on]:*:[svg]:stroke-primary data-[state=on]:*:[span]:text-primary text-xs rounded-full px-2"
       >
         <IconArrowBackUp className="size-3" /> <span>Live from start</span>
       </Toggle>

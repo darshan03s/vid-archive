@@ -127,6 +127,7 @@ export class DownloadManager {
           if (data.includes('urllib3.connection.HTTPSConnection')) {
             mainWindow.webContents.send('yt-dlp:error', 'Connection error');
           }
+          if (data.includes('[download] Got error: HTTPSConnection')) return;
           if (
             data.includes(
               '--live-from-start is passed, but there are no formats that can be downloaded from the start'
@@ -160,8 +161,12 @@ export class DownloadManager {
           // download paused
           this.onDownloadPause(downloadingItem, code);
         } else {
-          // download failed
-          this.onDownloadFail(downloadingItem, code);
+          if (downloadingItem.complete_output.includes('[download] 100% of')) {
+            this.onDownloadSuccess(downloadingItem, code);
+          } else {
+            // download failed
+            this.onDownloadFail(downloadingItem, code);
+          }
         }
       }
     });
@@ -181,7 +186,7 @@ export class DownloadManager {
       .filter(Boolean);
   }
 
-  private onDownloadSuccess(downloadedItem: NewDownloadHistoryItem, code: number) {
+  private onDownloadSuccess(downloadedItem: NewDownloadHistoryItem, code: number | null) {
     downloadedItem.download_status = 'completed';
     downloadedItem.download_completed_at = new Date().toISOString();
     downloadedItem.download_progress_string = 'Download Completed';
