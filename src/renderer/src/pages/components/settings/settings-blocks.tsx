@@ -1,5 +1,5 @@
 import { AppSettingsChange } from '@shared/types';
-import { useSettingsStore } from '@renderer/stores/settings-store';
+import { initialSettingsState, useSettingsStore } from '@renderer/stores/settings-store';
 import { useEffect, useState } from 'react';
 import { SUPPORTED_COOKIE_BROWSERS, SupportedCookieBrowser } from 'yt-dlp-command-builder';
 import { SettingsBlock } from './settings-block';
@@ -17,6 +17,7 @@ import {
   IconInfoCircle,
   IconMinus,
   IconPlus,
+  IconReload,
   IconTrash
 } from '@tabler/icons-react';
 import { Switch } from '@renderer/components/ui/switch';
@@ -98,7 +99,6 @@ export const SettingsBlocks = () => {
 
     if (key === 'cookiesBrowserProfile') {
       const profile = (value as string).trim();
-      if (profile.length === 0) return;
       useSettingsStore.getState().setSettingsChange({ cookiesBrowserProfile: profile as string });
     }
   }
@@ -224,6 +224,17 @@ export const SettingsBlocks = () => {
             >
               <IconInfoCircle className="size-3" />
             </TooltipWrapper>
+            <TooltipWrapper message="Reset Option">
+              <button
+                disabled={settingsChange.cookiesBrowser === initialSettingsState.cookiesBrowser}
+                className="flex items-center justify-center disabled:opacity-50"
+                onClick={() =>
+                  handleSettingsChange('cookiesBrowser', initialSettingsState.cookiesBrowser)
+                }
+              >
+                <IconReload className="size-3" />
+              </button>
+            </TooltipWrapper>
           </SettingName>
           <div className="h-8 w-[400px] flex items-center gap-2">
             <Select
@@ -255,6 +266,23 @@ export const SettingsBlocks = () => {
               message="Enter browser profile to read cookies (optional)"
             >
               <IconInfoCircle className="size-3" />
+            </TooltipWrapper>
+            <TooltipWrapper message="Reset Option">
+              <button
+                disabled={
+                  settingsChange.cookiesBrowserProfile ===
+                  initialSettingsState.cookiesBrowserProfile
+                }
+                className="flex items-center justify-center disabled:opacity-50"
+                onClick={() =>
+                  handleSettingsChange(
+                    'cookiesBrowserProfile',
+                    initialSettingsState.cookiesBrowserProfile
+                  )
+                }
+              >
+                <IconReload className="size-3" />
+              </button>
             </TooltipWrapper>
           </SettingName>
           {browserProfiles.length > 0 ? (

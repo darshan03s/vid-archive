@@ -9,7 +9,7 @@ interface SettingsStore {
   setSettingsChange: (settings: Partial<AppSettings>) => void;
 }
 
-const initialSettingsState: AppSettings = {
+export const initialSettingsState: AppSettings = {
   appVersion: '',
   downloadsFolder: '',
   ffmpegPath: '',
