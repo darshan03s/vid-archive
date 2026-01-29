@@ -28,6 +28,10 @@ export function getYouTubeVideoId(url: string): string | null {
       // shorts and embed url
       if (parsed.pathname.includes('shorts') || parsed.pathname.includes('embed'))
         return parsed.pathname.split('/')[2];
+      // live url
+      if (parsed.pathname.includes('/live')) {
+        return parsed.pathname.split('/')[2];
+      }
     }
     return null;
   } catch {

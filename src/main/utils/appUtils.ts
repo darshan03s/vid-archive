@@ -111,7 +111,7 @@ export async function getFfmpegFromPc(): ReturnType<Api['confirmFfmpeg']> {
 
 export function getSourceFromUrl(url: string): Source | null {
   const parsedUrl = new URL(url);
-  if (parsedUrl.hostname.includes('www.youtube.com')) {
+  if (parsedUrl.hostname === 'www.youtube.com' || parsedUrl.hostname === 'youtube.com') {
     if (!parsedUrl.searchParams.get('v') && parsedUrl.searchParams.get('list')) {
       return 'youtube-playlist';
     }
@@ -119,6 +119,9 @@ export function getSourceFromUrl(url: string): Source | null {
       return 'youtube-video';
     }
     if (parsedUrl.pathname.includes('shorts')) {
+      return 'youtube-video';
+    }
+    if (parsedUrl.pathname.includes('/live')) {
       return 'youtube-video';
     }
   }
