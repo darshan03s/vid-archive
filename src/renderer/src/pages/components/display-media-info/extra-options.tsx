@@ -232,13 +232,13 @@ export const ExtraOptions = () => {
     <div className="flex flex-col gap-4 font-main">
       {infoJson.is_live && source === 'youtube-video' && (
         <div>
-          <OptionBlock name="Live options">
+          <OptionBlock name="Live stream">
             <LiveFromStart />
           </OptionBlock>
         </div>
       )}
       <div>
-        <OptionBlock name="Embed options">
+        <OptionBlock name="Embed into Media">
           <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
             <EmbedThumbnail />
             <EmbedChapters />
@@ -248,7 +248,7 @@ export const ExtraOptions = () => {
         </OptionBlock>
       </div>
       <div>
-        <OptionBlock name="Write options">
+        <OptionBlock name="Additional Files">
           <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
             <WriteDescription />
             <WriteComments />
@@ -259,7 +259,7 @@ export const ExtraOptions = () => {
         </OptionBlock>
       </div>
       <div>
-        <OptionBlock name="Output options">
+        <OptionBlock name="Output format">
           <div className="flex items-center gap-2 flex-wrap [&_.toggle-comp]:rounded-full [&_.toggle-comp]:px-2">
             <MergeOutputFormat />
             <RecodeOutput />
