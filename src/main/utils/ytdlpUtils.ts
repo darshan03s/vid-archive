@@ -91,6 +91,10 @@ export async function createInfoJson(
         if (data.includes('No video formats found')) {
           mainWindow.webContents.send('yt-dlp:error', 'No video formats found');
         }
+        if (data.includes('HTTPSConnection')) {
+          mainWindow.webContents.send('yt-dlp:error', 'Connection Error');
+          return;
+        }
         if (data.includes('HTTPError')) {
           mainWindow.webContents.send('yt-dlp:error', 'HTTP Error');
         }
@@ -171,6 +175,10 @@ async function addLiveFromStartFormats(url: string, infoJson: MediaInfoJson) {
             'yt-dlp:error',
             'Could not get cookies from the selected browser. Try a different browser'
           );
+          if (data.includes('HTTPSConnection')) {
+            mainWindow.webContents.send('yt-dlp:error', 'Connection Error');
+            return;
+          }
         } else {
           mainWindow.webContents.send('yt-dlp:error', data);
         }
