@@ -48,7 +48,7 @@ const RecodeOutputModal = ({ children, defaultValue, onSelect }: RecodeOutputMod
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-main">Recode media</DialogTitle>
+          <DialogTitle className="font-main">Recode output</DialogTitle>
           <DialogDescription className="font-main flex flex-col gap-2">
             Convert the output into a different format. This may re-encode media, increasing
             processing time and reducing quality.
