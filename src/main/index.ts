@@ -51,12 +51,12 @@ let splashWindow: BrowserWindow;
 
 export function createSplash() {
   splashWindow = new BrowserWindow({
-    width: 750,
+    width: 850,
     height: 670,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
-    resizable: false,
+    resizable: true,
     show: true,
     icon
   });
@@ -66,8 +66,7 @@ export function createSplash() {
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     minWidth: 750,
-    width: 750,
-    maxWidth: 750,
+    width: 850,
     height: 670,
     minHeight: 670,
     show: false,
@@ -124,6 +123,10 @@ if (!gotLock) {
       mainWindow.focus();
     }
   });
+}
+
+if (is.dev) {
+  app.disableHardwareAcceleration();
 }
 
 // This method will be called when Electron has finished

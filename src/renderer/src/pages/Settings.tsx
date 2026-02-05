@@ -11,7 +11,7 @@ const Settings = () => {
   }, [currentSettings]);
 
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full lg:max-w-6xl lg:mx-auto flex flex-col gap-1">
       <SettingsHeader />
       <SettingsBlocks />
     </div>

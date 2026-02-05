@@ -2,6 +2,7 @@ export const IPC_CHANNELS = {
   app: {
     window: {
       minimize: 'app:window.minimize',
+      maximize: 'app:window.maximize',
       close: 'app:window.close'
     },
     renderer: {

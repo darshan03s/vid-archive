@@ -17,6 +17,8 @@ const api: Api = {
   // ───────────────── app ─────────────────
   minimize: () => ipcRenderer.send(IPC_CHANNELS.app.window.minimize),
 
+  maximize: () => ipcRenderer.send(IPC_CHANNELS.app.window.maximize),
+
   close: () => ipcRenderer.send(IPC_CHANNELS.app.window.close),
 
   rendererInit: () => ipcRenderer.invoke(IPC_CHANNELS.app.renderer.init),

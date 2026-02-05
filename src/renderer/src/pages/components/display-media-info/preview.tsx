@@ -14,7 +14,7 @@ const PreviewContainer = ({
   infoJson: MediaInfoJson;
 }) => {
   return (
-    <div className="w-full h-60 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30 relative">
+    <div className="w-full h-60 lg:h-82 bg-black flex items-center justify-center rounded-md outline-1 outline-primary/30 relative">
       {children}
       <span className="absolute bottom-2 right-2">
         <LiveStatus infoJson={infoJson} />
@@ -40,7 +40,7 @@ export const Preview = ({
     return (
       <PreviewContainer infoJson={infoJson}>
         <iframe
-          className="aspect-video w-[420px] border-none outline-0 shadow-none m-0 p-0"
+          className="aspect-video w-[420px] lg:w-[570px] border-none outline-0 shadow-none m-0 p-0"
           src={`${getServerUrl()}/embed?url=${url}&source=${source}`}
           scrolling="no"
         ></iframe>

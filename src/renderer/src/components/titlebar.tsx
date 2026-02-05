@@ -1,5 +1,5 @@
 import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
-import { Minus } from 'lucide-react';
+import { Minus, Square } from 'lucide-react';
 import appIcon from '../../../../build/icon.png';
 import { useNavigate } from 'react-router-dom';
 import ModeToggle from './mode-toggle';
@@ -79,6 +79,21 @@ const MinimizeButton = () => {
   );
 };
 
+const MaximizeButton = () => {
+  function maximize() {
+    window.api.maximize();
+  }
+  return (
+    <button
+      title="Maximize"
+      onClick={maximize}
+      className="w-10 hover:bg-secondary flex items-center justify-center h-10"
+    >
+      <Square className="size-3 text-foreground" />
+    </button>
+  );
+};
+
 const CloseButton = () => {
   const [isConfirmExitModalVisible, setIsConfirmExitModalVisible] = useState(false);
 
@@ -97,7 +112,7 @@ const CloseButton = () => {
       <button
         title="Close"
         onClick={close}
-        className="w-10 hover:bg-red-600/80 flex items-center justify-center h-10 rounded-tr-lg"
+        className="w-10 hover:bg-red-600/80 flex items-center justify-center h-10"
       >
         <IconX className="size-4 text-foreground" />
       </button>
@@ -171,6 +186,7 @@ const Titlebar = () => {
       <AppName />
       <div className="titlebar-right flex items-center">
         <MinimizeButton />
+        <MaximizeButton />
         <CloseButton />
       </div>
     </div>

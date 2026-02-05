@@ -41,6 +41,16 @@ import { IPC_CHANNELS } from '../../shared/ipc/channels';
 
 function registerHanlders() {
   ipcMain.on(IPC_CHANNELS.app.window.minimize, () => mainWindow.minimize());
+  ipcMain.on(IPC_CHANNELS.app.window.maximize, () => {
+    if (!mainWindow) return;
+
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+
   ipcMain.on(IPC_CHANNELS.app.window.close, () => mainWindow.close());
   ipcMain.handle(IPC_CHANNELS.app.renderer.init, rendererInit);
   ipcMain.on(IPC_CHANNELS.app.settings.save, saveSettings);

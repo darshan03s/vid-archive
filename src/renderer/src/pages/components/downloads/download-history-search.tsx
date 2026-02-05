@@ -30,7 +30,7 @@ export const DownloadHistorySearch = () => {
           }
         }}
         onChange={(e) => handleSearchInput(e.target.value)}
-        className="h-7 text-[10px] w-[260px] font-main placeholder:font-main"
+        className="h-7 text-[10px] w-[260px] lg:w-[400px] font-main placeholder:font-main"
         type="search"
         placeholder="Search in download history"
       />

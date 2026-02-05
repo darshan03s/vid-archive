@@ -40,6 +40,7 @@ export type YtdlpVersions = {
 
 export type Api = {
   minimize: () => void;
+  maximize: () => void;
   close: () => void;
   rendererInit: () => Promise<AppSettings | null>;
   confirmYtdlp: () => Promise<{
