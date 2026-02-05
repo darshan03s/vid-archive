@@ -54,8 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          body: |
-            ![Installer Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.ref_name }}/vid-archive-setup.exe)
           files: |
             dist/*.exe
             dist/latest.yml
