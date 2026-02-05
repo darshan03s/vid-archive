@@ -3,12 +3,12 @@ import {
   SupportedCookieBrowser,
   YtdlpCommandBuilder
 } from 'yt-dlp-command-builder';
-import { YTDLP_EXE_PATH } from '..';
-import Settings from '@main/settings';
-import { pathExistsSync, removeEmoji } from './fsUtils';
+import { YTDLP_EXE_PATH } from '../..';
+import Settings from '@main/settings/settings';
+import { pathExistsSync, removeEmoji } from '../fs';
 import { Source } from '@shared/types';
 import { DownloadOptions } from '@shared/types/download';
-import { getInfoJsonPath } from './ytdlpUtils';
+import { getInfoJsonPath } from '.';
 
 function addCookiesToCommand(builder: YtdlpCommandBuilder) {
   const settings = Settings.getInstance();

@@ -1,5 +1,5 @@
 import ElectronStore from 'electron-store';
-import { DATA_DIR } from '.';
+import { DATA_DIR } from '..';
 import { AppSettings, AppSettingsChange } from '@shared/types';
 
 class Settings {

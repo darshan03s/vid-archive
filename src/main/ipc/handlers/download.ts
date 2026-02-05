@@ -1,7 +1,7 @@
 import { DownloadManager } from '@main/downloadManager';
 import { mainWindow } from '@main/index';
 import { NewDownloadHistoryItem } from '@main/types/db';
-import { downloadHistoryOperations } from '@main/utils/dbUtils';
+import { downloadHistoryOperations } from '@main/utils/db';
 import logger from '@shared/logger';
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 

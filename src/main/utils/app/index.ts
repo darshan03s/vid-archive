@@ -1,4 +1,4 @@
-import Settings from '@main/settings';
+import Settings from '@main/settings/settings';
 import logger from '@shared/logger';
 import { Api, AppSettings, Source } from '@shared/types';
 import {
@@ -15,8 +15,8 @@ import { app } from 'electron';
 import { readdir, writeFile } from 'fs/promises';
 import path from 'path';
 import { promisify } from 'util';
-import { listFolderItems } from './fsUtils';
-import { mainWindow } from '..';
+import { listFolderItems } from '../fs';
+import { mainWindow } from '../../';
 const execPromise = promisify(exec);
 
 export async function getYtdlpFromSettings() {

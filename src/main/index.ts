@@ -9,7 +9,7 @@ import registerHanlders from './ipc/registerHandlers';
 import registerProtocolHandlers from './protocolHanlders';
 import runServer from './server';
 import { initAutoUpdater } from './updater';
-import { captureScreen } from './utils/appUtils';
+import { captureScreen } from './utils/app';
 
 const logsFolderName = new Date().toISOString().split('T')[0];
 

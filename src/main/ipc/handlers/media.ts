@@ -1,6 +1,6 @@
-import { getNormalizedUrl, getSourceFromUrl } from '@main/utils/appUtils';
-import { urlHistoryOperations } from '@main/utils/dbUtils';
-import { downloadFromYtdlp, getInfoJson } from '@main/utils/ytdlpUtils';
+import { getNormalizedUrl, getSourceFromUrl } from '@main/utils/app';
+import { urlHistoryOperations } from '@main/utils/db';
+import { downloadFromYtdlp, getInfoJson } from '@main/utils/yt-dlp';
 import { allowedSources } from '@shared/data';
 import logger from '@shared/logger';
 import { Source } from '@shared/types';

@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
-import { mainWindow, MEDIA_DATA_FOLDER_PATH } from '..';
+import { mainWindow, MEDIA_DATA_FOLDER_PATH } from '../..';
 import path from 'node:path';
-import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from './fsUtils';
+import { downloadFile, pathExists, readJson, sanitizeFileName, writeJson } from '../fs';
 import { LiveFromStartFormats, MediaInfoJson } from '@shared/types/info-json';
 import { Source } from '@shared/types';
 import logger from '@shared/logger';
@@ -9,7 +9,7 @@ import { writeFile } from 'node:fs/promises';
 import { DownloadManager } from '@main/downloadManager';
 import { NewDownloadHistoryItem } from '@main/types/db';
 import { DownloadOptions } from '@shared/types/download';
-import Settings from '@main/settings';
+import Settings from '@main/settings/settings';
 import { getMediaId } from '@shared/utils';
 import { mediaSources, playlistSources } from '@shared/data';
 import {

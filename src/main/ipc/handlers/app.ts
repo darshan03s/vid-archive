@@ -1,7 +1,7 @@
 import { mainWindow, MEDIA_DATA_FOLDER_PATH } from '@main/index';
-import Settings from '@main/settings';
-import { getAllInfoJsonFiles, getSettings } from '@main/utils/appUtils';
-import { deleteFile } from '@main/utils/fsUtils';
+import Settings from '@main/settings/settings';
+import { getAllInfoJsonFiles, getSettings } from '@main/utils/app';
+import { deleteFile } from '@main/utils/fs';
 import logger from '@shared/logger';
 import { AppSettingsChange } from '@shared/types';
 import { IpcMainEvent } from 'electron';

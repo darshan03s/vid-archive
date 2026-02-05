@@ -1,8 +1,8 @@
 import { DATA_DIR, FFMPEG_FOLDER_PATH } from '@main/index';
-import Settings from '@main/settings';
-import { getFfmpegFromPc, getFfmpegVersionFromPc } from '@main/utils/appUtils';
-import { downloadFfmpeg7z } from '@main/utils/downloadFfmpeg7z';
-import { copyFolder, deleteFile } from '@main/utils/fsUtils';
+import Settings from '@main/settings/settings';
+import { getFfmpegFromPc, getFfmpegVersionFromPc } from '@main/utils/app';
+import { downloadFfmpeg7z } from '@main/utils/download';
+import { copyFolder, deleteFile } from '@main/utils/fs';
 import logger from '@shared/logger';
 import path from 'node:path';
 import SevenZip from '7zip-min';
@@ -18,7 +18,10 @@ export async function confirmFfmpeg() {
 
     if (ffmpegPathInPc && ffmpegVersionInPc) {
       const ffmpegFolderInPc = path.dirname(ffmpegPathInPc);
-      await copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
+      // copy ffmpeg files on windows
+      if (process.platform === 'win32') {
+        await copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
+      }
       settings.set('ffmpegPath', FFMPEG_FOLDER_PATH);
       settings.set('ffmpegVersion', ffmpegVersionInPc);
     }
@@ -43,6 +46,7 @@ export async function downloadFfmpeg() {
     logger.info('Downloaded ffmpeg');
 
     if (!is.dev) {
+      // set 7zip path on windows
       const sevenZipPath = path.join(
         process.resourcesPath,
         'app.asar.unpacked',
@@ -62,8 +66,9 @@ export async function downloadFfmpeg() {
 
     await deleteFile(output7zPath);
 
-    const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-8.0-full_build', 'bin', 'ffmpeg.exe');
-    const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-8.0-full_build', 'bin');
+    // set ffmpeg path for windows
+    const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-win', 'bin', 'ffmpeg.exe');
+    const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-win', 'bin');
 
     const ffmpegVersionInPc = await getFfmpegVersionFromPc(ffmpegExePath);
 

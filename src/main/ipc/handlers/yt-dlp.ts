@@ -1,24 +1,17 @@
 import { is } from '@electron-toolkit/utils';
 import { DATA_DIR, mainWindow, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '@main/index';
-import Settings from '@main/settings';
-import { getYtdlpFromPc, getYtdlpVersionFromPc } from '@main/utils/appUtils';
-import { downloadQuickJS } from '@main/utils/downloadJsRuntime';
-import {
-  copyFileToFolder,
-  deleteFile,
-  pathExistsSync,
-  readJson,
-  writeJson
-} from '@main/utils/fsUtils';
+import Settings from '@main/settings/settings';
+import { getYtdlpFromPc, getYtdlpVersionFromPc } from '@main/utils/app';
+import { downloadQuickJS, downloadYtDlpLatestRelease } from '@main/utils/download';
+import { copyFileToFolder, deleteFile, pathExistsSync, readJson, writeJson } from '@main/utils/fs';
 import logger from '@shared/logger';
 import path from 'node:path';
 import SevenZip from '7zip-min';
-import { downloadYtDlpLatestRelease } from '@main/utils/downloadYtdlp';
 import { YtdlpVersions } from '@shared/types';
 import { IpcMainEvent } from 'electron';
 import { ReleaseChannel } from 'yt-dlp-command-builder';
 import { spawn } from 'node:child_process';
-import { getUpdateCommand } from '@main/utils/ytdlpCommands';
+import { getUpdateCommand } from '@main/utils/yt-dlp/ytdlpCommands';
 
 export async function confirmYtdlp() {
   const settings = Settings.getInstance();
@@ -29,7 +22,10 @@ export async function confirmYtdlp() {
     const { ytdlpVersionInPc, ytdlpPathInPc } = await getYtdlpFromPc();
 
     if (ytdlpPathInPc && ytdlpVersionInPc) {
-      await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH);
+      // copy yt-dlp files on windows
+      if (process.platform === 'win32') {
+        await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH);
+      }
       settings.set('ytdlpPath', YTDLP_EXE_PATH);
       settings.set('ytdlpVersion', ytdlpVersionInPc);
     }
@@ -48,10 +44,11 @@ export async function confirmYtdlp() {
 
 async function addJsRuntime() {
   const settings = Settings.getInstance();
-  const outputJsRuntimeZipPath = await downloadQuickJS(path.join(DATA_DIR, 'quickjs'));
+  const outputJsRuntime7zPath = await downloadQuickJS(path.join(DATA_DIR, 'quickjs'));
   logger.info('Downloaded JS Runtime');
 
   if (!is.dev) {
+    // set 7zip path on windows
     const sevenZipPath = path.join(
       process.resourcesPath,
       'app.asar.unpacked',
@@ -67,11 +64,14 @@ async function addJsRuntime() {
     });
   }
 
-  await SevenZip.unpack(outputJsRuntimeZipPath, path.join(DATA_DIR, 'quickjs'));
+  await SevenZip.unpack(outputJsRuntime7zPath, path.join(DATA_DIR, 'quickjs'));
 
-  await deleteFile(outputJsRuntimeZipPath);
+  await deleteFile(outputJsRuntime7zPath);
 
-  settings.set('jsRuntimePath', path.join(DATA_DIR, 'quickjs', 'qjs.exe'));
+  // set quickjs path for windows
+  const quickJsPath = path.join(DATA_DIR, 'quickjs', 'qjs.exe');
+
+  settings.set('jsRuntimePath', quickJsPath);
 }
 
 export async function downloadYtdlp() {

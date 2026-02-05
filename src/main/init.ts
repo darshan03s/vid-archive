@@ -1,11 +1,11 @@
 import { app } from 'electron';
 import { DATA_DIR, DB_PATH, MEDIA_DATA_FOLDER_PATH, SETTINGS_PATH } from '.';
 import { initDatabase, runMigrations } from './db';
-import { getDefaultAppSettings } from './defaultSettings';
+import { getDefaultAppSettings } from './settings/defaultSettings';
 import { DownloadManager } from './downloadManager';
-import { makeDirs, pathExistsSync } from './utils/fsUtils';
+import { makeDirs, pathExistsSync } from './utils/fs';
 import logger from '@shared/logger';
-import Settings from './settings';
+import Settings from './settings/settings';
 
 // Apply necessary updates to settings when app version changes
 function updateSettings() {

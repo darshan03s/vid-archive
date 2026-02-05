@@ -30,7 +30,8 @@ export default defineConfig(
       '@typescript-eslint/no-explicit-any': 'warn',
       'react-refresh/only-export-components': 'off',
       'react-hooks/exhaustive-deps': 'off',
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
+      'prefer-const': 'warn'
     }
   },
   eslintConfigPrettier

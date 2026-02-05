@@ -1,4 +1,4 @@
-import { urlHistoryOperations } from '@main/utils/dbUtils';
+import { urlHistoryOperations } from '@main/utils/db';
 import logger from '@shared/logger';
 import { IpcMainInvokeEvent } from 'electron';
 

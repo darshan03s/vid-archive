@@ -1,12 +1,12 @@
 import { ChildProcess, spawn } from 'node:child_process';
 import { NewDownloadHistoryItem } from '../types/db';
-import { downloadHistoryOperations } from '../utils/dbUtils';
+import { downloadHistoryOperations } from '../utils/db';
 import { mainWindow } from '..';
 import { ProgressDetails } from '@shared/types/download';
-import { getFileExtension } from '../utils/fsUtils';
-import Settings from '../settings';
+import { getFileExtension } from '../utils/fs';
+import Settings from '../settings/settings';
 import logger from '@shared/logger';
-import { terminateProcess } from '../utils/appUtils';
+import { terminateProcess } from '../utils/app';
 import { PendingQueue } from './pendingQueue';
 
 type RunningDownload = {
