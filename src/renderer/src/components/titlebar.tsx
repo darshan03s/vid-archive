@@ -1,6 +1,6 @@
 import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
 import { Minus, Square } from 'lucide-react';
-import appIcon from '../../../../build/icon.png';
+import appIcon from '../../../../resources/icon.png';
 import { useNavigate } from 'react-router-dom';
 import ModeToggle from './mode-toggle';
 import { RunningDownloadsList } from '@/shared/types/history';
