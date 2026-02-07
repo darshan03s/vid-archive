@@ -7,6 +7,23 @@ import logger from '@shared/logger';
 import path from 'node:path';
 import SevenZip from '7zip-min';
 import { is } from '@electron-toolkit/utils';
+import { get7zBinaryPath } from '@main/utils/app';
+
+async function copyFfmpegFromPc(ffmpegPathInPc: string) {
+  const ffmpegFolderInPc = path.dirname(ffmpegPathInPc);
+  // copy ffmpeg files on windows
+  if (process.platform === 'win32') {
+    await copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
+  }
+}
+
+function getFfmpegExeAndBinPath() {
+  // ffmpeg path for windows
+  const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-win', 'bin', 'ffmpeg.exe');
+  const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-win', 'bin');
+
+  return { ffmpegExePath, ffmpegBinPath };
+}
 
 export async function confirmFfmpeg() {
   const settings = Settings.getInstance();
@@ -17,11 +34,7 @@ export async function confirmFfmpeg() {
     const { ffmpegVersionInPc, ffmpegPathInPc } = await getFfmpegFromPc();
 
     if (ffmpegPathInPc && ffmpegVersionInPc) {
-      const ffmpegFolderInPc = path.dirname(ffmpegPathInPc);
-      // copy ffmpeg files on windows
-      if (process.platform === 'win32') {
-        await copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
-      }
+      await copyFfmpegFromPc(ffmpegPathInPc);
       settings.set('ffmpegPath', FFMPEG_FOLDER_PATH);
       settings.set('ffmpegVersion', ffmpegVersionInPc);
     }
@@ -46,19 +59,8 @@ export async function downloadFfmpeg() {
     logger.info('Downloaded ffmpeg');
 
     if (!is.dev) {
-      // set 7zip path on windows
-      const sevenZipPath = path.join(
-        process.resourcesPath,
-        'app.asar.unpacked',
-        'node_modules',
-        '7zip-bin',
-        'win',
-        'x64',
-        '7za.exe'
-      );
-
       SevenZip.config({
-        binaryPath: sevenZipPath
+        binaryPath: get7zBinaryPath()
       });
     }
 
@@ -66,9 +68,7 @@ export async function downloadFfmpeg() {
 
     await deleteFile(output7zPath);
 
-    // set ffmpeg path for windows
-    const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-win', 'bin', 'ffmpeg.exe');
-    const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-win', 'bin');
+    const { ffmpegExePath, ffmpegBinPath } = getFfmpegExeAndBinPath();
 
     const ffmpegVersionInPc = await getFfmpegVersionFromPc(ffmpegExePath);
 

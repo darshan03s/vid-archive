@@ -1,7 +1,7 @@
 import { is } from '@electron-toolkit/utils';
 import { DATA_DIR, mainWindow, YTDLP_EXE_PATH, YTDLP_FOLDER_PATH } from '@main/index';
 import Settings from '@main/settings/settings';
-import { getYtdlpFromPc, getYtdlpVersionFromPc } from '@main/utils/app';
+import { get7zBinaryPath, getYtdlpFromPc, getYtdlpVersionFromPc } from '@main/utils/app';
 import { downloadQuickJS, downloadYtDlpLatestRelease } from '@main/utils/download';
 import { copyFileToFolder, deleteFile, pathExistsSync, readJson, writeJson } from '@main/utils/fs';
 import logger from '@shared/logger';
@@ -13,6 +13,15 @@ import { ReleaseChannel } from 'yt-dlp-command-builder';
 import { spawn } from 'node:child_process';
 import { getUpdateCommand } from '@main/utils/yt-dlp/ytdlpCommands';
 
+async function copyYtdlpFromPc(ytdlpPathInPc: string) {
+  await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH);
+}
+
+function getQuickJsPath() {
+  // quickjs path for windows
+  return path.join(DATA_DIR, 'quickjs', 'qjs.exe');
+}
+
 export async function confirmYtdlp() {
   const settings = Settings.getInstance();
 
@@ -22,10 +31,7 @@ export async function confirmYtdlp() {
     const { ytdlpVersionInPc, ytdlpPathInPc } = await getYtdlpFromPc();
 
     if (ytdlpPathInPc && ytdlpVersionInPc) {
-      // copy yt-dlp files on windows
-      if (process.platform === 'win32') {
-        await copyFileToFolder(ytdlpPathInPc, YTDLP_FOLDER_PATH);
-      }
+      await copyYtdlpFromPc(ytdlpPathInPc);
       settings.set('ytdlpPath', YTDLP_EXE_PATH);
       settings.set('ytdlpVersion', ytdlpVersionInPc);
     }
@@ -48,19 +54,8 @@ async function addJsRuntime() {
   logger.info('Downloaded JS Runtime');
 
   if (!is.dev) {
-    // set 7zip path on windows
-    const sevenZipPath = path.join(
-      process.resourcesPath,
-      'app.asar.unpacked',
-      'node_modules',
-      '7zip-bin',
-      'win',
-      'x64',
-      '7za.exe'
-    );
-
     SevenZip.config({
-      binaryPath: sevenZipPath
+      binaryPath: get7zBinaryPath()
     });
   }
 
@@ -68,10 +63,7 @@ async function addJsRuntime() {
 
   await deleteFile(outputJsRuntime7zPath);
 
-  // set quickjs path for windows
-  const quickJsPath = path.join(DATA_DIR, 'quickjs', 'qjs.exe');
-
-  settings.set('jsRuntimePath', quickJsPath);
+  settings.set('jsRuntimePath', getQuickJsPath());
 }
 
 export async function downloadYtdlp() {

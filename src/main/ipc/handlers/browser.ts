@@ -7,10 +7,7 @@ export async function getBrowserProfiles(
   browser: SupportedCookieBrowser
 ) {
   if (browser === 'firefox') {
-    // get firefox profiles for windows
-    if (process.platform === 'win32') {
-      return getFirefoxProfiles();
-    }
+    return getFirefoxProfiles();
   }
   return [];
 }

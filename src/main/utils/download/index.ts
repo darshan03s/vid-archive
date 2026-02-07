@@ -15,6 +15,7 @@ export async function downloadFfmpeg7z(targetDir: string): Promise<string> {
   await mkdir(targetDir, { recursive: true });
   const outputPath = path.join(targetDir, 'ffmpeg.7z');
 
+  // download ffmpeg for windows
   if (process.platform === 'win32') {
     await download(LINKS.ffmpegWin, outputPath);
   }
@@ -26,6 +27,7 @@ export async function downloadQuickJS(targetDir: string): Promise<string> {
   await mkdir(targetDir, { recursive: true });
   const outputPath = path.join(targetDir, 'quickjs.7z');
 
+  // download quickjs for windows
   if (process.platform === 'win32') {
     await download(LINKS.quickJsWin, outputPath);
   }
@@ -38,6 +40,7 @@ export async function downloadYtDlpLatestRelease(targetDir: string): Promise<str
   // set yt-dlp path for windows
   const outputPath = path.join(targetDir, 'yt-dlp.exe');
 
+  // download yt-dlp for windows
   if (process.platform === 'win32') {
     await download(LINKS.ytdlpLatestReleaseWin, outputPath);
   }

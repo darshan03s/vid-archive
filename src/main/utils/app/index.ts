@@ -49,11 +49,13 @@ export async function getSettings(): Promise<AppSettings> {
 async function getAppPath(appName: string) {
   try {
     let command: string;
+    // On Windows, use PowerShell to get the full path of the executable
     if (process.platform === 'win32') {
       command = `(Get-Command ${appName}).Source`;
       const { stdout } = await execPromise(command, { shell: 'powershell.exe' });
       return { found: true, path: stdout.trim() };
     } else {
+      // On Unix-like systems, use 'which' command
       command = `which ${appName}`;
       const { stdout } = await execPromise(command);
       return { found: true, path: stdout.trim() };
@@ -224,9 +226,13 @@ export function getNormalizedUrl(source: Source, url: string) {
   return '';
 }
 
-export function terminateProcess(process: ChildProcess) {
-  const pid = process.pid;
-  exec(`taskkill /PID ${pid} /T /F`);
+export function terminateProcess(childProcess: ChildProcess) {
+  const pid = childProcess.pid;
+
+  // kill child process on windows
+  if (process.platform === 'win32') {
+    exec(`taskkill /PID ${pid} /T /F`);
+  }
 }
 
 export async function getAllInfoJsonFiles(
@@ -255,10 +261,14 @@ export async function getAllInfoJsonFiles(
 }
 
 export async function getFirefoxProfiles() {
-  const roamingAppDataPath = app.getPath('appData');
-  const firefoxProfilesFolder = path.join(roamingAppDataPath, 'Mozilla', 'Firefox', 'Profiles');
-  const profilesList = await listFolderItems(firefoxProfilesFolder);
-  return profilesList;
+  if (process.platform === 'win32') {
+    const roamingAppDataPath = app.getPath('appData');
+    const firefoxProfilesFolder = path.join(roamingAppDataPath, 'Mozilla', 'Firefox', 'Profiles');
+    const profilesList = await listFolderItems(firefoxProfilesFolder);
+    return profilesList;
+  } else {
+    return [];
+  }
 }
 
 export async function captureScreen(dirPath: string) {
@@ -291,4 +301,19 @@ export async function captureScreen(dirPath: string) {
   dbg.detach();
 
   console.log(`Saved ${scale}x Screenshot: ${filePath}`);
+}
+
+export function get7zBinaryPath(): string {
+  // set 7zip path on windows
+  const binPath = path.join(
+    process.resourcesPath,
+    'app.asar.unpacked',
+    'node_modules',
+    '7zip-bin',
+    'win',
+    'x64',
+    '7za.exe'
+  );
+
+  return binPath;
 }
