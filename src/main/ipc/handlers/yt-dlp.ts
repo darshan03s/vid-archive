@@ -18,6 +18,10 @@ async function copyYtdlpFromPc(ytdlpPathInPc: string) {
 }
 
 function getQuickJsPath() {
+  // quickjs path for linux
+  if (process.platform === 'linux') {
+    return path.join(DATA_DIR, 'quickjs', 'qjs');
+  }
   // quickjs path for windows
   return path.join(DATA_DIR, 'quickjs', 'qjs.exe');
 }

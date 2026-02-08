@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
-# Simulate environment where yt-dlp and ffmpeg are not in PATH
 
-# Detect correct PATH separator for Windows vs POSIX
-SEP=';'
-if [[ "$PATH" == *":"* && "$PATH" != *";"* ]]; then
-  SEP=':'
-fi
+set -e
 
-# Backup original PATH
-ORIGINAL_PATH="$PATH"
+# Create temp dir for shadowed binaries
+SHADOW_BIN="$(mktemp -d)"
 
-# Filter out directories containing yt-dlp or ffmpeg binaries
-CLEAN_PATH=$(echo "$ORIGINAL_PATH" | tr ';:' '\n' | grep -viE 'yt-dlp|ffmpeg' | paste -sd "$SEP")
+# Create fake yt-dlp
+cat > "$SHADOW_BIN/yt-dlp" <<'EOF'
+#!/usr/bin/env bash
+exit 127
+EOF
 
-# Ensure PNPM path is preserved
-if ! echo "$CLEAN_PATH" | grep -qi "pnpm"; then
-  PNPM_DIR=$(dirname "$(which pnpm 2>/dev/null)")
-  CLEAN_PATH="${CLEAN_PATH}${SEP}${PNPM_DIR}"
-fi
+# Create fake ffmpeg
+cat > "$SHADOW_BIN/ffmpeg" <<'EOF'
+#!/usr/bin/env bash
+exit 127
+EOF
 
-# Run the app with filtered PATH
-PATH="$CLEAN_PATH" pnpm dev
+chmod +x "$SHADOW_BIN/yt-dlp" "$SHADOW_BIN/ffmpeg"
+
+# Prepend shadow bin to PATH
+export PATH="$SHADOW_BIN:$PATH"
+
+# Run normally
+pnpm dev

@@ -23,4 +23,4 @@ chmod +x "$SHADOW_BIN/yt-dlp" "$SHADOW_BIN/ffmpeg"
 export PATH="$SHADOW_BIN:$PATH"
 
 # Run normally
-pnpm start:win-unpack
+pnpm start:linux-unpack

@@ -78,7 +78,7 @@ export async function getYtdlpVersionFromPc(ytdlpPath: string = 'yt-dlp') {
 
 export async function getFfmpegVersionFromPc(ffmpegPath: string = 'ffmpeg') {
   const { stdout } = await execPromise(`${ffmpegPath} -version`);
-  const match = stdout.match(/ffmpeg version\s+(\d+(?:\.\d+)?)/);
+  const match = stdout.match(/ffmpeg version\s+([^\s]+)/);
   const version = match ? match[1] : null;
   return version ?? 'N/A';
 }
@@ -227,11 +227,13 @@ export function getNormalizedUrl(source: Source, url: string) {
 }
 
 export function terminateProcess(childProcess: ChildProcess) {
-  const pid = childProcess.pid;
+  const pid = childProcess.pid!;
 
   // kill child process on windows
   if (process.platform === 'win32') {
     exec(`taskkill /PID ${pid} /T /F`);
+  } else {
+    process.kill(pid, 'SIGTERM');
   }
 }
 
@@ -305,7 +307,7 @@ export async function captureScreen(dirPath: string) {
 
 export function get7zBinaryPath(): string {
   // set 7zip path on windows
-  const binPath = path.join(
+  let binPath = path.join(
     process.resourcesPath,
     'app.asar.unpacked',
     'node_modules',
@@ -314,6 +316,18 @@ export function get7zBinaryPath(): string {
     'x64',
     '7za.exe'
   );
+
+  if (process.platform === 'linux') {
+    binPath = path.join(
+      process.resourcesPath,
+      'app.asar.unpacked',
+      'node_modules',
+      '7zip-bin',
+      'linux',
+      'x64',
+      '7za'
+    );
+  }
 
   return binPath;
 }

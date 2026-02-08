@@ -30,7 +30,10 @@ export const MIGRATIONS_FOLDER = is.dev
   ? path.join(APP_PATH, 'drizzle')
   : path.join(process.resourcesPath, 'app.asar.unpacked', 'drizzle');
 export const YTDLP_FOLDER_PATH = path.join(DATA_DIR, 'yt-dlp');
-export const YTDLP_EXE_PATH = path.join(DATA_DIR, 'yt-dlp', 'yt-dlp.exe');
+export const YTDLP_EXE_PATH =
+  process.platform === 'win32'
+    ? path.join(DATA_DIR, 'yt-dlp', 'yt-dlp.exe')
+    : path.join(DATA_DIR, 'yt-dlp', 'yt-dlp');
 export const FFMPEG_FOLDER_PATH = path.join(DATA_DIR, 'ffmpeg');
 const SPLASH_HTML_PATH = is.dev
   ? path.join(APP_PATH, 'resources', 'splash.html')
@@ -127,6 +130,10 @@ if (!gotLock) {
 
 if (is.dev) {
   app.disableHardwareAcceleration();
+}
+
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('force-device-scale-factor', '1.10');
 }
 
 // This method will be called when Electron has finished

@@ -24,4 +24,13 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+linux:
+  target:
+    - AppImage
+    - deb
+  maintainer: darshans.site
+  category: Utility
+  artifactName: ${productName}-${version}-${arch}.${ext}
+appImage:
+  artifactName: ${productName}-${version}-${arch}.${ext}
 npmRebuild: false

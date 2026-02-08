@@ -2,7 +2,7 @@ import { DATA_DIR, FFMPEG_FOLDER_PATH } from '@main/index';
 import Settings from '@main/settings/settings';
 import { getFfmpegFromPc, getFfmpegVersionFromPc } from '@main/utils/app';
 import { downloadFfmpeg7z } from '@main/utils/download';
-import { copyFolder, deleteFile } from '@main/utils/fs';
+import { copyFileToFolder, copyFolder, deleteFile } from '@main/utils/fs';
 import logger from '@shared/logger';
 import path from 'node:path';
 import SevenZip from '7zip-min';
@@ -11,16 +11,25 @@ import { get7zBinaryPath } from '@main/utils/app';
 
 async function copyFfmpegFromPc(ffmpegPathInPc: string) {
   const ffmpegFolderInPc = path.dirname(ffmpegPathInPc);
-  // copy ffmpeg files on windows
+  // copy ffmpeg files on windows, linux
   if (process.platform === 'win32') {
     await copyFolder(ffmpegFolderInPc, FFMPEG_FOLDER_PATH);
+  } else {
+    await copyFileToFolder(path.join(ffmpegFolderInPc, 'ffmpeg'), FFMPEG_FOLDER_PATH);
+    await copyFileToFolder(path.join(ffmpegFolderInPc, 'ffplay'), FFMPEG_FOLDER_PATH);
+    await copyFileToFolder(path.join(ffmpegFolderInPc, 'ffprobe'), FFMPEG_FOLDER_PATH);
   }
 }
 
 function getFfmpegExeAndBinPath() {
   // ffmpeg path for windows
-  const ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-win', 'bin', 'ffmpeg.exe');
-  const ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-win', 'bin');
+  let ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-win', 'bin', 'ffmpeg.exe');
+  let ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-win', 'bin');
+
+  if (process.platform === 'linux') {
+    ffmpegExePath = path.join(DATA_DIR, 'ffmpeg-linux', 'bin', 'ffmpeg');
+    ffmpegBinPath = path.join(DATA_DIR, 'ffmpeg-linux', 'bin');
+  }
 
   return { ffmpegExePath, ffmpegBinPath };
 }
